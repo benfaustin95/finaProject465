@@ -1,0 +1,32 @@
+
+
+
+
+int:: copy(List & obj)
+{
+	if(!head)
+		obj.head = null;	
+	else
+		return copy(head, obj.head, head->data); 
+}
+int:: copy(node *& source, node *& dest, int data)
+{
+	if(!source) return 0; 
+	int temp = copy(source->next, head, data); 
+	if(temp == 0 && source->data != data)
+		reutrn temp; 
+	if(!dest)
+		dest = new node; 
+	else
+		node * temp2 = new node; 
+		temp2->next = dest; 
+		dest = temp2;	
+	temp2->data = source->data; 
+	return temp+1;	
+}
+
+
+
+
+
+
