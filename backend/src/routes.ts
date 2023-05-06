@@ -45,7 +45,6 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			const newUser = await req.em.create(User, {
 				name,
 				email,
-				petType
 			});
 
 			await req.em.flush();
