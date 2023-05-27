@@ -1,0 +1,1670 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "level": {
+          "name": "level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "state",
+            "local",
+            "federal"
+          ],
+          "mappedType": "enum"
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "rate": {
+          "name": "rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "float"
+        }
+      },
+      "name": "tax_item",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "tax_item_pkey",
+          "columnNames": [
+            "level",
+            "location"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "birthday": {
+          "name": "birthday",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "users",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "users_pkey",
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "total_value": {
+          "name": "total_value",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "cost_basis": {
+          "name": "cost_basis",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "w_priority": {
+          "name": "w_priority",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "owed": {
+          "name": "owed",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "maintenance_expense": {
+          "name": "maintenance_expense",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "gross_income": {
+          "name": "gross_income",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "rental_asset",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "rental_asset_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "w_priority"
+          ],
+          "composite": false,
+          "keyName": "rental_asset_w_priority_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "rental_asset_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "rental_asset_owner_email_foreign": {
+          "constraintName": "rental_asset_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.rental_asset",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "rental_asset_state_level_state_location_foreign": {
+          "constraintName": "rental_asset_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.rental_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "rental_asset_federal_level_federal_location_foreign": {
+          "constraintName": "rental_asset_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.rental_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "rental_asset_local_level_local_location_foreign": {
+          "constraintName": "rental_asset_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.rental_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "cash_basis": {
+          "name": "cash_basis",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "one_time_income",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "one_time_income_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "one_time_income_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "one_time_income_owner_email_foreign": {
+          "constraintName": "one_time_income_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.one_time_income",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "one_time_income_state_level_state_location_foreign": {
+          "constraintName": "one_time_income_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.one_time_income",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "one_time_income_federal_level_federal_location_foreign": {
+          "constraintName": "one_time_income_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.one_time_income",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "one_time_income_local_level_local_location_foreign": {
+          "constraintName": "one_time_income_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.one_time_income",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "total_value": {
+          "name": "total_value",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "cost_basis": {
+          "name": "cost_basis",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "w_priority": {
+          "name": "w_priority",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "financial_asset",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "financial_asset_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "w_priority"
+          ],
+          "composite": false,
+          "keyName": "financial_asset_w_priority_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "financial_asset_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "financial_asset_owner_email_foreign": {
+          "constraintName": "financial_asset_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.financial_asset",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "financial_asset_state_level_state_location_foreign": {
+          "constraintName": "financial_asset_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.financial_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "financial_asset_federal_level_federal_location_foreign": {
+          "constraintName": "financial_asset_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.financial_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "financial_asset_local_level_local_location_foreign": {
+          "constraintName": "financial_asset_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.financial_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "rate": {
+          "name": "rate",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "asset_id": {
+          "name": "asset_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "dividend",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "dividend_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "dividend_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "dividend_owner_email_foreign": {
+          "constraintName": "dividend_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.dividend",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "dividend_state_level_state_location_foreign": {
+          "constraintName": "dividend_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.dividend",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "dividend_federal_level_federal_location_foreign": {
+          "constraintName": "dividend_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.dividend",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "dividend_local_level_local_location_foreign": {
+          "constraintName": "dividend_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.dividend",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "dividend_asset_id_foreign": {
+          "constraintName": "dividend_asset_id_foreign",
+          "columnNames": [
+            "asset_id"
+          ],
+          "localTableName": "public.dividend",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.financial_asset",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "start": {
+          "name": "start",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "end": {
+          "name": "end",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "income": {
+          "name": "income",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "recurrence": {
+          "name": "recurrence",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "cap_asset",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "cap_asset_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "cap_asset_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "cap_asset_owner_email_foreign": {
+          "constraintName": "cap_asset_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.cap_asset",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "cap_asset_state_level_state_location_foreign": {
+          "constraintName": "cap_asset_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.cap_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "cap_asset_federal_level_federal_location_foreign": {
+          "constraintName": "cap_asset_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.cap_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "cap_asset_local_level_local_location_foreign": {
+          "constraintName": "cap_asset_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.cap_asset",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "owner_email": {
+          "name": "owner_email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "growth_rate": {
+          "name": "growth_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "1",
+          "mappedType": "float"
+        },
+        "state_level": {
+          "name": "state_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "state_location": {
+          "name": "state_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "federal_level": {
+          "name": "federal_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "federal_location": {
+          "name": "federal_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "local_level": {
+          "name": "local_level",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "local_location": {
+          "name": "local_location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "recurrence": {
+          "name": "recurrence",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "daily",
+            "weekly",
+            "monthly",
+            "annually",
+            "non-reoccurring"
+          ],
+          "mappedType": "enum"
+        },
+        "start": {
+          "name": "start",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "end": {
+          "name": "end",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "budget_item",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "budget_item_name_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "budget_item_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "budget_item_owner_email_foreign": {
+          "constraintName": "budget_item_owner_email_foreign",
+          "columnNames": [
+            "owner_email"
+          ],
+          "localTableName": "public.budget_item",
+          "referencedColumnNames": [
+            "email"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "budget_item_state_level_state_location_foreign": {
+          "constraintName": "budget_item_state_level_state_location_foreign",
+          "columnNames": [
+            "state_level",
+            "state_location"
+          ],
+          "localTableName": "public.budget_item",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "budget_item_federal_level_federal_location_foreign": {
+          "constraintName": "budget_item_federal_level_federal_location_foreign",
+          "columnNames": [
+            "federal_level",
+            "federal_location"
+          ],
+          "localTableName": "public.budget_item",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "budget_item_local_level_local_location_foreign": {
+          "constraintName": "budget_item_local_level_local_location_foreign",
+          "columnNames": [
+            "local_level",
+            "local_location"
+          ],
+          "localTableName": "public.budget_item",
+          "referencedColumnNames": [
+            "level",
+            "location"
+          ],
+          "referencedTableName": "public.tax_item",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    }
+  ]
+}
