@@ -9,9 +9,8 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 	app.search<{ Body: { email: string; start: Date; end: Date } }>(
 		"/macroReport",
 		async (req, reply) => {
-
 			// eslint-disable-next-line
-			let {email, start, end } = req.body;
+			let { email, start, end } = req.body;
 			const toSendBudget = {};
 			try {
 				const user = await req.em.findOneOrFail(
@@ -32,14 +31,19 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 				start = new Date(start);
 				end = new Date(end);
 
-
 				const rentalAssets = user.rentalAssets.getItems();
 				const finAssets = user.financialAssets.getItems();
 				const dividends = user.dividends.getItems();
 				for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-					const budgetItems = user.budgetItems.getItems().filter(x => x.start.getFullYear() <= year && x.end.getFullYear()>= year);
-					const capAssets = user.capitalAssets.getItems().filter(x => x.start.getFullYear() <= year && x.end.getFullYear()>= year);
-					const oneTimeIncome = user.oneTimeIncomes.getItems().filter(x => x.date.getFullYear() === year);
+					const budgetItems = user.budgetItems
+						.getItems()
+						.filter((x) => x.start.getFullYear() <= year && x.end.getFullYear() >= year);
+					const capAssets = user.capitalAssets
+						.getItems()
+						.filter((x) => x.start.getFullYear() <= year && x.end.getFullYear() >= year);
+					const oneTimeIncome = user.oneTimeIncomes
+						.getItems()
+						.filter((x) => x.date.getFullYear() === year);
 					toSendBudget[year] = app.macroYearOutput(
 						budgetItems,
 						capAssets,
@@ -52,7 +56,6 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 				}
 
 				reply.send(toSendBudget);
-
 			} catch (err) {
 				console.log(err);
 				reply.status(500).send(err);

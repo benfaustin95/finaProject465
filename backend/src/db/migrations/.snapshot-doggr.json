@@ -1306,6 +1306,20 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "human capital",
+            "non-taxable annuity",
+            "social capital"
+          ],
+          "mappedType": "enum"
+        },
         "recurrence": {
           "name": "recurrence",
           "type": "varchar(255)",

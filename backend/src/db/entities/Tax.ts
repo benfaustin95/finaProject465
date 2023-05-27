@@ -1,10 +1,9 @@
-import {Entity, Enum, PrimaryKey, PrimaryKeyType, Property} from "@mikro-orm/core";
+import { Entity, Enum, PrimaryKey, PrimaryKeyType, Property } from "@mikro-orm/core";
 
 @Entity()
 export class TaxItem {
-
 	@PrimaryKey()
-	@Enum({ items: () => Level})
+	@Enum({ items: () => Level })
 	level!: Level;
 
 	@Property({ columnType: "float" })
@@ -20,5 +19,5 @@ export enum Level {
 	STATE = "state",
 	LOCAL = "local",
 	FEDERAL = "federal",
-	CAPGAINS = "capgains"
+	CAPGAINS = "capgains",
 }

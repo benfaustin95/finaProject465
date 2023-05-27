@@ -21,12 +21,12 @@ export class BaseInput extends BaseEntity {
 	@Property({ columnType: "float" })
 	growthRate: number = 1; //always assumed annual and converted to other
 
-	@ManyToOne({ nullable: true, eager:true })
+	@ManyToOne({ nullable: true, eager: true })
 	state?: TaxItem = null;
 
-	@ManyToOne({ nullable: true ,eager:true})
+	@ManyToOne({ nullable: true, eager: true })
 	federal?: TaxItem = null;
 
-	@ManyToOne({ nullable: true, eager:true})
+	@ManyToOne({ nullable: true, eager: true })
 	local?: TaxItem = null;
 }

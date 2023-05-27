@@ -19,7 +19,6 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 				toBeAdded.federal
 			);
 
-
 			const oti = await req.em.create(OneTimeIncome, {
 				...toBeAdded,
 				owner: user,

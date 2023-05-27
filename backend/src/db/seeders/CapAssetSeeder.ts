@@ -2,7 +2,7 @@ import type { Dictionary, EntityManager } from "@mikro-orm/core";
 import { Seeder } from "@mikro-orm/seeder";
 import { User } from "../entities/User.js";
 import { BudgetItem, Recurrence } from "../entities/budgetItem.js";
-import { CapAsset } from "../entities/capasset.js";
+import {CapAsset, CapAssetType} from "../entities/capasset.js";
 
 export class CapAssetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
@@ -21,6 +21,7 @@ export class CapAssetSeeder extends Seeder {
 			end: new Date("1/31/2027"),
 			state: context.state,
 			federal: context.federal,
+			type: CapAssetType.HUMAN
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -34,6 +35,7 @@ export class CapAssetSeeder extends Seeder {
 			state: context.state,
 			federal: context.federal,
 			local: context.local,
+			type:CapAssetType.SOCIAL
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -47,6 +49,7 @@ export class CapAssetSeeder extends Seeder {
 			state: context.state,
 			federal: context.federal,
 			local: context.local,
+			type: CapAssetType.NONTAXABLEANNUITY
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -59,6 +62,7 @@ export class CapAssetSeeder extends Seeder {
 			end: new Date("1/31/2030"),
 			federal: context.federal,
 			local: context.local,
+			type: CapAssetType.HUMAN
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -70,6 +74,7 @@ export class CapAssetSeeder extends Seeder {
 			start: new Date("3/14/2024"),
 			end: new Date("3/14/2024"),
 			state: context.state,
+			type: CapAssetType.HUMAN
 		});
 	}
 }

@@ -1,4 +1,5 @@
 import { Level } from "./entities/Tax.js";
+import {CapAssetType} from "./entities/capasset.js";
 
 export type ICreateUsersBody = {
 	name: string;
@@ -32,6 +33,7 @@ export interface CAssetBody extends BaseInputBody {
 	end: Date;
 	income: number;
 	recurrence: string;
+	type: CapAssetType
 }
 
 export interface RFBaseBody extends BaseInputBody {

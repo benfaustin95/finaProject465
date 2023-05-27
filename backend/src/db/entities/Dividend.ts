@@ -5,7 +5,7 @@ import { FinancialAsset } from "./financialasset.js";
 
 @Entity()
 export class Dividend extends BaseInput {
-	@Property({columnType: "float"})
+	@Property({ columnType: "float" })
 	rate!: number;
 
 	@ManyToOne()

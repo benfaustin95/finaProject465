@@ -11,17 +11,17 @@ export class TaxSeeder extends Seeder {
 		context.federal = em.create(TaxItem, {
 			level: Level.FEDERAL,
 			location: "USA",
-			rate: .24,
+			rate: 0.24,
 		});
 		context.state = em.create(TaxItem, {
 			level: Level.STATE,
 			location: "Oregon",
-			rate: .14,
+			rate: 0.14,
 		});
 		context.local = em.create(TaxItem, {
 			level: Level.LOCAL,
 			location: "Washington County",
-			rate: .14,
+			rate: 0.14,
 		});
 	}
 }

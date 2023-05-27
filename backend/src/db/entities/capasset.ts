@@ -1,5 +1,5 @@
 import { BaseInput } from "./BaseInput.js";
-import { Entity, Property } from "@mikro-orm/core";
+import {Entity, Enum, Property} from "@mikro-orm/core";
 import { Recurrence } from "./budgetItem.js";
 
 @Entity()
@@ -13,6 +13,17 @@ export class CapAsset extends BaseInput {
 	@Property()
 	income!: number;
 
+	@Enum(()=>CapAssetType)
+	type!:CapAssetType
+
 	@Property()
 	recurrence!: Recurrence;
+}
+
+
+export enum CapAssetType {
+	HUMAN = "human capital",
+	NONTAXABLEANNUITY = "non-taxable annuity",
+	SOCIAL = "social capital"
+
 }

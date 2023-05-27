@@ -17,7 +17,7 @@ export class DividendSeeder extends Seeder {
 			note: "Dividend1 seeder user1",
 			state: context.state,
 			federal: context.federal,
-			rate: .05,
+			rate: 0.05,
 			asset: context.finAsset1,
 		});
 		DivdendRepo.create({
@@ -25,7 +25,7 @@ export class DividendSeeder extends Seeder {
 			name: "Dividend2",
 			note: "Dividend2 seeder user1",
 			state: context.state,
-			rate: .10,
+			rate: 0.1,
 			asset: context.finAsset2,
 		});
 	}
