@@ -1,6 +1,6 @@
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { FastifyInstance } from "fastify";
-import { RFBaseBody} from "../db/types.js";
+import { RFBaseBody } from "../db/types.js";
 import { User } from "../db/entities/User.js";
 
 async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
@@ -9,7 +9,7 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: RFBaseBody }>("/financialAsset", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, { email: toBeAdded.email});
+			const user = await req.em.findOneOrFail(User, { email: toBeAdded.email });
 			const { local, federal, state } = await app.getTaxItems(
 				req,
 				toBeAdded.local,
@@ -34,6 +34,5 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 }
-
 
 export default financialAssetRoutes;

@@ -1,11 +1,10 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
-import { Seeder } from '@mikro-orm/seeder';
-import {FinancialAsset} from "../entities/financialasset.js";
-import {RentalAsset} from "../entities/rentalasset.js";
+import { Seeder } from "@mikro-orm/seeder";
+import { FinancialAsset } from "../entities/financialasset.js";
+import { RentalAsset } from "../entities/rentalasset.js";
 
 export class RentalAssetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
 		const RentalAssetRepo = em.getRepository(RentalAsset);
 
 		// https://mikro-orm.io/docs/seeding#shared-context
@@ -20,7 +19,7 @@ export class RentalAssetSeeder extends Seeder {
 			owed: 90000,
 			maintenanceExpense: 100,
 			grossIncome: 1200,
-			wPriority: 1
+			wPriority: 1,
 		});
 		RentalAssetRepo.create({
 			owner: context.user1,
@@ -32,7 +31,9 @@ export class RentalAssetSeeder extends Seeder {
 			owed: 200000,
 			maintenanceExpense: 1000,
 			grossIncome: 9000,
-			wPriority: 2
+			state: context.state,
+			federal: context.federal,
+			wPriority: 2,
 		});
 	}
 }

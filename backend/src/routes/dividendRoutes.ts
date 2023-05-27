@@ -3,7 +3,7 @@ import { User } from "../db/entities/User.js";
 import { DividendBody } from "../db/types.js";
 import { Dividend } from "../db/entities/Dividend.js";
 import * as repl from "repl";
-import {FinancialAsset} from "../db/entities/financialasset.js";
+import { FinancialAsset } from "../db/entities/financialasset.js";
 
 async function dividendRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("something");
@@ -13,7 +13,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 
 		try {
 			const user = await req.em.findOneOrFail(User, { email: toBeAdded.email });
-			const finAsset = await req.em.findOneOrFail(FinancialAsset, {name:toBeAdded.finAsset});
+			const finAsset = await req.em.findOneOrFail(FinancialAsset, { name: toBeAdded.finAsset });
 
 			const { local, federal, state } = await app.getTaxItems(
 				req,
@@ -28,7 +28,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 				local,
 				federal,
 				state,
-				asset: finAsset
+				asset: finAsset,
 			});
 
 			await req.em.flush();

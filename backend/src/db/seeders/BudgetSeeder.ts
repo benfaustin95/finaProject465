@@ -1,11 +1,10 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
-import { Seeder } from '@mikro-orm/seeder';
-import {User} from "../entities/User.js";
-import {BudgetItem, Recurrence} from "../entities/budgetItem.js";
+import { Seeder } from "@mikro-orm/seeder";
+import { User } from "../entities/User.js";
+import { BudgetItem, Recurrence } from "../entities/budgetItem.js";
 
 export class BudgetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
 		const budgetRepo = em.getRepository(BudgetItem);
 
 		// https://mikro-orm.io/docs/seeding#shared-context
@@ -18,7 +17,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 400,
 			recurrence: Recurrence.MONTHLY,
 			start: new Date("1/1/2023"),
-			end: new Date("1/31/2027")
+			end: new Date("1/31/2027"),
 		});
 		budgetRepo.create({
 			owner: context.user1,
@@ -28,7 +27,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 1000,
 			recurrence: Recurrence.MONTHLY,
 			start: new Date(),
-			end: new Date("1/01/3000")
+			end: new Date("1/01/3000"),
 		});
 		budgetRepo.create({
 			owner: context.user1,
@@ -38,7 +37,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 1000,
 			recurrence: Recurrence.MONTHLY,
 			start: new Date(),
-			end: new Date("1/01/3000")
+			end: new Date("1/01/3000"),
 		});
 		budgetRepo.create({
 			owner: context.user1,
@@ -48,7 +47,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 10000,
 			recurrence: Recurrence.ANNUALLY,
 			start: new Date(),
-			end: new Date("1/01/3000")
+			end: new Date("1/01/3000"),
 		});
 		budgetRepo.create({
 			owner: context.user1,
@@ -58,7 +57,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 100000,
 			recurrence: Recurrence.NON,
 			start: new Date("3/1/2026"),
-			end: new Date("3/1/2026")
+			end: new Date("3/1/2026"),
 		});
 		budgetRepo.create({
 			owner: context.user1,
@@ -68,7 +67,7 @@ export class BudgetSeeder extends Seeder {
 			amount: 100,
 			recurrence: Recurrence.MONTHLY,
 			start: new Date("3/1/2023"),
-			end: new Date("5/1/2023")
+			end: new Date("5/1/2023"),
 		});
 	}
 }

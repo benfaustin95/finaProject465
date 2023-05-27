@@ -1,5 +1,5 @@
-import {Entity, Property} from "@mikro-orm/core";
-import {BaseInput} from "./BaseInput.js";
+import { Entity, Property } from "@mikro-orm/core";
+import { BaseInput } from "./BaseInput.js";
 
 @Entity()
 export class OneTimeIncome extends BaseInput {
@@ -9,4 +9,3 @@ export class OneTimeIncome extends BaseInput {
 	@Property()
 	cashBasis!: number;
 }
-

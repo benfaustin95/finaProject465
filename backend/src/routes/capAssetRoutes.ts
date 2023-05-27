@@ -4,7 +4,7 @@ import { CAssetBody, ICreateUsersBody } from "../db/types.js";
 import { CapAsset } from "../db/entities/capasset.js";
 import { Level, TaxItem } from "../db/entities/Tax.js";
 import { getRecurrence } from "./budgetItemRoutes.js";
-import {Recurrence} from "../db/entities/budgetItem.js";
+import { Recurrence } from "../db/entities/budgetItem.js";
 
 async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -26,13 +26,13 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 			);
 
 
-			toAdd.start = (toAdd.start == undefined? new Date(): toAdd.start);
+			toAdd.start = toAdd.start == undefined ? new Date() : toAdd.start;
 
-			if(recurrence == Recurrence.NON) {
+			if (recurrence == Recurrence.NON) {
 				toAdd.end = new Date(toAdd.start);
 			}
 
-			toAdd.end = (toAdd.end == undefined? new Date("1/1/3000"): toAdd.end);
+			toAdd.end = toAdd.end == undefined ? new Date("1/1/3000") : toAdd.end;
 
 			const asset = req.em.create(CapAsset, {
 				...toAdd,
@@ -40,7 +40,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 				state,
 				federal,
 				local,
-				recurrence
+				recurrence,
 			});
 
 			await req.em.flush();

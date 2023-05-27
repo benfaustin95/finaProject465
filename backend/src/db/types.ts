@@ -18,8 +18,8 @@ export type BudgetBody = {
 	email: string;
 };
 interface BaseInputBody {
-	email: string,
-	name: string,
+	email: string;
+	name: string;
 	note: string;
 	growthRate: number;
 	state: string;

@@ -3,7 +3,6 @@ import { BaseInput } from "./BaseInput.js";
 
 @Entity()
 export class BudgetItem extends BaseInput {
-
 	@Property()
 	amount!: number;
 

@@ -1,8 +1,8 @@
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { FastifyInstance } from "fastify";
-import { RFBaseBody} from "../db/types.js";
+import { RFBaseBody } from "../db/types.js";
 import { User } from "../db/entities/User.js";
-import {RentalAsset} from "../db/entities/rentalasset.js";
+import { RentalAsset } from "../db/entities/rentalasset.js";
 
 async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("error with instance in gin asset");
@@ -10,7 +10,7 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: RFBaseBody }>("/rentalAsset", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, {email: toBeAdded.email});
+			const user = await req.em.findOneOrFail(User, { email: toBeAdded.email });
 			const { local, federal, state } = await app.getTaxItems(
 				req,
 				toBeAdded.local,
@@ -35,6 +35,5 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 }
-
 
 export default RentalAssetRoutes;

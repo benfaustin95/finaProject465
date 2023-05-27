@@ -5,11 +5,11 @@ import { FinancialAsset } from "./financialasset.js";
 import { CapAsset } from "./capasset.js";
 import { RentalAsset } from "./rentalasset.js";
 import { Dividend } from "./Dividend.js";
-import {OneTimeIncome} from "./OneTimeIncome.js";
+import { OneTimeIncome } from "./OneTimeIncome.js";
 
 @Entity({ tableName: "users" })
 export class User extends BaseEntity {
-	@Property({primary: true})
+	@Property({ primary: true })
 	email!: string;
 
 	@Property()
@@ -39,6 +39,8 @@ export class User extends BaseEntity {
 	@OneToMany(() => Dividend, (owner) => owner.owner, { cascade: [Cascade.PERSIST, Cascade.REMOVE] })
 	dividends!: Collection<Dividend>;
 
-	@OneToMany(() => OneTimeIncome, (owner) => owner.owner, { cascade: [Cascade.PERSIST, Cascade.REMOVE] })
+	@OneToMany(() => OneTimeIncome, (owner) => owner.owner, {
+		cascade: [Cascade.PERSIST, Cascade.REMOVE],
+	})
 	oneTimeIncomes!: Collection<OneTimeIncome>;
 }

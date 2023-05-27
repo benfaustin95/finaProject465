@@ -1,12 +1,11 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
-import { Seeder } from '@mikro-orm/seeder';
-import {User} from "../entities/User.js";
-import {BudgetItem, Recurrence} from "../entities/budgetItem.js";
-import {CapAsset} from "../entities/capasset.js";
+import { Seeder } from "@mikro-orm/seeder";
+import { User } from "../entities/User.js";
+import { BudgetItem, Recurrence } from "../entities/budgetItem.js";
+import { CapAsset } from "../entities/capasset.js";
 
 export class CapAssetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
 		const CapAssetRepo = em.getRepository(CapAsset);
 
 		// https://mikro-orm.io/docs/seeding#shared-context
@@ -21,7 +20,7 @@ export class CapAssetSeeder extends Seeder {
 			start: new Date("1/1/2023"),
 			end: new Date("1/31/2027"),
 			state: context.state,
-			federal: context.federal
+			federal: context.federal,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -34,8 +33,7 @@ export class CapAssetSeeder extends Seeder {
 			end: new Date("1/31/3000"),
 			state: context.state,
 			federal: context.federal,
-			local: context.local
-
+			local: context.local,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -48,7 +46,7 @@ export class CapAssetSeeder extends Seeder {
 			end: new Date("1/31/3000"),
 			state: context.state,
 			federal: context.federal,
-			local: context.local
+			local: context.local,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -60,7 +58,7 @@ export class CapAssetSeeder extends Seeder {
 			start: new Date("1/1/2023"),
 			end: new Date("1/31/2030"),
 			federal: context.federal,
-			local: context.local
+			local: context.local,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
@@ -70,8 +68,8 @@ export class CapAssetSeeder extends Seeder {
 			income: 100000,
 			recurrence: Recurrence.NON,
 			start: new Date("3/14/2024"),
-			end: new Date("1/31/2030"),
-			state: context.state
+			end: new Date("3/14/2024"),
+			state: context.state,
 		});
 	}
 }

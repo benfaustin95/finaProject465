@@ -1,14 +1,12 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
-import { Seeder } from '@mikro-orm/seeder';
-import {User} from "../entities/User.js";
-import {BudgetItem, Recurrence} from "../entities/budgetItem.js";
-import {CapAsset} from "../entities/capasset.js";
-import {FinancialAsset} from "../entities/financialasset.js";
+import { Seeder } from "@mikro-orm/seeder";
+import { User } from "../entities/User.js";
+import { BudgetItem, Recurrence } from "../entities/budgetItem.js";
+import { CapAsset } from "../entities/capasset.js";
+import { FinancialAsset } from "../entities/financialasset.js";
 
 export class FinAssetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
-
 		// https://mikro-orm.io/docs/seeding#shared-context
 
 		context.finAsset1 = em.create(FinancialAsset, {
@@ -18,7 +16,7 @@ export class FinAssetSeeder extends Seeder {
 			growthRate: 1.2,
 			totalValue: 120000,
 			costBasis: 100000,
-			wPriority: 1
+			wPriority: 1,
 		});
 		context.finAsset2 = em.create(FinancialAsset, {
 			owner: context.user1,
@@ -31,7 +29,7 @@ export class FinAssetSeeder extends Seeder {
 			state: context.state,
 			federal: context.federal,
 		});
-		context.finAsset3= em.create(FinancialAsset, {
+		context.finAsset3 = em.create(FinancialAsset, {
 			owner: context.user1,
 			name: "FinAsset3",
 			note: "Fin Asset3 seeder user1",
@@ -39,7 +37,7 @@ export class FinAssetSeeder extends Seeder {
 			totalValue: 100000,
 			costBasis: 90000,
 			wPriority: 3,
-			federal: context.federal
+			federal: context.federal,
 		});
 	}
 }

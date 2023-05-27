@@ -9,7 +9,7 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 
 	app.post<{ Body: ICreateUsersBody }>("/user", async (req, reply) => {
 		const user = req.body;
-	console.log(user);
+		console.log(user);
 		try {
 			const existing = await req.em.findOne(User, { email: user.email });
 			console.log(existing);
@@ -23,6 +23,5 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
-
 }
 export default userRoutes;

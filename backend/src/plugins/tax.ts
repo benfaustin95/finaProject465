@@ -24,17 +24,14 @@ const fastifyTax = async (app: FastifyInstance, options) => {
 			location: localName,
 			level: Level.LOCAL,
 		});
-		console.log(local);
 		const state = await req.em.findOne(TaxItem, {
 			location: stateName,
 			level: Level.STATE,
 		});
-		console.log(state);
 		const federal = await req.em.findOne(TaxItem, {
 			location: federalName,
 			level: Level.FEDERAL,
 		});
-		console.log(federal);
 
 		return { local, state, federal };
 	};

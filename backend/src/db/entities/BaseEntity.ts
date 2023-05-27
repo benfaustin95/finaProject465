@@ -1,5 +1,5 @@
 import { PrimaryKey, Property } from "@mikro-orm/core";
-import {SoftDeletable} from "mikro-orm-soft-delete";
+import { SoftDeletable } from "mikro-orm-soft-delete";
 
 @SoftDeletable(() => BaseEntity, "deleted_at", () => new Date())
 export class BaseEntity {
@@ -9,6 +9,6 @@ export class BaseEntity {
 	@Property({ onUpdate: () => new Date() })
 	updated_at = new Date();
 
-	@Property({nullable: true})
-	deleted_at?:Date;
+	@Property({ nullable: true })
+	deleted_at?: Date;
 }
