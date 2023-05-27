@@ -8,6 +8,9 @@ import {OneTimeIncome} from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
 import exp from "constants";
 import budgetItemRoutes from "../routes/budgetItemRoutes.js";
+import {Collection} from "@mikro-orm/core";
+import {User} from "../db/entities/User.js";
+import {OneTimeIncomeSeeder} from "../db/seeders/OneTimeIncomeSeeder.js";
 
 
 declare module "fastify" {
@@ -20,6 +23,10 @@ declare module "fastify" {
     }
 }
 
+
+function calculateTax(income: number, number: number, number2: number, number3: number) {
+    return income;
+}
 
 const macroBudgetReport = async (app: FastifyInstance, _options={}) => {
 
@@ -58,11 +65,15 @@ const macroBudgetReport = async (app: FastifyInstance, _options={}) => {
                 break;
         }
         //need to get inflation amount from api and add to growth rate
-        return compoundGrowthRate(item.income, item.growthRate, year - item.start.getFullYear());
+        income = compoundGrowthRate(item.income, item.growthRate, year - item.start.getFullYear());
+        const tax = calculateTax(income, (item.federal==null?0:item.federal.rate),(item.state==null?0:item.state.rate),(item.local==null?0:item.local.rate));
+        return {income, tax};
     }
 
     function rentalCalculation(item: RentalAsset, year: number) {
-        return compoundGrowthRate(item.grossIncome - item.maintenanceExpense, item.growthRate, year-item.created_at.getFullYear());
+        const income = compoundGrowthRate(item.grossIncome - item.maintenanceExpense, item.growthRate, year-item.created_at.getFullYear());
+        const tax = calculateTax(income, (item.federal==null?0:item.federal.rate),(item.state==null?0:item.state.rate),(item.local==null?0:item.local.rate));
+        return {income, tax};
     }
 
     function calculatePostTaxLiquidity(item: FinancialAsset) {
@@ -97,8 +108,7 @@ const macroBudgetReport = async (app: FastifyInstance, _options={}) => {
     }
     //Provided with collection of budget items for given year provided
     const expenseYearOutput = (expenses: Array<BudgetItem>, year: number) => {
-        const outputRecurring= new Object();
-        const outputNonRecurring = new Object();
+        const outputRecurring = {}, outputNonRecurring = {};
         let monthlyExpense= 0;
         let annualExpense = 0;
 
@@ -130,27 +140,36 @@ const macroBudgetReport = async (app: FastifyInstance, _options={}) => {
         let outRental: number = 0;
         let outDividend: number = 0;
         let outOneTime: number = 0;
+        let taxes: number = 0;
 
         capitalIncomes.forEach(x => {
-            outCapital+=incomeCalculation(x,year);
+            const toAdd = incomeCalculation(x,year);
+            outCapital+=toAdd.income;
+            taxes+=toAdd.tax;
         });
 
         rentalIncome.forEach(x => {
-                outRental+=rentalCalculation(x,year);
+                const toAdd = rentalCalculation(x,year);
+                outRental+=toAdd.income;
+                taxes+=toAdd.tax;
         });
 
         //where is dividend number coming from?
         //fix for pulling asset id from relation to dividend
         dividends.forEach(x => {
             const value = finAssets.find(y => y.id == x.asset.id);
-            outDividend+=(x.rate*value.totalValue);
+            const income =(x.rate*value.totalValue);
+            outDividend+=income;
+            taxes += calculateTax(income, (x.federal==null?0:x.federal.rate),(x.state==null?0:x.state.rate),(x.local==null?0:x.local.rate));
         })
 
         oneTime.forEach(x =>{
-            outOneTime+=compoundGrowthRate(x.cashBasis, 1, year - x.created_at.getFullYear());
+            const income = compoundGrowthRate(x.cashBasis, 1, year - x.created_at.getFullYear());
+            outOneTime += income;
+            taxes += calculateTax(income, (x.federal==null?0:x.federal.rate),(x.state==null?0:x.state.rate),(x.local==null?0:x.local.rate));
         })
 
-        return {outCapital, outRental, outDividend, outOneTime};
+        return {outCapital, outRental, outDividend, outOneTime, taxes};
     }
 
     app.decorate("incomeYearOutput", incomeYearOutput);
@@ -196,6 +215,27 @@ const macroBudgetReport = async (app: FastifyInstance, _options={}) => {
     }
 
     app.decorate("withdrawalYearOutput", withdrawalYearOutput);
+
+    const macroYearOutPut  = (expenses: Array<BudgetItem>, capitalAssets: Array<CapAsset>,
+                              dividends: Array<Dividend>, finAssets: Array<FinancialAsset>,
+                              oneTimeIncomes: Array<OneTimeIncome>, rentals: Array<RentalAsset>,
+                              year: number) => {
+        const toReturn = new Object();
+        let deficit = 0;
+        const expense = expenseYearOutput(expenses, year);
+        Object.getOwnPropertyNames(expense).forEach(key => toReturn[key] = expense[key])
+        const income = incomeYearOutput(capitalAssets, rentals, dividends, finAssets,oneTimeIncomes, year);
+        Object.getOwnPropertyNames(income).forEach(key => {
+            toReturn[key] = income[key];
+            if(key!=="taxes")
+                deficit+=income[key];
+            else
+                deficit-=income[key];
+        });
+        const withdrawal = withdrawalYearOutput(finAssets,deficit);
+        Object.getOwnPropertyNames(withdrawal).forEach(key => toReturn[key] = withdrawal[key]);
+        return {toReturn};
+        }
 }
 
 

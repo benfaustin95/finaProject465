@@ -34,11 +34,11 @@ export class User extends BaseEntity {
 	@OneToMany(() => RentalAsset, (owner) => owner.owner, {
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
 	})
-	RentalAssets!: Collection<RentalAsset>;
+	rentalAssets!: Collection<RentalAsset>;
 
 	@OneToMany(() => Dividend, (owner) => owner.owner, { cascade: [Cascade.PERSIST, Cascade.REMOVE] })
-	Dividends!: Collection<Dividend>;
+	dividends!: Collection<Dividend>;
 
 	@OneToMany(() => OneTimeIncome, (owner) => owner.owner, { cascade: [Cascade.PERSIST, Cascade.REMOVE] })
-	OneTimeIncomes!: Collection<OneTimeIncome>;
+	oneTimeIncomes!: Collection<OneTimeIncome>;
 }

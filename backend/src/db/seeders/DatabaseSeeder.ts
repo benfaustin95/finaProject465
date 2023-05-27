@@ -9,6 +9,7 @@ import {FinancialAsset} from "../entities/financialasset.js";
 import {FinAssetSeeder} from "./FinAssetSeeder.js";
 import {RentalAssetSeeder} from "./RentalAssetSeeder.js";
 import {DividendSeeder} from "./DividendSeeder.js";
+import {OneTimeIncomeSeeder} from "./OneTimeIncomeSeeder.js";
 
 export class DatabaseSeeder extends Seeder {
 	async run(em: EntityManager): Promise<void> {
@@ -19,7 +20,8 @@ export class DatabaseSeeder extends Seeder {
 			FinAssetSeeder,
 			CapAssetSeeder,
 			RentalAssetSeeder,
-			DividendSeeder
+			DividendSeeder,
+			OneTimeIncomeSeeder
 		]);
 	}
 }

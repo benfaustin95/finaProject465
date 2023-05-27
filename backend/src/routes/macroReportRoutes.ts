@@ -12,18 +12,15 @@ async function macroReportRoutes  (app:FastifyInstance, options ={}) {
      let {email, start, end} = req.body;
      const toSendBudget = new Object();
      try{
-         const user = await req.em.findOneOrFail(User, {email});
-         const userBudget = await req.em.find(BudgetItem, {owner: user});
+         const user = await req.em.findOneOrFail(User, {email},
+             {populate:['budgetItems', 'financialAssets', 'capitalAssets','rentalAssets','dividends','oneTimeIncomes']});
 
          start = new Date(start);
          end = new Date(end);
-         console.log(start.getFullYear() <= end.getFullYear());
          for(let year = start.getFullYear(); year <= end.getFullYear(); ++year){
-             toSendBudget[year] = app.expenseYearOutput(userBudget.filter(x =>
+             toSendBudget[year] = app.expenseYearOutput(user.budgetItems.getItems().filter(x =>
                  x.start.getFullYear() <= year && x.end.getFullYear() >= year), year);
          }
-
-         console.log(toSendBudget);
          reply.send(toSendBudget);
 
      }catch(err){
