@@ -7,7 +7,7 @@ import {FinancialAsset} from "../db/entities/financialasset.js";
 import {OneTimeIncome} from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
 import {expenseYearOutput} from "./helperFunctions/expenseYearOutput.js";
-import {withdrawalYearOutput} from "./helperFunctions/withdrawalYearOutput.js";
+import {withdrawalOutput} from "./helperFunctions/withdrawalOutput.js";
 import {incomeYearOutput} from "./helperFunctions/incomeYearOutput.js";
 
 declare module "fastify" {
@@ -53,7 +53,7 @@ const macroBudgetReport = async (app: FastifyInstance, _options = {}) => {
 			else deficit += income[key];
 		});
 		toReturn["deficit"] = -deficit;
-		const withdrawal = withdrawalYearOutput(finAssets, deficit);
+		const withdrawal = withdrawalOutput(finAssets, deficit, 1);
 		Object.getOwnPropertyNames(withdrawal).forEach((key) => (toReturn[key] = withdrawal[key]));
 		return { ...toReturn };
 	};

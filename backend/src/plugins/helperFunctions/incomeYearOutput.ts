@@ -24,71 +24,73 @@ export const incomeYearOutput = (
 
     capitalIncomes.forEach((x) => {
         const toAdd = incomeCalculation(x, year);
-        outCapital += toAdd.income;
-        taxes += toAdd.tax;
+        outCapital += toAdd.income*12;
+        Object.getOwnPropertyNames(toAdd.tax).forEach(x=>taxes+=toAdd.tax[x]);
     });
 
     rentalIncome.forEach((x) => {
         const toAdd = rentalCalculation(x, year);
-        outRental += toAdd.income;
-        taxes += toAdd.tax;
+        outRental += toAdd.income*12;
+        Object.getOwnPropertyNames(toAdd.tax).forEach(x=>taxes+=toAdd.tax[x]);
     });
 
     dividends.forEach((x) => {
         const toAdd= dividendCalculation(finAssets, x);
         outDividend = toAdd.income;
-        taxes = toAdd.taxes;
+        Object.getOwnPropertyNames(toAdd.tax).forEach(x=>taxes+=toAdd.tax[x]);
     });
 
     oneTime.forEach((x) => {
         const toAdd = oneTimeCalculation(x, year);
         outOneTime = toAdd.income
-        taxes = toAdd.taxes;
+        Object.getOwnPropertyNames(toAdd.tax).forEach(x=>taxes+=toAdd.tax[x]);
     });
 
     return { outCapital, outRental, outDividend, outOneTime, taxes };
 };
-export function calculateTax(income: number, number: number, number2: number, number3: number) {
-    return income * (number + number2 + number3);
+export function calculateTax(income: number, federal: number, state: number, local: number, capitalGains: number) {
+    return { federal: income * federal, state: income*state, local: income*local, capitalGains: income*capitalGains};
 }
 //assume rental income is update for withdrawals from previous years in array of assets passed in/
 // assumption remains the same for fin assets used to calculate dividends
-function oneTimeCalculation(x: OneTimeIncome, year: number) {
+export function oneTimeCalculation(x: OneTimeIncome, year: number) {
     const income = compoundGrowthRate(x.cashBasis, 1, year - x.created_at.getFullYear());
-    const taxes = calculateTax(
+    const tax = calculateTax(
         income,
         x.federal == null ? 0 : x.federal.rate,
         x.state == null ? 0 : x.state.rate,
-        x.local == null ? 0 : x.local.rate
+        x.local == null ? 0 : x.local.rate,
+        x.capitalGains== null ? 0 : x.capitalGains.rate
     );
-    return {income, taxes};
+    return {income, tax};
 }
 
-function dividendCalculation(finAssets: Array<FinancialAsset>, x: Dividend) {
+export function dividendCalculation(finAssets: Array<FinancialAsset>, x: Dividend) {
     const value = finAssets.find((y) => y.id == x.asset.id);
     const income = x.rate * value.totalValue;
-    const taxes = calculateTax(
+    const tax = calculateTax(
         income,
         x.federal == null ? 0 : x.federal.rate,
         x.state == null ? 0 : x.state.rate,
-        x.local == null ? 0 : x.local.rate
+        x.local == null ? 0 : x.local.rate,
+    x.capitalGains== null ? 0 : x.capitalGains.rate
     );
-    return {income, taxes};
+    return {income, tax};
 }
-function incomeCalculation(item: CapAsset, year: number) {
+export function incomeCalculation(item: CapAsset, year: number) {
     let income: number;
     switch (item.recurrence) {
         case Recurrence.DAILY:
-            income = item.income * 365;
+            income = item.income * 30.437;
             break;
         case Recurrence.WEEKLY:
-            income = item.income * 52;
+            income = item.income * 4.3;
             break;
         case Recurrence.MONTHLY:
-            income = item.income * 12;
+            income = item.income;
             break;
         case Recurrence.ANNUALLY:
-            income = item.income;
+            income = item.income/12;
             break;
         case Recurrence.NON:
             income = item.income;
@@ -100,12 +102,13 @@ function incomeCalculation(item: CapAsset, year: number) {
         income,
         item.federal == null ? 0 : item.federal.rate,
         item.state == null ? 0 : item.state.rate,
-        item.local == null ? 0 : item.local.rate
+        item.local == null ? 0 : item.local.rate,
+        item.capitalGains== null ? 0 : item.capitalGains.rate
     );
     return { income, tax };
 }
 
-function rentalCalculation(item: RentalAsset, year: number) {
+export function rentalCalculation(item: RentalAsset, year: number) {
     const income = compoundGrowthRate(
         item.grossIncome - item.maintenanceExpense,
         item.growthRate,
@@ -115,7 +118,8 @@ function rentalCalculation(item: RentalAsset, year: number) {
         income,
         item.federal == null ? 0 : item.federal.rate,
         item.state == null ? 0 : item.state.rate,
-        item.local == null ? 0 : item.local.rate
+        item.local == null ? 0 : item.local.rate,
+        item.capitalGains== null ? 0 : item.capitalGains.rate
     );
     return { income, tax };
 }

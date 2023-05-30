@@ -13,15 +13,15 @@ function calculateWithdrawal(item: FinancialAsset, difference: number) {
 //update finAssets to be current with growth
 //create object with the amount withdrawn from each account
 //return new array of finAssets with updated amount fields
-export const withdrawalYearOutput = (finAssets: Array<FinancialAsset>, difference: number) => {
-    const outputWithdrawals = new Object();
+export const withdrawalOutput = (finAssets: Array<FinancialAsset>, difference: number, period: number) => {
+    const outputWithdrawals = {};
 
     finAssets
         .sort((a, b) => a.wPriority - b.wPriority)
         .filter((x) => x.totalValue > 0)
         .forEach((x) => {
             const toAdd = x;
-            toAdd.totalValue = compoundGrowthRate(toAdd.totalValue, toAdd.growthRate, 1);
+            toAdd.totalValue = compoundGrowthRate(toAdd.totalValue, Math.pow(toAdd.growthRate,period), 1);
             if (difference < 0) {
                 toAdd.totalValue -= difference;
                 toAdd.costBasis -= difference;
@@ -43,6 +43,6 @@ export const withdrawalYearOutput = (finAssets: Array<FinancialAsset>, differenc
             }
         });
 
-    return { outputWithdrawals, difference};
+    return {outputWithdrawals, difference};
 };
 

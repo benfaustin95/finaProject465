@@ -29,4 +29,7 @@ export class BaseInput extends BaseEntity {
 
 	@ManyToOne({ nullable: true, eager: true })
 	local?: TaxItem = null;
+
+	@ManyToOne({ nullable: true, eager: true })
+	capitalGains?: TaxItem = null;
 }

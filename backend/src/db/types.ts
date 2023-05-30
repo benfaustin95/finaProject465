@@ -64,3 +64,10 @@ export interface taxItem {
 	rate: number;
 	location: string;
 }
+
+export interface taxOutput {
+	federal:number;
+	state:number;
+	local:number;
+	capitalGains:number;
+}

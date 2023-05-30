@@ -1,7 +1,7 @@
 //Provided with collection of budget items for given year provided
 import {BudgetItem, Recurrence} from "../../db/entities/budgetItem.js";
 
-const inflation: number = 1.025;
+export const inflation: number = 1.025;
 export function compoundGrowthRate(value: number, rate: number, difference: number) {
     return value * Math.pow(rate * inflation, difference);
 }
@@ -26,7 +26,7 @@ export const expenseYearOutput = (expenses: Array<BudgetItem>, year: number) => 
     return {outputRecurring, outputNonRecurring, monthlyExpense, annualExpense };
 };
 
-const expenseCalculation = (item: BudgetItem, year: number) => {
+export const expenseCalculation = (item: BudgetItem, year: number) => {
     let expense: number;
     switch (item.recurrence) {
         case Recurrence.DAILY:

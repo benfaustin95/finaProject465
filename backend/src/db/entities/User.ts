@@ -18,6 +18,9 @@ export class User extends BaseEntity {
 	@Property()
 	birthday!: Date;
 
+	@Property()
+	start: Date = new Date();
+
 	@OneToMany(() => BudgetItem, (owner) => owner.owner, {
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
 	})
