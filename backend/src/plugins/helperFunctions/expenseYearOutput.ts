@@ -27,7 +27,7 @@ export const expenseYearOutput = (
 	const outputRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const outputNonRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
-	const annualExpense: outputRow = mkOutputRow("Monthly Expense");
+	const annualExpense: outputRow = mkOutputRow("Annual Expense");
 
 	expenses.forEach((x) => {
 		const recurrence = x.recurrence != Recurrence.NON;

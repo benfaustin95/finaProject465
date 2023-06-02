@@ -72,14 +72,16 @@ export const incomeYearOutput = (
 		});
 
 		rentalIncome.forEach((x) => {
+			const current = outRental.amounts.get(i);
 			const toAdd = rentalCalculation(x, i);
-			outRental.amounts.set(i, toAdd.income);
+			outRental.amounts.set(i, current == undefined ? toAdd.income : current + toAdd.income);
 			taxYear = taxAccumulate(toAdd.tax, taxYear, toAdd.income);
 		});
 
 		oneTime.forEach((x) => {
+			const current = outOneTime.amounts.get(i);
 			const toAdd = oneTimeCalculation(x, i);
-			outOneTime.amounts.set(i, toAdd.income);
+			outOneTime.amounts.set(i, current == undefined ? toAdd.income : current + toAdd.income);
 			taxYear = taxAccumulate(toAdd.tax, taxYear, toAdd.income);
 		});
 
@@ -177,6 +179,7 @@ export function rentalCalculation(item: RentalAsset, year: number): incomeCalcul
 			item.growthRate,
 			year - item.created_at.getFullYear()
 		) * 12;
+	console.log(item.name, " ", income);
 	const tax = calculateTax(
 		income,
 		item.federal == null ? 0 : item.federal.rate,

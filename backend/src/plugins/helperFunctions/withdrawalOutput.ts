@@ -6,6 +6,7 @@ import { Dividend } from "../../db/entities/Dividend.js";
 import { current } from "tap";
 
 function calculatePostTaxLiquidity(item: FinancialAsset) {
+	if (item.totalValue == 0) return 0;
 	const tax = calculateTax(
 		item.totalValue - item.costBasis,
 		item.federal == null ? 0 : item.federal.rate,
@@ -33,7 +34,7 @@ function calculateWithdrawal(item: FinancialAsset, difference: number) {
 	);
 	Object.getOwnPropertyNames(tax).forEach((x) => (taxableAmount += tax[x]));
 
-	item.totalValue -= nonTaxableAmount + taxableAmount;
+	item.totalValue += nonTaxableAmount + taxableAmount;
 	item.costBasis = item.totalValue * taxRate;
 
 	return nonTaxableAmount + taxableAmount;
@@ -77,7 +78,6 @@ export const withdrawalOutput = (
 
 		finAssets
 			.sort((a, b) => a.wPriority - b.wPriority)
-			.filter((x) => x.totalValue > 0)
 			.forEach((x, index) => {
 				const toAdd = x;
 				let currentOutputWithdrawal: withdrawalOutputRow;
@@ -97,26 +97,24 @@ export const withdrawalOutput = (
 					toAdd.growthRate,
 					year == start ? 0 : period
 				);
-
 				if (currentDeficit > 0) {
-					toAdd.totalValue -= currentDeficit;
-					toAdd.costBasis -= currentDeficit;
+					toAdd.totalValue += currentDeficit;
+					toAdd.costBasis += currentDeficit;
 					currentOutputWithdrawal.amounts.set(year, currentDeficit);
 					currentDeficit = 0;
 				} else if (currentDeficit < 0) {
 					const postTaxLiquidity = calculatePostTaxLiquidity(toAdd);
-					if (postTaxLiquidity <= currentDeficit) {
+					if (postTaxLiquidity <= -currentDeficit) {
 						toAdd.totalValue = 0;
 						toAdd.costBasis = 0;
-						currentDeficit -= postTaxLiquidity;
-						currentOutputWithdrawal.amounts.set(year, postTaxLiquidity);
+						currentDeficit += postTaxLiquidity;
+						currentOutputWithdrawal.amounts.set(year, -postTaxLiquidity);
 					} else {
 						const withdrawal = calculateWithdrawal(toAdd, currentDeficit);
 						currentDeficit = 0;
 						currentOutputWithdrawal.amounts.set(year, withdrawal);
 					}
 				} else currentOutputWithdrawal.amounts.set(year, 0);
-
 				currentOutputWithdrawal.updatedValue.set(year, toAdd.totalValue);
 			});
 	}

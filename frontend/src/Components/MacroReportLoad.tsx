@@ -8,10 +8,10 @@ import { destructuredMacroYearReport, macroYearReport } from "../../../backend/s
 export const MacroReportLoad = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { end } = location.state;
+	// const { end } = location.state;
 	const [macroReport, setMacroReport] = useState<destructuredMacroYearReport>();
 	const loadReport = () => {
-		MacroReportService.send(1, new Date("1/1/2035"))
+		MacroReportService.send(1, new Date("1/1/2105"))
 			.then((res) => {
 				if (res.status != 200) navigate("/");
 				console.log(res);

@@ -76,6 +76,19 @@ export class taxAccumulator extends taxOutput {
 	ficaIncome: number = 0;
 }
 
+export interface destructuredTaxAccumulator {
+	capitalGains: [number, number][];
+	fica: [number, number][];
+	federal: [number, number][];
+	state: [number, number][];
+	local: [number, number][];
+	capitalGainsIncome: [number, number][];
+	ficaIncome: [number, number][];
+	federalIncome: [number, number][];
+	stateIncome: [number, number][];
+	localIncome: [number, number][];
+}
+
 export interface incomeCalculation {
 	income: number;
 	tax: taxOutput;
@@ -96,7 +109,7 @@ export interface destructuredIncomeYear {
 	outNonTaxable: destructuredOutputRow;
 	outRental: destructuredOutputRow;
 	outOneTime: destructuredOutputRow;
-	taxes: [number, taxAccumulator][];
+	taxes: destructuredTaxAccumulator;
 }
 export class amount {
 	year: number;

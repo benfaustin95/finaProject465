@@ -3,12 +3,14 @@ import {
 	destructuredIncomeYear,
 	destructuredMacroYearReport,
 	destructuredOutputRow,
+	destructuredTaxAccumulator,
 	destructuredWithdrawal,
 	destructuredWithOutputRow,
 	expenseYear,
 	incomeYear,
 	macroYearReport,
 	outputRow,
+	taxAccumulator,
 	withdrawal,
 	withdrawalOutputRow,
 } from "../db/types.js";
@@ -18,7 +20,9 @@ function sendRow(outputRow: outputRow): destructuredOutputRow {
 	return {
 		name: outputRow.name,
 		note: outputRow.note,
-		amounts: Array.from(outputRow.amounts.entries()),
+		amounts: Array.from(outputRow.amounts.entries()).sort((x, y) => {
+			return x[0] - y[0];
+		}),
 	};
 }
 
@@ -37,6 +41,40 @@ function sendExpenses(expenses: expenseYear): destructuredExpenseYear {
 	};
 }
 
+function sendTaxes(taxes: Map<number, taxAccumulator>) {
+	const toReturn: destructuredTaxAccumulator = {
+		capitalGains: [],
+		fica: [],
+		federal: [],
+		state: [],
+		local: [],
+		capitalGainsIncome: [],
+		ficaIncome: [],
+		federalIncome: [],
+		stateIncome: [],
+		localIncome: [],
+	};
+	Array.from(taxes.entries())
+		.sort((x, y) => x[0] - y[0])
+		.forEach(([year, value]) => {
+			toReturn.capitalGains = [...toReturn.capitalGains, [year, value.capitalGains]];
+			toReturn.capitalGainsIncome = [
+				...toReturn.capitalGainsIncome,
+				[year, value.capitalGainsIncome],
+			];
+			toReturn.fica = [...toReturn.fica, [year, value.fica]];
+			toReturn.ficaIncome = [...toReturn.ficaIncome, [year, value.ficaIncome]];
+			toReturn.federal = [...toReturn.federal, [year, value.federal]];
+			toReturn.federalIncome = [...toReturn.federalIncome, [year, value.federalIncome]];
+			toReturn.state = [...toReturn.state, [year, value.state]];
+			toReturn.stateIncome = [...toReturn.stateIncome, [year, value.stateIncome]];
+			toReturn.local = [...toReturn.local, [year, value.local]];
+			toReturn.localIncome = [...toReturn.localIncome, [year, value.localIncome]];
+		});
+
+	return toReturn;
+}
+
 function sendIncomes(incomes: incomeYear): destructuredIncomeYear {
 	return {
 		outHuman: sendRow(incomes.outHuman),
@@ -44,14 +82,16 @@ function sendIncomes(incomes: incomeYear): destructuredIncomeYear {
 		outNonTaxable: sendRow(incomes.outNonTaxable),
 		outRental: sendRow(incomes.outRental),
 		outOneTime: sendRow(incomes.outOneTime),
-		taxes: Array.from(incomes.taxes.entries()),
+		taxes: sendTaxes(incomes.taxes),
 	};
 }
 
 function sendWithRow(withdrawalOutputRow: withdrawalOutputRow): destructuredWithOutputRow {
 	return {
 		...sendRow(withdrawalOutputRow),
-		updatedValue: Array.from(withdrawalOutputRow.updatedValue.entries()),
+		updatedValue: Array.from(withdrawalOutputRow.updatedValue.entries()).sort(
+			(x, y) => x[0] - y[0]
+		),
 	};
 }
 
