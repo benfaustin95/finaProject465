@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { User } from "../db/entities/User.js";
 import { CAssetBody, ICreateUsersBody } from "../db/types.js";
-import {CapAsset, CapAssetType} from "../db/entities/capasset.js";
-import { Level, TaxItem } from "../db/entities/Tax.js";
+import { CapAsset, CapAssetType } from "../db/entities/capasset.js";
+import { Level, TaxRate } from "../db/entities/Tax.js";
 import { getRecurrence } from "./budgetItemRoutes.js";
-import { Recurrence } from "../db/entities/budgetItem.js";
+import {BudgetItem, Recurrence} from "../db/entities/budgetItem.js";
 
 async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -39,7 +39,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 				state,
 				federal,
 				local,
-				recurrence
+				recurrence,
 			});
 
 			await req.em.flush();
@@ -49,6 +49,31 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
+
+	app.delete<{Body: {id: number, userId: number}}>("/capitalAsset", async (req, reply) => {
+		const {userId, id} = req.body;
+
+		try{
+			const item = await req.em.findOneOrFail(CapAsset, {id, owner:userId}, {strict: true});
+			console.log(item);
+			await req.em.removeAndFlush(item);
+			return reply.send(item);
+		}catch(err){
+			reply.status(500).send(err);
+		}
+	})
+
+	app.search<{Body: {userId: number}}>("/capitalAsset", async (req, reply) => {
+		const {userId} = req.body;
+
+		try{
+			const item = await req.em.find(CapAsset, {owner: userId});
+			console.log(item);
+			return reply.send(item);
+		}catch(err){
+			reply.status(500).send(err);
+		}
+	})
 }
 
 export default capAssetRoutes;

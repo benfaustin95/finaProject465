@@ -6,7 +6,7 @@ export class RFBase extends BaseInput {
 	totalValue!: number;
 
 	@Property()
-	costBasis!: number;
+	costBasis: number = 0;
 
 	@Property()
 	@Unique()

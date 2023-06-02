@@ -10,35 +10,35 @@ export class UserSeeder extends Seeder {
 			name: "User1",
 			email: "email@email.com",
 			birthday: "1/1/1966",
-			start: "1/1/2023"
+			start: "1/1/2023",
 		});
 
 		context.user2 = em.create(User, {
 			name: "User2",
 			email: "email2@email.com",
 			birthday: "1/1/1976",
-			start: "1/1/2023"
+			start: "1/1/2023",
 		});
 
 		context.user3 = em.create(User, {
 			name: "User3",
 			email: "email3@email.com",
 			birthday: "1/1/1986",
-			start: "1/1/2023"
+			start: "1/1/2023",
 		});
 
 		context.user4 = em.create(User, {
 			name: "User4",
 			email: "email4@email.com",
 			birthday: "1/1/1996",
-			start: "1/1/2023"
+			start: "1/1/2023",
 		});
 
 		context.user5 = em.create(User, {
 			name: "User5",
 			email: "email5@email.com",
 			birthday: "1/1/1946",
-			start: "1/1/2023"
+			start: "1/1/2023",
 		});
 	}
 }

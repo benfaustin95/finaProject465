@@ -30,7 +30,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 
 			const recurrence = getRecurrence(toAdd.recurrence);
 
-			toAdd.start = toAdd.start == undefined ? new Date() : toAdd.start;
+			toAdd.start = toAdd.start == undefined ? user.start : toAdd.start;
 
 			if (recurrence == Recurrence.NON) {
 				toAdd.end = new Date(toAdd.start);
@@ -49,6 +49,31 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 			return reply.send(item);
 		} catch (err) {
 			return reply.status(500).send(err);
+		}
+	});
+
+	app.delete<{ Body: { id: number; userId: number } }>("/budgetItem", async (req, reply) => {
+		const { userId, id } = req.body;
+
+		try {
+			const item = await req.em.findOneOrFail(BudgetItem, { id, owner: userId }, { strict: true });
+			console.log(item);
+			await req.em.removeAndFlush(item);
+			return reply.send(item);
+		} catch (err) {
+			reply.status(500).send(err);
+		}
+	});
+
+	app.search<{ Body: { userId: number } }>("/budgetItem", async (req, reply) => {
+		const { userId } = req.body;
+
+		try {
+			const item = await req.em.find(BudgetItem, { owner: userId });
+			console.log(item);
+			return reply.send(item);
+		} catch (err) {
+			reply.status(500).send(err);
 		}
 	});
 }

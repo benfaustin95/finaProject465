@@ -3,6 +3,9 @@ import { SoftDeletable } from "mikro-orm-soft-delete";
 
 @SoftDeletable(() => BaseEntity, "deleted_at", () => new Date())
 export class BaseEntity {
+	@PrimaryKey()
+	id!: number;
+
 	@Property()
 	created_at = new Date();
 

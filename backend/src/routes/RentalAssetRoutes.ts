@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify";
 import { RFBaseBody } from "../db/types.js";
 import { User } from "../db/entities/User.js";
 import { RentalAsset } from "../db/entities/rentalasset.js";
+import {BudgetItem} from "../db/entities/budgetItem.js";
 
 async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("error with instance in gin asset");
@@ -34,6 +35,31 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
+
+	app.delete<{Body: {id: number, userId: number}}>("/rentalAsset", async (req, reply) => {
+		const {userId, id} = req.body;
+
+		try{
+			const item = await req.em.findOneOrFail(RentalAsset, {id, owner:userId}, {strict: true});
+			console.log(item);
+			await req.em.removeAndFlush(item);
+			return reply.send(item);
+		}catch(err){
+			reply.status(500).send(err);
+		}
+	})
+
+	app.search<{Body: {userId: number}}>("/rentalAsset", async (req, reply) => {
+		const {userId} = req.body;
+
+		try{
+			const item = await req.em.find(RentalAsset, {owner: userId});
+			console.log(item);
+			return reply.send(item);
+		}catch(err){
+			reply.status(500).send(err);
+		}
+	})
 }
 
 export default RentalAssetRoutes;

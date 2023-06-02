@@ -2,12 +2,9 @@ import { ManyToOne, PrimaryKey, Property, Unique } from "@mikro-orm/core";
 import type { Ref, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity.js";
 import { User } from "./User.js";
-import { TaxItem } from "./Tax.js";
+import { TaxRate } from "./Tax.js";
 
 export class BaseInput extends BaseEntity {
-	@PrimaryKey()
-	id!: number;
-
 	@ManyToOne()
 	owner!: Rel<User>;
 
@@ -22,14 +19,17 @@ export class BaseInput extends BaseEntity {
 	growthRate: number = 1; //always assumed annual and converted to other
 
 	@ManyToOne({ nullable: true, eager: true })
-	state?: TaxItem = null;
+	state?: TaxRate = null;
 
 	@ManyToOne({ nullable: true, eager: true })
-	federal?: TaxItem = null;
+	federal?: TaxRate = null;
 
 	@ManyToOne({ nullable: true, eager: true })
-	local?: TaxItem = null;
+	local?: TaxRate = null;
 
 	@ManyToOne({ nullable: true, eager: true })
-	capitalGains?: TaxItem = null;
+	capitalGains?: TaxRate = null;
+
+	@ManyToOne({ nullable: true, eager: true })
+	fica?: TaxRate = null;
 }

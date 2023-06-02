@@ -13,20 +13,30 @@ export class DividendSeeder extends Seeder {
 
 		DivdendRepo.create({
 			owner: context.user1,
-			name: "Dividend1",
-			note: "Dividend1 seeder user1",
+			name: "Schawbb Brokerage",
+			note: "",
 			state: context.state,
 			federal: context.federal,
-			rate: 0.05,
+			rate: 0.015,
 			asset: context.finAsset1,
 		});
 		DivdendRepo.create({
 			owner: context.user1,
-			name: "Dividend2",
-			note: "Dividend2 seeder user1",
+			name: "TD Ameritrade Brokerage",
+			note: "",
 			state: context.state,
-			rate: 0.1,
+			federal: context.federal,
+			rate: 0.02,
 			asset: context.finAsset2,
+		});
+		DivdendRepo.create({
+			owner: context.user1,
+			name: "TD Ameritrade Brokerage two",
+			note: "",
+			state: context.state,
+			federal: context.federal,
+			rate: 0.005,
+			asset: context.finAsset3,
 		});
 	}
 }

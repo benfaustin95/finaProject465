@@ -14,20 +14,12 @@ export class OneTimeIncomeSeeder extends Seeder {
 
 		OneTimeRepo.create({
 			owner: context.user1,
-			name: "OneTimeIncome1",
-			note: "OneTimeIncome seeder user1",
+			name: "Sale Art",
+			note: "Assume 2023",
+			capitalGains: context.capGains,
 			state: context.state,
-			federal: context.federal,
-			date: new Date("1/23/2026"),
-			cashBasis: 93000,
-		});
-		OneTimeRepo.create({
-			owner: context.user1,
-			name: "OneTimeIncome2",
-			note: "OneTimeIncome seeder user1",
-			state: context.state,
-			date: new Date(1 / 1 / 2023),
-			cashBasis: 10000,
+			date: new Date("1/1/2023"),
+			cashBasis: 400000,
 		});
 	}
 }

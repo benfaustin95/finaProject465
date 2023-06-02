@@ -9,7 +9,7 @@ import { OneTimeIncome } from "./OneTimeIncome.js";
 
 @Entity({ tableName: "users" })
 export class User extends BaseEntity {
-	@Property({ primary: true })
+	@Property()
 	email!: string;
 
 	@Property()

@@ -13,7 +13,7 @@ import DividendRoutes from "./routes/dividendRoutes.js";
 import FinancialAssetRoutes from "./routes/financialAssetRoutes.js";
 import RentalAssetRoutes from "./routes/RentalAssetRoutes.js";
 import OneTimeIncomeRoutes from "./routes/oneTimeIncomeRoutes.js";
-import {FastifyMicroReportsPlugin} from "./plugins/microBudgetReport.js";
+import { FastifyMicroReportsPlugin } from "./plugins/microBudgetReport.js";
 import MicroReportRoute from "./routes/microReportRoute.js";
 
 const envToLogger = {
@@ -50,6 +50,7 @@ await app.register(cors, {
 	origin: (origin, cb) => {
 		cb(null, true);
 	},
+	methods: ['GET','POST','PUT','DELETE','PATCH','SEARCH'],
 });
 
 await app.register(FastifyMikroOrmPlugin, config);
@@ -64,6 +65,6 @@ await app.register(DividendRoutes, {});
 await app.register(FinancialAssetRoutes, {});
 await app.register(RentalAssetRoutes, {});
 await app.register(OneTimeIncomeRoutes, {});
-await app.register(FastifyMicroReportsPlugin,{})
+await app.register(FastifyMicroReportsPlugin, {});
 await app.register(MicroReportRoute, {});
 export default app;

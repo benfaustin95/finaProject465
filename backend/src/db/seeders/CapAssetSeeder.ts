@@ -2,7 +2,7 @@ import type { Dictionary, EntityManager } from "@mikro-orm/core";
 import { Seeder } from "@mikro-orm/seeder";
 import { User } from "../entities/User.js";
 import { BudgetItem, Recurrence } from "../entities/budgetItem.js";
-import {CapAsset, CapAssetType} from "../entities/capasset.js";
+import { CapAsset, CapAssetType } from "../entities/capasset.js";
 
 export class CapAssetSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
@@ -12,69 +12,67 @@ export class CapAssetSeeder extends Seeder {
 
 		CapAssetRepo.create({
 			owner: context.user1,
-			name: "CapAsset1",
-			note: "Cap Asset1 seeder user1",
-			growthRate: 1.2,
-			income: 1200,
+			name: "Final Work Year",
+			note: "",
+			income: 8000,
 			recurrence: Recurrence.MONTHLY,
-			start: new Date("1/1/2023"),
-			end: new Date("1/31/2027"),
+			start: new Date("4/1/2023"),
+			end: new Date("12/31/2023"),
 			state: context.state,
 			federal: context.federal,
-			type: CapAssetType.HUMAN
+			local: context.local,
+			fica: context.fica,
+			type: CapAssetType.HUMAN,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
-			name: "CapAsset2",
-			note: "Cap Asset2 seeder user1",
-			growthRate: 1.2,
+			name: "Part time work",
+			note: "",
 			income: 1000,
 			recurrence: Recurrence.MONTHLY,
-			start: new Date("1/1/2023"),
-			end: new Date("1/31/3000"),
+			start: new Date("1/1/2025"),
+			end: new Date("12/31/2026"),
 			state: context.state,
 			federal: context.federal,
 			local: context.local,
-			type:CapAssetType.SOCIAL
+			fica: context.fica,
+			type: CapAssetType.HUMAN,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
-			name: "CapAsset3",
-			note: "Cap Asset3 seeder user1",
-			growthRate: 1.2,
-			income: 1000,
-			recurrence: Recurrence.ANNUALLY,
-			start: new Date("1/1/2023"),
-			end: new Date("1/31/3000"),
+			name: "Social Security",
+			note: "",
+			income: 2600,
+			recurrence: Recurrence.MONTHLY,
+			start: new Date("10/1/2032"),
+			end: new Date("12/31/3000"),
 			state: context.state,
 			federal: context.federal,
-			local: context.local,
-			type: CapAssetType.NONTAXABLEANNUITY
+			type: CapAssetType.SOCIAL,
 		});
 		CapAssetRepo.create({
 			owner: context.user1,
-			name: "CapAsset4",
-			note: "Cap Asset4 seeder user1",
-			growthRate: 1.2,
-			income: 10,
-			recurrence: Recurrence.DAILY,
-			start: new Date("1/1/2023"),
-			end: new Date("1/31/2030"),
-			federal: context.federal,
-			local: context.local,
-			type: CapAssetType.HUMAN
-		});
-		CapAssetRepo.create({
-			owner: context.user1,
-			name: "CapAsset5",
-			note: "Cap Asset4 seeder user1",
-			growthRate: 1.2,
-			income: 100000,
-			recurrence: Recurrence.NON,
-			start: new Date("3/14/2024"),
-			end: new Date("3/14/2024"),
+			name: "Pension",
+			note: "",
+			income: 200,
+			growthRate: 0,
+			recurrence: Recurrence.MONTHLY,
+			start: new Date("10/1/2027"),
+			end: new Date("12/31/3000"),
 			state: context.state,
-			type: CapAssetType.HUMAN
+			federal: context.federal,
+			type: CapAssetType.SOCIAL,
+		});
+		CapAssetRepo.create({
+			owner: context.user1,
+			name: "AIG",
+			note: "",
+			income: 2000,
+			growthRate: 0,
+			recurrence: Recurrence.MONTHLY,
+			start: new Date("01/1/2033"),
+			end: new Date("12/31/3000"),
+			type: CapAssetType.NONTAXABLEANNUITY,
 		});
 	}
 }

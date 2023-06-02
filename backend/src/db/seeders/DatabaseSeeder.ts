@@ -2,7 +2,7 @@ import type { EntityManager } from "@mikro-orm/core";
 import { Seeder } from "@mikro-orm/seeder";
 import { UserSeeder } from "./UserSeeder.js";
 import { BudgetSeeder } from "./BudgetSeeder.js";
-import { TaxItem } from "../entities/Tax.js";
+import { TaxRate } from "../entities/Tax.js";
 import { TaxSeeder } from "./taxSeeder.js";
 import { CapAssetSeeder } from "./CapAssetSeeder.js";
 import { FinancialAsset } from "../entities/financialasset.js";

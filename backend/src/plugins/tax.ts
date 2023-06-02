@@ -1,6 +1,6 @@
 import fastify, { FastifyInstance, FastifyRequest } from "fastify";
 import { CAssetBody } from "../db/types.js";
-import { Level, TaxItem } from "../db/entities/Tax.js";
+import { Level, TaxRate } from "../db/entities/Tax.js";
 import fp from "fastify-plugin";
 
 declare module "fastify" {
@@ -10,7 +10,7 @@ declare module "fastify" {
 			localName: string,
 			stateName: string,
 			federalName: string
-		) => { local: TaxItem; state: TaxItem; federal: TaxItem };
+		) => { local: TaxRate; state: TaxRate; federal: TaxRate };
 	}
 }
 const fastifyTax = async (app: FastifyInstance, options) => {
@@ -20,15 +20,15 @@ const fastifyTax = async (app: FastifyInstance, options) => {
 		stateName: string,
 		federalName: string
 	) => {
-		const local = await req.em.findOne(TaxItem, {
+		const local = await req.em.findOne(TaxRate, {
 			location: localName,
 			level: Level.LOCAL,
 		});
-		const state = await req.em.findOne(TaxItem, {
+		const state = await req.em.findOne(TaxRate, {
 			location: stateName,
 			level: Level.STATE,
 		});
-		const federal = await req.em.findOne(TaxItem, {
+		const federal = await req.em.findOne(TaxRate, {
 			location: federalName,
 			level: Level.FEDERAL,
 		});
