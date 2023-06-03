@@ -7,12 +7,13 @@ import { FinancialAsset } from "../db/entities/financialasset.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
 import { expenseYearOutput } from "./helperFunctions/expenseYearOutput.js";
-import { withdrawalOutput } from "./helperFunctions/withdrawalOutput.js";
+import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js";
 import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
 import { expenseMonthOutput } from "./helperFunctions/expenseMonthOutput.js";
 import budgetItemRoutes from "../routes/budgetItemRoutes.js";
 import { incomeMonthOutput } from "./helperFunctions/incomeMonthOutput.js";
-import { incomeMonth, microYearReport, withdrawal } from "../db/types.js";
+import { expenseMonth, incomeMonth, microYearReport, withdrawal } from "../db/types.js";
+import { sendIncomeMonth, sendMonthlyExpenses } from "../helperMethods/destructure.js";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -23,10 +24,13 @@ declare module "fastify" {
 			dividends: Array<Dividend>,
 			finAssets: Array<FinancialAsset>,
 			rentals: Array<RentalAsset>,
-			year: number
+			start: Date,
+			end: Date
 		) => microYearReport;
 	}
 }
+
+function accumulateDeficit(expense: expenseMonth, income: incomeMonth, start: Date, end: Date) {}
 
 const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 	const microYearOutput = (
@@ -36,42 +40,15 @@ const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 		dividends: Array<Dividend>,
 		finAssets: Array<FinancialAsset>,
 		rentals: Array<RentalAsset>,
-		year: number
-	): microYearReport => {
-		const expensesByMonth: number[] = new Array(12);
-		const incomesByMonth: incomeMonth[] = new Array(12);
-		const withdrawalsByMonth: withdrawal[] = new Array(12);
-
-		for (let i = 0; i < 12; ++i) {
-			const currentExpenses = expenses.filter((x) => {
-				if (x.start.getFullYear() == year && x.start.getMonth() > i) return false;
-				return !(x.end.getFullYear() == year && x.end.getMonth() < i);
-			});
-			const currentCapAsset = capitalAssets.filter((x) => {
-				if (x.start.getFullYear() == year && x.start.getMonth() > i) return false;
-				return !(x.end.getFullYear() == year && x.end.getMonth() < i);
-			});
-			const currentOneTimeIncomes = oneTimeIncomes.filter((x) => {
-				return x.date.getFullYear() == year && x.date.getMonth() === i;
-			});
-			expensesByMonth[i] = expenseMonthOutput(currentExpenses, year);
-			incomesByMonth[i] = incomeMonthOutput(
-				currentCapAsset,
-				rentals,
-				dividends,
-				finAssets,
-				currentOneTimeIncomes,
-				i,
-				year
-			);
-			// withdrawalsByMonth[i] = withdrawalOutput(
-			// 	finAssets,
-			// 	incomesByMonth[i].income - expensesByMonth[i],
-			// 	1 / 12
-			// );
-		}
-		return { year, expensesByMonth, incomesByMonth, withdrawalsByMonth };
+		start: Date,
+		end: Date
+	) => {
+		const expense = expenseMonthOutput(expenses, start, end);
+		const income = incomeMonthOutput(capitalAssets, rentals, oneTimeIncomes, start, end);
+		const deficit = accumulateDeficit(expense, income, start, end);
+		return sendIncomeMonth(income);
 	};
+
 	app.decorate("microYearReport", microYearOutput);
 };
 

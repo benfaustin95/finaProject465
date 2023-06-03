@@ -7,7 +7,7 @@ import { FinancialAsset } from "../db/entities/financialasset.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
 import { expenseYearOutput } from "./helperFunctions/expenseYearOutput.js";
-import { withdrawalOutput } from "./helperFunctions/withdrawalOutput.js";
+import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js";
 import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
 import de from "@faker-js/faker/locales/de/index.js";
 import {
@@ -111,7 +111,7 @@ const macroBudgetReport = async (app: FastifyInstance, _options = {}) => {
 		);
 
 		const deficit = accumulateDeficit(expense, income, start, end);
-		const withdrawal = withdrawalOutput(finAssets, dividends, deficit, start, end, 1);
+		const withdrawal = withdrawalYearOutput(finAssets, dividends, deficit, start, end, 1);
 		return { expenses: expense, incomes: income, deficit, withdrawals: withdrawal };
 		// incomes: income, withdrawals: withdrawal, deficit };
 	};

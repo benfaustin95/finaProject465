@@ -12,12 +12,6 @@ export function currentYear(fullYear: number, fullYear2: number, i: number) {
 	return fullYear <= i && fullYear2 >= i;
 }
 
-export function getFreshAmount(): amount {
-	return {
-		value: 0,
-		year: undefined,
-	};
-}
 export const expenseYearOutput = (
 	expenses: Array<BudgetItem>,
 	start: number,
@@ -61,7 +55,7 @@ export const expenseYearOutput = (
 	return { outputRecurring, outputNonRecurring, monthlyExpense, annualExpense };
 };
 
-export const expenseCalculation = (item: BudgetItem, year: number) => {
+export const expenseCalculation = (item: BudgetItem, year: number): number => {
 	let expense: number;
 	switch (item.recurrence) {
 		case Recurrence.DAILY:

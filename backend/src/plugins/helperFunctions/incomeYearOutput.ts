@@ -123,9 +123,13 @@ export function oneTimeCalculation(x: OneTimeIncome, year: number): incomeCalcul
 	return { income, tax };
 }
 
-export function dividendCalculation(finAssets: Array<FinancialAsset>, x: Dividend): number {
+export function dividendCalculation(
+	finAssets: Array<FinancialAsset>,
+	x: Dividend,
+	period = 1
+): number {
 	const value = finAssets.find((y) => y.id == x.asset.id);
-	const income = x.rate * value.totalValue;
+	const income = (x.rate * value.totalValue) / period;
 	const tax = calculateTax(
 		income,
 		x.federal == null ? 0 : x.federal.rate,
@@ -136,7 +140,7 @@ export function dividendCalculation(finAssets: Array<FinancialAsset>, x: Dividen
 	);
 	return income - (tax.fica + tax.capitalGains + tax.federal + tax.state + tax.local);
 }
-export function incomeCalculation(item: CapAsset, year: number): incomeCalculation {
+export function incomeCalculation(item: CapAsset, year: number, period = 1): incomeCalculation {
 	let income: number;
 	switch (item.recurrence) {
 		case Recurrence.DAILY:
@@ -155,12 +159,10 @@ export function incomeCalculation(item: CapAsset, year: number): incomeCalculati
 			income = item.income;
 			break;
 	}
+	income = compoundGrowthRate(income, item.growthRate, year - item.start.getFullYear());
 	//need to get inflation amount from api and add to growth rate
-	income = annualIncomeCalculation(
-		item,
-		year,
-		compoundGrowthRate(income, item.growthRate, year - item.start.getFullYear())
-	);
+	if (period == 1) income = annualIncomeCalculation(item, year, income);
+
 	const tax = calculateTax(
 		income,
 		item.federal == null ? 0 : item.federal.rate,
@@ -169,16 +171,17 @@ export function incomeCalculation(item: CapAsset, year: number): incomeCalculati
 		item.capitalGains == null ? 0 : item.capitalGains.rate,
 		item.fica == null ? 0 : item.fica.rate
 	);
+
 	return { income, tax };
 }
 
-export function rentalCalculation(item: RentalAsset, year: number): incomeCalculation {
+export function rentalCalculation(item: RentalAsset, year: number, period = 12): incomeCalculation {
 	const income =
 		compoundGrowthRate(
 			item.grossIncome - item.maintenanceExpense,
 			item.growthRate,
 			year - item.created_at.getFullYear()
-		) * 12;
+		) * period;
 	console.log(item.name, " ", income);
 	const tax = calculateTax(
 		income,

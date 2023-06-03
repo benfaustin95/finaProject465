@@ -7,22 +7,17 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 
 	app.search<{ Body: { id: number } }>("/microReport", async (req, reply) => {
 		const { id } = req.body;
-		const toSend: microYearReport[] = [];
 		try {
-			const user = await req.em.findOneOrFail(
-				User,
-				id,
-				{
-					populate: [
-						"budgetItems",
-						"financialAssets",
-						"capitalAssets",
-						"rentalAssets",
-						"dividends",
-						"oneTimeIncomes",
-					],
-				}
-			);
+			const user = await req.em.findOneOrFail(User, id, {
+				populate: [
+					"budgetItems",
+					"financialAssets",
+					"capitalAssets",
+					"rentalAssets",
+					"dividends",
+					"oneTimeIncomes",
+				],
+			});
 
 			const rentalAssets = user.rentalAssets.getItems();
 			const finAssets = user.financialAssets.getItems();
@@ -32,20 +27,16 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 			const oneTimeIncome = user.oneTimeIncomes.getItems();
 
 			// for(let year = user.start.getFullYear(); year<=user.start.getFullYear()+5;++year){
-			const year = user.start.getFullYear();
-			for (let i = year; i < year + 5; ++i) {
-				toSend.push(
-					app.microYearReport(
-						budgetItems.filter((x) => x.start.getFullYear() <= year && x.end.getFullYear() >= year),
-						capAssets.filter((x) => x.start.getFullYear() <= year && x.end.getFullYear() >= year),
-						oneTimeIncome.filter((x) => x.date.getFullYear() === year),
-						dividends,
-						finAssets,
-						rentalAssets,
-						year
-					)
-				);
-			}
+			const toSend = app.microYearReport(
+				budgetItems,
+				capAssets,
+				oneTimeIncome,
+				dividends,
+				finAssets,
+				rentalAssets,
+				user.start,
+				user.start
+			);
 			reply.send(toSend);
 		} catch (err) {
 			reply.status(500).send(err);

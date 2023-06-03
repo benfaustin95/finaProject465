@@ -89,6 +89,18 @@ export interface destructuredTaxAccumulator {
 	localIncome: [number, number][];
 }
 
+export interface destructuredMonthlyTaxAccumulator {
+	capitalGains: [[number, number], number][];
+	fica: [[number, number], number][];
+	federal: [[number, number], number][];
+	state: [[number, number], number][];
+	local: [[number, number], number][];
+	capitalGainsIncome: [[number, number], number][];
+	ficaIncome: [[number, number], number][];
+	federalIncome: [[number, number], number][];
+	stateIncome: [[number, number], number][];
+	localIncome: [[number, number], number][];
+}
 export interface incomeCalculation {
 	income: number;
 	tax: taxOutput;
@@ -121,23 +133,41 @@ export interface outputRow {
 	amounts: Map<number, number>;
 }
 
+export interface monthOutputRow {
+	name: string;
+	note: string;
+	amounts: Map<string, number>;
+}
 export interface destructuredOutputRow {
 	name: string;
 	note: string;
 	amounts: [number, number][];
 }
 
+export interface destructuredMonthOutputRow {
+	name: string;
+	note: string;
+	amounts: [[number, number], number][];
+}
 export interface destructuredWithOutputRow extends destructuredOutputRow {
 	updatedValue: [number, number][];
 }
 export interface withdrawalOutputRow extends outputRow {
 	updatedValue: Map<number, number>;
 }
+export interface withdrawalMonthOutputRow extends monthOutputRow {
+	updatedValue: Map<string, number>;
+}
 export interface expenseYear {
 	outputRecurring: Map<number, outputRow>;
 	outputNonRecurring: Map<number, outputRow>;
 	monthlyExpense: outputRow;
 	annualExpense: outputRow;
+}
+
+export interface expenseMonth {
+	outReccuring: monthOutputRow;
+	outNonReccuring: monthOutputRow;
 }
 
 export interface destructuredExpenseYear {
@@ -151,6 +181,10 @@ export interface withdrawal {
 	outDividend: Map<number, outputRow>;
 }
 
+export interface withdrawalMonth {
+	outputWithdrawal: Map<number, withdrawalMonthOutputRow>;
+	outDividend: Map<number, monthOutputRow>;
+}
 export interface destructuredWithdrawal {
 	outputWithdrawal: [number, destructuredWithOutputRow][];
 	outDividend: [number, destructuredOutputRow][];
@@ -182,11 +216,16 @@ export interface microYearReport {
 }
 
 export interface incomeMonth {
-	salary: row[];
-	retirementIncome: row[];
-	nonTaxable: row[];
-	investments: row[];
-	oneTimeIncome: row[];
-	taxes: taxAccumulator;
-	income: number;
+	salary: Map<number, monthOutputRow>;
+	investments: Map<number, monthOutputRow>;
+	retirementIncome: Map<number, monthOutputRow>;
+	nonTaxable: Map<number, monthOutputRow>;
+	oneTimeIncome: Map<number, monthOutputRow>;
+	taxes: Map<string, taxAccumulator>;
+	monthlyIncome: monthOutputRow;
+}
+
+export interface dateKey {
+	month: number;
+	year: number;
 }

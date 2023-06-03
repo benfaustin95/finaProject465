@@ -1,14 +1,20 @@
 import {
+	dateKey,
 	destructuredExpenseYear,
 	destructuredIncomeYear,
 	destructuredMacroYearReport,
+	destructuredMonthlyTaxAccumulator,
+	destructuredMonthOutputRow,
 	destructuredOutputRow,
 	destructuredTaxAccumulator,
 	destructuredWithdrawal,
 	destructuredWithOutputRow,
+	expenseMonth,
 	expenseYear,
+	incomeMonth,
 	incomeYear,
 	macroYearReport,
+	monthOutputRow,
 	outputRow,
 	taxAccumulator,
 	withdrawal,
@@ -121,5 +127,96 @@ export function sendMacroReport(toSendBudget: macroYearReport): destructuredMacr
 		incomes: sendIncomes(toSendBudget.incomes),
 		withdrawals: sendWithdrawals(toSendBudget.withdrawals),
 		deficit: sendRow(toSendBudget.deficit),
+	};
+}
+
+function sendMonthOutputRow(outNonReccuring: monthOutputRow): destructuredMonthOutputRow {
+	return {
+		name: outNonReccuring.name,
+		note: outNonReccuring.note,
+		amounts: Array.from(outNonReccuring.amounts.entries()).map(([key, value]) => {
+			const parsedKey: dateKey = JSON.parse(key);
+			return [[parsedKey.month, parsedKey.year], value];
+		}),
+	};
+}
+
+function sendMonthRowGroup(
+	outputRecurring: Map<number, monthOutputRow>
+): [number, destructuredMonthOutputRow][] {
+	const toReturn: Map<number, destructuredMonthOutputRow> = new Map<
+		number,
+		destructuredMonthOutputRow
+	>();
+	[...outputRecurring.keys()].forEach((x) =>
+		toReturn.set(x, sendMonthOutputRow(outputRecurring.get(x)))
+	);
+	return Array.from(toReturn.entries());
+}
+export function sendMonthlyExpenses(expenses: expenseMonth) {
+	return {
+		outNonReccuring: sendMonthOutputRow(expenses.outNonReccuring),
+		outReccuring: sendMonthOutputRow(expenses.outReccuring),
+	};
+}
+
+function sendMonthTaxes(taxes: Map<string, taxAccumulator>) {
+	const toReturn: destructuredMonthlyTaxAccumulator = {
+		capitalGains: [],
+		fica: [],
+		federal: [],
+		state: [],
+		local: [],
+		capitalGainsIncome: [],
+		ficaIncome: [],
+		federalIncome: [],
+		stateIncome: [],
+		localIncome: [],
+	};
+
+	Array.from(taxes.entries()).forEach(([key, value]) => {
+		const keyParsed = JSON.parse(key);
+		toReturn.capitalGains = [
+			...toReturn.capitalGains,
+			[[keyParsed.month, keyParsed.year], value.capitalGains],
+		];
+		toReturn.capitalGainsIncome = [
+			...toReturn.capitalGainsIncome,
+			[[keyParsed.month, keyParsed.year], value.capitalGainsIncome],
+		];
+		toReturn.fica = [...toReturn.fica, [[keyParsed.month, keyParsed.year], value.fica]];
+		toReturn.ficaIncome = [
+			...toReturn.ficaIncome,
+			[[keyParsed.month, keyParsed.year], value.ficaIncome],
+		];
+		toReturn.federal = [...toReturn.federal, [[keyParsed.month, keyParsed.year], value.federal]];
+		toReturn.federalIncome = [
+			...toReturn.federalIncome,
+			[[keyParsed.month, keyParsed.year], value.federalIncome],
+		];
+		toReturn.state = [...toReturn.state, [[keyParsed.month, keyParsed.year], value.state]];
+		toReturn.stateIncome = [
+			...toReturn.stateIncome,
+			[[keyParsed.month, keyParsed.year], value.stateIncome],
+		];
+		toReturn.local = [...toReturn.local, [[keyParsed.month, keyParsed.year], value.local]];
+		toReturn.localIncome = [
+			...toReturn.localIncome,
+			[[keyParsed.month, keyParsed.year], value.localIncome],
+		];
+	});
+
+	return toReturn;
+}
+
+export function sendIncomeMonth(income: incomeMonth) {
+	return {
+		salary: sendMonthRowGroup(income.salary),
+		investments: sendMonthRowGroup(income.investments),
+		retirementIncome: sendMonthRowGroup(income.retirementIncome),
+		nonTaxable: sendMonthRowGroup(income.nonTaxable),
+		oneTimeIncome: sendMonthRowGroup(income.oneTimeIncome),
+		taxes: sendMonthTaxes(income.taxes),
+		monthlyIncome: sendMonthOutputRow(income.monthlyIncome),
 	};
 }

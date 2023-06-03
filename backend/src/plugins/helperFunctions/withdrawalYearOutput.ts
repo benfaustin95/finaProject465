@@ -43,7 +43,7 @@ function calculateWithdrawal(item: FinancialAsset, difference: number) {
 //update finAssets to be current with growth
 //create object with the amount withdrawn from each account
 //return new array of finAssets with updated amount fields
-export const withdrawalOutput = (
+export const withdrawalYearOutput = (
 	finAssets: Array<FinancialAsset>,
 	dividends: Array<Dividend>,
 	deficit: outputRow,
@@ -120,32 +120,3 @@ export const withdrawalOutput = (
 	}
 	return { outputWithdrawal, outDividend };
 };
-// finAssets
-// 	.sort((a, b) => a.wPriority - b.wPriority)
-// 	.filter((x) => x.totalValue > 0)
-// 	.forEach((x) => {
-// 		const toAdd = x;
-// 		toAdd.totalValue = compoundGrowthRate(
-// 			toAdd.totalValue,
-// 			Math.pow(toAdd.growthRate, period),
-// 			period
-// 		);
-// 		if (difference < 0) {
-// 			toAdd.totalValue -= difference;
-// 			toAdd.costBasis -= difference;
-// 			outputWithdrawal.push({ name: x.name, note: x.note, amount: -difference });
-// 			difference = 0;
-// 		} else if (difference > 0) {
-// 			const postTaxLiquidity = calculatePostTaxLiquidity(toAdd);
-// 			if (postTaxLiquidity <= difference) {
-// 				toAdd.totalValue = 0;
-// 				toAdd.costBasis = 0;
-// 				difference -= postTaxLiquidity;
-// 				outputWithdrawal.push({ name: x.name, note: x.note, amount: postTaxLiquidity });
-// 			} else {
-// 				const withdrawal = calculateWithdrawal(toAdd, difference);
-// 				difference = 0;
-// 				outputWithdrawal.push({ name: x.name, note: x.note, amount: withdrawal });
-// 			}
-// 		}
-// 	});
