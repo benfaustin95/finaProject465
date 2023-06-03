@@ -182,7 +182,6 @@ export function rentalCalculation(item: RentalAsset, year: number, period = 12):
 			item.growthRate,
 			year - item.created_at.getFullYear()
 		) * period;
-	console.log(item.name, " ", income);
 	const tax = calculateTax(
 		income,
 		item.federal == null ? 0 : item.federal.rate,

@@ -17,7 +17,6 @@ export const expenseYearOutput = (
 	start: number,
 	end: number
 ): expenseYear => {
-	console.log(end - start);
 	const outputRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const outputNonRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
@@ -41,7 +40,7 @@ export const expenseYearOutput = (
 				currentMonthly = currentMonthly == undefined ? toAdd : currentMonthly + toAdd;
 				currentYearly =
 					currentYearly == undefined
-						? toAdd
+						? annualExpenseCalculation(x, i, toAdd)
 						: currentYearly + annualExpenseCalculation(x, i, toAdd);
 			} else currentYearly = currentYearly == undefined ? toAdd : currentYearly + toAdd;
 
@@ -83,6 +82,5 @@ function annualExpenseCalculation(item: BudgetItem, year: number, expense: numbe
 		return monthsActive * expense;
 	if (item.start.getFullYear() == year) monthsActive -= item.start.getMonth();
 	if (item.end.getFullYear() == year) monthsActive -= 11 - item.end.getMonth();
-
 	return monthsActive * expense;
 }

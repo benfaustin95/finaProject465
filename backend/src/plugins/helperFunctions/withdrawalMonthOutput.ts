@@ -69,12 +69,13 @@ export const withdrawalMonthOutput = (
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key = JSON.stringify({ month, year });
 			let currentDeficit = deficit.amounts.get(key);
+
 			if (currentDeficit == undefined) {
 				throw new Error("issue with deficit");
 			}
 			dividends.forEach((x, index) => {
 				let currentOutDividend: monthOutputRow = outDividend.get(x.id);
-
+				let currentAmount = 0;
 				if (currentOutDividend == undefined) {
 					currentOutDividend = {
 						name: x.name,
@@ -83,8 +84,7 @@ export const withdrawalMonthOutput = (
 					};
 					outDividend.set(x.id, currentOutDividend);
 				}
-
-				const currentAmount: number = dividendCalculation(finAssets, x, 12);
+				if (month == 0) currentAmount = dividendCalculation(finAssets, x);
 				currentOutDividend.amounts.set(key, currentAmount);
 				currentDeficit += currentAmount;
 			});

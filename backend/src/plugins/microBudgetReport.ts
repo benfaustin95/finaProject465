@@ -6,24 +6,16 @@ import { RentalAsset } from "../db/entities/rentalasset.js";
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
-import { expenseYearOutput } from "./helperFunctions/expenseYearOutput.js";
-import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js";
-import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
 import { expenseMonthOutput } from "./helperFunctions/expenseMonthOutput.js";
-import budgetItemRoutes from "../routes/budgetItemRoutes.js";
 import { incomeMonthOutput, mkMonthOutputRow } from "./helperFunctions/incomeMonthOutput.js";
 import {
 	expenseMonth,
 	incomeMonth,
 	microYearReport,
 	monthOutputRow,
-	withdrawal,
+	taxAccumulator,
 } from "../db/types.js";
-import {
-	sendIncomeMonth,
-	sendMicroReport,
-	sendMonthlyExpenses,
-} from "../helperMethods/destructure.js";
+import { sendMicroReport } from "../helperMethods/destructure.js";
 import { withdrawalMonthOutput } from "./helperFunctions/withdrawalMonthOutput.js";
 
 declare module "fastify" {
@@ -41,6 +33,17 @@ declare module "fastify" {
 	}
 }
 
+function sumTaxes(taxAccumulator: taxAccumulator) {
+	if (taxAccumulator == undefined) return 0;
+	return (
+		taxAccumulator.capitalGains +
+		taxAccumulator.fica +
+		taxAccumulator.federal +
+		taxAccumulator.state +
+		taxAccumulator.local
+	);
+}
+
 function accumulateDeficit(
 	expense: expenseMonth,
 	income: incomeMonth,
@@ -56,7 +59,8 @@ function accumulateDeficit(
 			const currentExpense =
 				(expense.outReccuring.amounts.get(key) ?? 0) +
 				(expense.outNonReccuring.amounts.get(key) ?? 0);
-			defecit.amounts.set(key, currentIncome - currentExpense);
+			const currentTax = sumTaxes(income.taxes.get(key));
+			defecit.amounts.set(key, currentIncome - (currentTax + currentExpense));
 		}
 	}
 	return defecit;
