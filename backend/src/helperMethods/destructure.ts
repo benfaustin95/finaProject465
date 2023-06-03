@@ -1,8 +1,12 @@
 import {
 	dateKey,
+	destructuredExpenseMonth,
 	destructuredExpenseYear,
+	destructuredIncomeMonth,
 	destructuredIncomeYear,
 	destructuredMacroYearReport,
+	destructuredMicroReport,
+	destructuredMicroWithdrawal,
 	destructuredMonthlyTaxAccumulator,
 	destructuredMonthOutputRow,
 	destructuredOutputRow,
@@ -138,10 +142,16 @@ function sendMonthOutputRow(outNonReccuring: monthOutputRow): destructuredMonthO
 	return {
 		name: outNonReccuring.name,
 		note: outNonReccuring.note,
-		amounts: Array.from(outNonReccuring.amounts.entries()).map(([key, value]) => {
-			const parsedKey: dateKey = JSON.parse(key);
-			return [[parsedKey.month, parsedKey.year], value];
-		}),
+		//@ts-ignore
+		amounts: Array.from(outNonReccuring.amounts.entries())
+			.map(([key, value]) => {
+				const parsedKey: dateKey = JSON.parse(key);
+				return [[parsedKey.month, parsedKey.year], value];
+			})
+			.sort((a, b) => {
+				if (a[0][1] == b[0][1]) return a[0][0] - b[0][0];
+				return a[0][1] - b[0][1];
+			}),
 	};
 }
 
@@ -157,10 +167,10 @@ function sendMonthRowGroup(
 	);
 	return Array.from(toReturn.entries());
 }
-export function sendMonthlyExpenses(expenses: expenseMonth) {
+export function sendMonthlyExpenses(expenses: expenseMonth): destructuredExpenseMonth {
 	return {
-		outNonReccuring: sendMonthOutputRow(expenses.outNonReccuring),
-		outReccuring: sendMonthOutputRow(expenses.outReccuring),
+		outNonRecurring: sendMonthOutputRow(expenses.outNonReccuring),
+		outRecurring: sendMonthOutputRow(expenses.outReccuring),
 	};
 }
 
@@ -178,42 +188,50 @@ function sendMonthTaxes(taxes: Map<string, taxAccumulator>) {
 		localIncome: [],
 	};
 
-	Array.from(taxes.entries()).forEach(([key, value]) => {
-		const keyParsed = JSON.parse(key);
-		toReturn.capitalGains = [
-			...toReturn.capitalGains,
-			[[keyParsed.month, keyParsed.year], value.capitalGains],
-		];
-		toReturn.capitalGainsIncome = [
-			...toReturn.capitalGainsIncome,
-			[[keyParsed.month, keyParsed.year], value.capitalGainsIncome],
-		];
-		toReturn.fica = [...toReturn.fica, [[keyParsed.month, keyParsed.year], value.fica]];
-		toReturn.ficaIncome = [
-			...toReturn.ficaIncome,
-			[[keyParsed.month, keyParsed.year], value.ficaIncome],
-		];
-		toReturn.federal = [...toReturn.federal, [[keyParsed.month, keyParsed.year], value.federal]];
-		toReturn.federalIncome = [
-			...toReturn.federalIncome,
-			[[keyParsed.month, keyParsed.year], value.federalIncome],
-		];
-		toReturn.state = [...toReturn.state, [[keyParsed.month, keyParsed.year], value.state]];
-		toReturn.stateIncome = [
-			...toReturn.stateIncome,
-			[[keyParsed.month, keyParsed.year], value.stateIncome],
-		];
-		toReturn.local = [...toReturn.local, [[keyParsed.month, keyParsed.year], value.local]];
-		toReturn.localIncome = [
-			...toReturn.localIncome,
-			[[keyParsed.month, keyParsed.year], value.localIncome],
-		];
-	});
+	Array.from(taxes.entries())
+		.sort((a, b) => {
+			const parsedKeyA: dateKey = JSON.parse(a[0]);
+			const parsedKeyB: dateKey = JSON.parse(b[0]);
+
+			if (parsedKeyA.year == parsedKeyB.year) return parsedKeyA.month - parsedKeyB.month;
+			return parsedKeyA.year - parsedKeyB.year;
+		})
+		.forEach(([key, value]) => {
+			const keyParsed = JSON.parse(key);
+			toReturn.capitalGains = [
+				...toReturn.capitalGains,
+				[[keyParsed.month, keyParsed.year], value.capitalGains],
+			];
+			toReturn.capitalGainsIncome = [
+				...toReturn.capitalGainsIncome,
+				[[keyParsed.month, keyParsed.year], value.capitalGainsIncome],
+			];
+			toReturn.fica = [...toReturn.fica, [[keyParsed.month, keyParsed.year], value.fica]];
+			toReturn.ficaIncome = [
+				...toReturn.ficaIncome,
+				[[keyParsed.month, keyParsed.year], value.ficaIncome],
+			];
+			toReturn.federal = [...toReturn.federal, [[keyParsed.month, keyParsed.year], value.federal]];
+			toReturn.federalIncome = [
+				...toReturn.federalIncome,
+				[[keyParsed.month, keyParsed.year], value.federalIncome],
+			];
+			toReturn.state = [...toReturn.state, [[keyParsed.month, keyParsed.year], value.state]];
+			toReturn.stateIncome = [
+				...toReturn.stateIncome,
+				[[keyParsed.month, keyParsed.year], value.stateIncome],
+			];
+			toReturn.local = [...toReturn.local, [[keyParsed.month, keyParsed.year], value.local]];
+			toReturn.localIncome = [
+				...toReturn.localIncome,
+				[[keyParsed.month, keyParsed.year], value.localIncome],
+			];
+		});
 
 	return toReturn;
 }
 
-export function sendIncomeMonth(income: incomeMonth) {
+export function sendIncomeMonth(income: incomeMonth): destructuredIncomeMonth {
 	return {
 		salary: sendMonthRowGroup(income.salary),
 		investments: sendMonthRowGroup(income.investments),
@@ -247,14 +265,14 @@ function sendWithMonthRows(
 	});
 }
 
-function sendWithdrawalMonth(withdrawal: withdrawalMonth) {
+function sendWithdrawalMonth(withdrawal: withdrawalMonth): destructuredMicroWithdrawal {
 	return {
-		outWithdrawal: sendWithMonthRows(withdrawal.outputWithdrawal),
+		outputWithdrawal: sendWithMonthRows(withdrawal.outputWithdrawal),
 		outDividend: sendMonthRowGroup(withdrawal.outDividend),
 	};
 }
 
-export function sendMicroReport(report: microMonthReport) {
+export function sendMicroReport(report: microMonthReport): destructuredMicroReport {
 	return {
 		expense: sendMonthlyExpenses(report.expense),
 		income: sendIncomeMonth(report.income),

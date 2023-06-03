@@ -1,8 +1,9 @@
 import { Link, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
 import { MacroReportSet } from "@/Components/UsersList.tsx";
-import { MacroReportLoad } from "@/Components/MacroReportLoad.tsx";
+import { MicroReportLoad } from "@/Components/MicroReportLoad.tsx";
 import { Container } from "react-bootstrap";
+import { MacroReportLoad } from "@/Components/MacroReportLoad.tsx";
 
 export function DoggrRouter() {
 	return (
@@ -12,7 +13,10 @@ export function DoggrRouter() {
 					<div className={"navbar-center lg:flex"}>
 						<ul className={"menu menu-horizontal"}>
 							<li>
-								<Link to="/">Load Report</Link>{" "}
+								<Link to="/">Load Report</Link>
+							</li>
+							<li>
+								<Link to="/microReportLoaded">Load Micro Report</Link>
 							</li>
 						</ul>
 					</div>
@@ -22,6 +26,7 @@ export function DoggrRouter() {
 			<Routes>
 				<Route path="/" element={<MacroReportSet />} />
 				<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
+				<Route path="/microReportLoaded" element={<MicroReportLoad />} />
 			</Routes>
 		</Container>
 	);

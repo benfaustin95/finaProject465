@@ -180,6 +180,12 @@ export interface destructuredExpenseYear {
 	monthlyExpense: destructuredOutputRow;
 	annualExpense: destructuredOutputRow;
 }
+
+export interface destructuredExpenseMonth {
+	outRecurring: destructuredMonthOutputRow;
+	outNonRecurring: destructuredMonthOutputRow;
+}
+
 export interface withdrawal {
 	outputWithdrawal: Map<number, withdrawalOutputRow>;
 	outDividend: Map<number, outputRow>;
@@ -192,6 +198,11 @@ export interface withdrawalMonth {
 export interface destructuredWithdrawal {
 	outputWithdrawal: [number, destructuredWithOutputRow][];
 	outDividend: [number, destructuredOutputRow][];
+}
+
+export interface destructuredMicroWithdrawal {
+	outputWithdrawal: [number, destructuredWithdrawalMonthOutputRow][];
+	outDividend: [number, destructuredMonthOutputRow][];
 }
 export interface row {
 	name: string;
@@ -229,6 +240,15 @@ export interface incomeMonth {
 	monthlyIncome: monthOutputRow;
 }
 
+export interface destructuredIncomeMonth {
+	salary: [number, destructuredMonthOutputRow][];
+	investments: [number, destructuredMonthOutputRow][];
+	retirementIncome: [number, destructuredMonthOutputRow][];
+	nonTaxable: [number, destructuredMonthOutputRow][];
+	oneTimeIncome: [number, destructuredMonthOutputRow][];
+	taxes: destructuredMonthlyTaxAccumulator;
+	monthlyIncome: destructuredMonthOutputRow;
+}
 export interface dateKey {
 	month: number;
 	year: number;
@@ -239,4 +259,11 @@ export interface microMonthReport {
 	income: incomeMonth;
 	deficit: monthOutputRow;
 	withdrawal: withdrawalMonth;
+}
+
+export interface destructuredMicroReport {
+	expense: destructuredExpenseMonth;
+	income: destructuredIncomeMonth;
+	deficit: destructuredMonthOutputRow;
+	withdrawal: destructuredMicroWithdrawal;
 }
