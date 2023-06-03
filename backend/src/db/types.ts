@@ -158,6 +158,10 @@ export interface withdrawalOutputRow extends outputRow {
 export interface withdrawalMonthOutputRow extends monthOutputRow {
 	updatedValue: Map<string, number>;
 }
+
+export interface destructuredWithdrawalMonthOutputRow extends destructuredMonthOutputRow {
+	updatedValue: [[number, number], number][];
+}
 export interface expenseYear {
 	outputRecurring: Map<number, outputRow>;
 	outputNonRecurring: Map<number, outputRow>;
@@ -228,4 +232,11 @@ export interface incomeMonth {
 export interface dateKey {
 	month: number;
 	year: number;
+}
+
+export interface microMonthReport {
+	expense: expenseMonth;
+	income: incomeMonth;
+	deficit: monthOutputRow;
+	withdrawal: withdrawalMonth;
 }

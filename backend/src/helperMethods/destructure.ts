@@ -8,16 +8,20 @@ import {
 	destructuredOutputRow,
 	destructuredTaxAccumulator,
 	destructuredWithdrawal,
+	destructuredWithdrawalMonthOutputRow,
 	destructuredWithOutputRow,
 	expenseMonth,
 	expenseYear,
 	incomeMonth,
 	incomeYear,
 	macroYearReport,
+	microMonthReport,
 	monthOutputRow,
 	outputRow,
 	taxAccumulator,
 	withdrawal,
+	withdrawalMonth,
+	withdrawalMonthOutputRow,
 	withdrawalOutputRow,
 } from "../db/types.js";
 import exp from "constants";
@@ -101,7 +105,7 @@ function sendWithRow(withdrawalOutputRow: withdrawalOutputRow): destructuredWith
 	};
 }
 
-function sendWithdrawalRow(
+function sendWithdrawalRows(
 	outputWithdrawal: Map<number, withdrawalOutputRow>
 ): [number, destructuredWithOutputRow][] {
 	const toReturn: Map<number, destructuredWithOutputRow> = new Map<
@@ -116,7 +120,7 @@ function sendWithdrawalRow(
 
 function sendWithdrawals(withdrawals: withdrawal): destructuredWithdrawal {
 	return {
-		outputWithdrawal: sendWithdrawalRow(withdrawals.outputWithdrawal),
+		outputWithdrawal: sendWithdrawalRows(withdrawals.outputWithdrawal),
 		outDividend: sendRowGroup(withdrawals.outDividend),
 	};
 }
@@ -218,5 +222,43 @@ export function sendIncomeMonth(income: incomeMonth) {
 		oneTimeIncome: sendMonthRowGroup(income.oneTimeIncome),
 		taxes: sendMonthTaxes(income.taxes),
 		monthlyIncome: sendMonthOutputRow(income.monthlyIncome),
+	};
+}
+
+function sendWithMonthOutputRow(
+	withdrawalMonthOutputRow: withdrawalMonthOutputRow
+): destructuredWithdrawalMonthOutputRow {
+	return {
+		...sendMonthOutputRow(withdrawalMonthOutputRow),
+		updatedValue: Array.from(withdrawalMonthOutputRow.updatedValue.entries()).map(
+			([key, value]) => {
+				const parsedKey: dateKey = JSON.parse(key);
+				return [[parsedKey.month, parsedKey.year], value];
+			}
+		),
+	};
+}
+
+function sendWithMonthRows(
+	outputWithdrawal: Map<number, withdrawalMonthOutputRow>
+): [number, destructuredWithdrawalMonthOutputRow][] {
+	return Array.from(outputWithdrawal.entries()).map(([key, value]) => {
+		return [key, sendWithMonthOutputRow(value)];
+	});
+}
+
+function sendWithdrawalMonth(withdrawal: withdrawalMonth) {
+	return {
+		outWithdrawal: sendWithMonthRows(withdrawal.outputWithdrawal),
+		outDividend: sendMonthRowGroup(withdrawal.outDividend),
+	};
+}
+
+export function sendMicroReport(report: microMonthReport) {
+	return {
+		expense: sendMonthlyExpenses(report.expense),
+		income: sendIncomeMonth(report.income),
+		deficit: sendMonthOutputRow(report.deficit),
+		withdrawal: sendWithdrawalMonth(report.withdrawal),
 	};
 }

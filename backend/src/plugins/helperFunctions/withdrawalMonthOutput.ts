@@ -52,13 +52,12 @@ function calculateWithdrawal(item: FinancialAsset, difference: number) {
 //update finAssets to be current with growth
 //create object with the amount withdrawn from each account
 //return new array of finAssets with updated amount fields
-export const withdrawalYearOutput = (
+export const withdrawalMonthOutput = (
 	finAssets: Array<FinancialAsset>,
 	dividends: Array<Dividend>,
 	deficit: monthOutputRow,
 	start: Date,
-	end: Date,
-	period: number
+	end: Date
 ): withdrawalMonth => {
 	const outDividend: Map<number, monthOutputRow> = new Map<number, monthOutputRow>();
 	const outputWithdrawal: Map<number, withdrawalMonthOutputRow> = new Map<
@@ -68,7 +67,7 @@ export const withdrawalYearOutput = (
 
 	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
-			const key = JSON.stringify([month, year]);
+			const key = JSON.stringify({ month, year });
 			let currentDeficit = deficit.amounts.get(key);
 			if (currentDeficit == undefined) {
 				throw new Error("issue with deficit");

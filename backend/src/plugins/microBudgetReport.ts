@@ -11,9 +11,20 @@ import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js"
 import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
 import { expenseMonthOutput } from "./helperFunctions/expenseMonthOutput.js";
 import budgetItemRoutes from "../routes/budgetItemRoutes.js";
-import { incomeMonthOutput } from "./helperFunctions/incomeMonthOutput.js";
-import { expenseMonth, incomeMonth, microYearReport, withdrawal } from "../db/types.js";
-import { sendIncomeMonth, sendMonthlyExpenses } from "../helperMethods/destructure.js";
+import { incomeMonthOutput, mkMonthOutputRow } from "./helperFunctions/incomeMonthOutput.js";
+import {
+	expenseMonth,
+	incomeMonth,
+	microYearReport,
+	monthOutputRow,
+	withdrawal,
+} from "../db/types.js";
+import {
+	sendIncomeMonth,
+	sendMicroReport,
+	sendMonthlyExpenses,
+} from "../helperMethods/destructure.js";
+import { withdrawalMonthOutput } from "./helperFunctions/withdrawalMonthOutput.js";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -30,7 +41,26 @@ declare module "fastify" {
 	}
 }
 
-function accumulateDeficit(expense: expenseMonth, income: incomeMonth, start: Date, end: Date) {}
+function accumulateDeficit(
+	expense: expenseMonth,
+	income: incomeMonth,
+	start: Date,
+	end: Date
+): monthOutputRow {
+	const defecit: monthOutputRow = mkMonthOutputRow("defecit");
+
+	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
+		for (let month = start.getFullYear() == year ? start.getMonth() : 0; month < 12; ++month) {
+			const key = JSON.stringify({ month, year });
+			const currentIncome = income.monthlyIncome.amounts.get(key);
+			const currentExpense =
+				(expense.outReccuring.amounts.get(key) ?? 0) +
+				(expense.outNonReccuring.amounts.get(key) ?? 0);
+			defecit.amounts.set(key, currentIncome - currentExpense);
+		}
+	}
+	return defecit;
+}
 
 const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 	const microYearOutput = (
@@ -46,7 +76,8 @@ const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 		const expense = expenseMonthOutput(expenses, start, end);
 		const income = incomeMonthOutput(capitalAssets, rentals, oneTimeIncomes, start, end);
 		const deficit = accumulateDeficit(expense, income, start, end);
-		return sendIncomeMonth(income);
+		const withdrawal = withdrawalMonthOutput(finAssets, dividends, deficit, start, end);
+		return sendMicroReport({ expense, income, deficit, withdrawal });
 	};
 
 	app.decorate("microYearReport", microYearOutput);
