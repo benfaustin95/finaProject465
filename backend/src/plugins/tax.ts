@@ -1,5 +1,4 @@
-import fastify, { FastifyInstance, FastifyRequest } from "fastify";
-import { CAssetBody } from "../db/types.js";
+import { FastifyInstance, FastifyRequest } from "fastify";
 import { Level, TaxRate } from "../db/entities/Tax.js";
 import fp from "fastify-plugin";
 
@@ -9,8 +8,10 @@ declare module "fastify" {
 			req: FastifyRequest,
 			localName: string,
 			stateName: string,
-			federalName: string
-		) => { local: TaxRate; state: TaxRate; federal: TaxRate };
+			federalName: string,
+			capitalGainsName: string,
+			ficaName: string
+		) => { local: TaxRate; state: TaxRate; federal: TaxRate; capitalGains: TaxRate; fica: TaxRate };
 	}
 }
 const fastifyTax = async (app: FastifyInstance, options) => {
@@ -18,22 +19,46 @@ const fastifyTax = async (app: FastifyInstance, options) => {
 		req: FastifyRequest,
 		localName: string,
 		stateName: string,
-		federalName: string
+		federalName: string,
+		capitalGainsName: string,
+		ficaName: string
 	) => {
-		const local = await req.em.findOne(TaxRate, {
-			location: localName,
-			level: Level.LOCAL,
-		});
-		const state = await req.em.findOne(TaxRate, {
-			location: stateName,
-			level: Level.STATE,
-		});
-		const federal = await req.em.findOne(TaxRate, {
-			location: federalName,
-			level: Level.FEDERAL,
-		});
-
-		return { local, state, federal };
+		const local =
+			localName != ""
+				? await req.em.findOne(TaxRate, {
+						location: localName,
+						level: Level.LOCAL,
+				  })
+				: null;
+		const state =
+			stateName != ""
+				? await req.em.findOne(TaxRate, {
+						location: stateName,
+						level: Level.STATE,
+				  })
+				: null;
+		const federal =
+			federalName != ""
+				? await req.em.findOne(TaxRate, {
+						location: federalName,
+						level: Level.FEDERAL,
+				  })
+				: null;
+		const capitalGains =
+			capitalGainsName != ""
+				? await req.em.findOne(TaxRate, {
+						location: capitalGainsName,
+						level: Level.CAPGAINS,
+				  })
+				: null;
+		const fica =
+			ficaName != ""
+				? await req.em.findOne(TaxRate, {
+						location: ficaName,
+						level: Level.FICA,
+				  })
+				: null;
+		return { local, state, federal, capitalGains, fica };
 	};
 	app.decorate("getTaxItems", getTaxItems);
 };

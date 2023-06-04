@@ -44,16 +44,22 @@ export const BaseInputForm = (props: baseInputForm) => {
 			/>
 			{type != "budgetItem" ? (
 				<>
-					<Form.Label htmlFor="itemGrowthRate">Growth Rate:</Form.Label>
-					<Form.Control
-						id="itemGrowthRate"
-						type="text"
-						placeholder="item note...."
-						onChange={(e) => growthRateChanger(Number.parseFloat(e.target.value))}
-					/>
+					{type != "dividend" ? (
+						<>
+							<Form.Label htmlFor="itemGrowthRate">Growth Rate:</Form.Label>
+							<Form.Control
+								id="itemGrowthRate"
+								type="text"
+								placeholder="item note...."
+								onChange={(e) => growthRateChanger(Number.parseFloat(e.target.value))}
+							/>
+						</>
+					) : null}
 					<TaxSelector stateChanger={federalChanger} level={"federal"} />
-					<TaxSelector stateChanger={capitalGainsChanger} level={"capitalGains"} />
-					<TaxSelector level={"fica"} stateChanger={ficaChanger} />
+					{type != "capitalAsset" && type != "dividend" ? (
+						<TaxSelector stateChanger={capitalGainsChanger} level={"capitalGains"} />
+					) : null}
+					{type != "dividend" ? <TaxSelector level={"fica"} stateChanger={ficaChanger} /> : null}
 					<TaxSelector level={"state"} stateChanger={stateChanger} />
 					<TaxSelector level={"local"} stateChanger={localChanger} />
 				</>

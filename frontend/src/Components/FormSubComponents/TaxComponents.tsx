@@ -34,7 +34,7 @@ export const TaxSelector = (props: { level: string; stateChanger: any }) => {
 			<Form.Select id={level} onChange={(e) => setTaxLevel(e.target.value)}>
 				{tax.length != 0
 					? tax.map((x) => (
-							<option value={JSON.stringify([x.level, x.location])}>
+							<option key={x.level + x.location} value={x.location}>
 								{x.level + " - " + x.location + "-" + x.rate}
 							</option>
 					  ))

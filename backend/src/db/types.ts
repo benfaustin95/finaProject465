@@ -20,13 +20,15 @@ export type BudgetBody = {
 	owner_id: number;
 };
 interface BaseInputBody {
-	email: string;
+	owner_id: number;
 	name: string;
 	note: string;
 	growthRate: number;
 	state: string;
 	federal: string;
 	local: string;
+	fica: string;
+	capitalGains: string;
 }
 
 export interface CAssetBody extends BaseInputBody {
@@ -34,7 +36,7 @@ export interface CAssetBody extends BaseInputBody {
 	end: Date;
 	income: number;
 	recurrence: string;
-	type: CapAssetType;
+	type: string;
 }
 
 export interface RFBaseBody extends BaseInputBody {
@@ -57,7 +59,7 @@ export interface OneTimeIncomeBody extends BaseInputBody {
 
 export interface DividendBody extends BaseInputBody {
 	rate: number;
-	finAsset: string;
+	finAsset: number;
 }
 
 export class taxOutput {
