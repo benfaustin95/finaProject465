@@ -26,7 +26,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: BudgetBody }>("/budgetItem", async (req, reply) => {
 		const toAdd = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, { email: toAdd.email });
+			const user = await req.em.findOneOrFail(User, { id: toAdd.owner_id });
 
 			const recurrence = getRecurrence(toAdd.recurrence);
 

@@ -17,7 +17,7 @@ export type BudgetBody = {
 	recurrence: string;
 	start: Date;
 	end: Date;
-	email: string;
+	owner_id: number;
 };
 interface BaseInputBody {
 	email: string;

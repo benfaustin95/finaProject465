@@ -4,6 +4,7 @@ import { MacroReportSet } from "@/Components/UsersList.tsx";
 import { MicroReportLoad } from "@/Components/MicroReportLoad.tsx";
 import { Container } from "react-bootstrap";
 import { MacroReportLoad } from "@/Components/MacroReportLoad.tsx";
+import { BudgetItemForm } from "@/Components/FormSubComponents/BudgetItemForm.tsx";
 
 export function DoggrRouter() {
 	return (
@@ -18,6 +19,9 @@ export function DoggrRouter() {
 							<li>
 								<Link to="/microReportLoaded">Load Micro Report</Link>
 							</li>
+							<li>
+								<Link to="/budgetItemPost">Budget Item Post</Link>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -27,6 +31,7 @@ export function DoggrRouter() {
 				<Route path="/" element={<MacroReportSet />} />
 				<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
 				<Route path="/microReportLoaded" element={<MicroReportLoad />} />
+				<Route path="/budgetItemPost" element={<BudgetItemForm />} />
 			</Routes>
 		</Container>
 	);
