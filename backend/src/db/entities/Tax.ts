@@ -11,8 +11,9 @@ export class TaxRate {
 
 	@PrimaryKey()
 	location!: string;
-}
 
+	[PrimaryKeyType]?: [Level, string];
+}
 export enum Level {
 	STATE = "state",
 	LOCAL = "local",

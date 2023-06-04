@@ -43,10 +43,10 @@ export interface RFBaseBody extends BaseInputBody {
 	wPriority: number;
 }
 
-export interface RenAssetBody extends RFBaseBody {
-	owed: number;
-	maintenanceExpense: number;
-	grossIncome: number;
+export interface TaxBody extends RFBaseBody {
+	level: Level;
+	location: string;
+	rate: number;
 }
 
 export interface OneTimeIncomeBody extends BaseInputBody {
