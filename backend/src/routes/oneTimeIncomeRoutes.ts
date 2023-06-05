@@ -4,6 +4,8 @@ import { User } from "../db/entities/User.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { BudgetItem } from "../db/entities/budgetItem.js";
+import { validateOneTimeIncomeBody } from "../helperMethods/validation.js";
+import { InvalidDataError } from "../helperMethods/errors.js";
 
 async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("this is the worst");
@@ -11,32 +13,17 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: OneTimeIncomeBody }>("/oneTimeIncome", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, { id: toBeAdded.owner_id });
+			const toBeAddedInit = validateOneTimeIncomeBody(toBeAdded, app, req);
+			toBeAdded.date = new Date(toBeAdded.date) ?? toBeAddedInit.owner.start;
 
-			const { local, federal, state, capitalGains, fica } = await app.getTaxItems(
-				req,
-				toBeAdded.local,
-				toBeAdded.state,
-				toBeAdded.federal,
-				toBeAdded.capitalGains,
-				toBeAdded.fica
-			);
-
-			toBeAdded.date = new Date(toBeAdded.date) ?? user.start;
 			const oti = await req.em.create(OneTimeIncome, {
-				...toBeAdded,
-				owner: user,
-				local,
-				federal,
-				state,
-				capitalGains,
-				fica,
+				...toBeAddedInit,
 			});
 
 			await req.em.flush();
-
 			return reply.send(oti);
 		} catch (err) {
+			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
 			return reply.status(500).send(err);
 		}
 	});
@@ -45,11 +32,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 		const { userId, id } = req.body;
 
 		try {
-			const item = await req.em.findOneOrFail(
-				OneTimeIncome,
-				{ id, owner: userId },
-				{ strict: true }
-			);
+			const item = await req.em.getReference(OneTimeIncome, id);
 			console.log(item);
 			await req.em.removeAndFlush(item);
 			return reply.send(item);

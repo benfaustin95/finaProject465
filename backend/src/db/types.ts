@@ -1,6 +1,9 @@
-import { Level } from "./entities/Tax.js";
+import { Level, TaxRate } from "./entities/Tax.js";
 import { CapAssetType } from "./entities/capasset.js";
 import { taxAccumulate } from "../plugins/helperFunctions/incomeMonthOutput.js";
+import { Recurrence } from "./entities/budgetItem.js";
+import { User } from "./entities/User.js";
+import { FinancialAsset } from "./entities/financialasset.js";
 
 export type ICreateUsersBody = {
 	name: string;
@@ -14,12 +17,12 @@ export type BudgetBody = {
 	name: string;
 	amount: number;
 	growthRate: number;
-	recurrence: string;
+	recurrence: Recurrence;
 	start: Date;
 	end: Date;
 	owner_id: number;
 };
-interface BaseInputBody {
+export interface BaseInputBody {
 	owner_id: number;
 	name: string;
 	note: string;
@@ -31,21 +34,50 @@ interface BaseInputBody {
 	capitalGains: string;
 }
 
+export interface BaseInputBodyInit {
+	owner: User;
+	name: string;
+	note: string;
+	growthRate: number;
+	state: TaxRate;
+	federal: TaxRate;
+	local: TaxRate;
+	fica: TaxRate;
+	capitalGains: TaxRate;
+}
 export interface CAssetBody extends BaseInputBody {
 	start: Date;
 	end: Date;
 	income: number;
-	recurrence: string;
-	type: string;
+	recurrence: Recurrence;
+	type: CapAssetType;
 }
 
+export interface CAssetBodyInit extends BaseInputBodyInit {
+	start: Date;
+	end: Date;
+	income: number;
+	recurrence: Recurrence;
+	type: CapAssetType;
+}
 export interface RFBaseBody extends BaseInputBody {
 	totalValue: number;
 	costBasis: number;
 	wPriority: number;
 }
 
+export interface RFBaseBodyInit extends BaseInputBodyInit {
+	totalValue: number;
+	costBasis: number;
+	wPriority: number;
+}
+
 export interface RentalAssetBody extends RFBaseBody {
+	owed: number;
+	expense: number;
+	grossIncome: number;
+}
+export interface RentalAssetBodyInit extends RFBaseBodyInit {
 	owed: number;
 	expense: number;
 	grossIncome: number;
@@ -61,9 +93,19 @@ export interface OneTimeIncomeBody extends BaseInputBody {
 	cashBasis: number;
 }
 
+export interface OneTimeIncomeBodyInit extends BaseInputBodyInit {
+	date: Date;
+	cashBasis: number;
+}
+
 export interface DividendBody extends BaseInputBody {
 	rate: number;
 	finAsset: number;
+}
+
+export interface DividendBodyInit extends BaseInputBodyInit {
+	rate: number;
+	finAsset: FinancialAsset;
 }
 
 export class taxOutput {

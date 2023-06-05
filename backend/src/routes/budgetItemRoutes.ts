@@ -1,22 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { BudgetItem, Recurrence } from "../db/entities/budgetItem.js";
+import { BudgetItem } from "../db/entities/budgetItem.js";
 import { User } from "../db/entities/User.js";
 import { BudgetBody } from "../db/types.js";
-
-export function getRecurrence(recurrence: string) {
-	switch (recurrence) {
-		case Recurrence.NON:
-			return Recurrence.NON;
-		case Recurrence.ANNUALLY:
-			return Recurrence.ANNUALLY;
-		case Recurrence.MONTHLY:
-			return Recurrence.MONTHLY;
-		case Recurrence.WEEKLY:
-			return Recurrence.DAILY;
-		default:
-			return Recurrence.NON;
-	}
-}
+import { InvalidDataError } from "../helperMethods/errors.js";
+import { validateBudgetBody } from "../helperMethods/validation.js";
 
 async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -24,30 +11,22 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 	}
 
 	app.post<{ Body: BudgetBody }>("/budgetItem", async (req, reply) => {
-		const toAdd = req.body;
+		const toAdd: BudgetBody = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, { id: toAdd.owner_id });
-
-			const recurrence = getRecurrence(toAdd.recurrence);
-
-			toAdd.start = toAdd.start == undefined ? user.start : toAdd.start;
-
-			if (recurrence == Recurrence.NON) {
-				toAdd.end = new Date(toAdd.start);
-			}
-
-			toAdd.end = toAdd.end == undefined ? new Date("1/1/3000") : toAdd.end;
+			const user = await req.em.getReference(User, toAdd.owner_id);
+			validateBudgetBody(toAdd, user);
 
 			const item = await req.em.create(BudgetItem, {
-				...toAdd,
-				recurrence,
+				...validateBudgetBody(toAdd, user),
 				owner: user,
 			});
+
 			console.log(item);
 			await req.em.flush();
 
 			return reply.send(item);
 		} catch (err) {
+			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
 			return reply.status(500).send(err);
 		}
 	});
@@ -56,7 +35,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		const { userId, id } = req.body;
 
 		try {
-			const item = await req.em.findOneOrFail(BudgetItem, { id, owner: userId }, { strict: true });
+			const item = await req.em.getReference(BudgetItem, id);
 			console.log(item);
 			await req.em.removeAndFlush(item);
 			return reply.send(item);

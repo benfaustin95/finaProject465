@@ -5,6 +5,8 @@ import { Dividend } from "../db/entities/Dividend.js";
 import * as repl from "repl";
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { BudgetItem } from "../db/entities/budgetItem.js";
+import { validateDividendInputBody } from "../helperMethods/validation.js";
+import { InvalidDataError } from "../helperMethods/errors.js";
 
 async function dividendRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("something");
@@ -13,33 +15,14 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 
 		try {
-			const user = await req.em.findOneOrFail(User, { id: toBeAdded.owner_id });
-			const finAsset = await req.em.findOneOrFail(FinancialAsset, { id: toBeAdded.finAsset });
-
-			const { local, federal, state, capitalGains, fica } = await app.getTaxItems(
-				req,
-				toBeAdded.local,
-				toBeAdded.state,
-				toBeAdded.federal,
-				toBeAdded.capitalGains,
-				toBeAdded.fica
-			);
-
 			const dividend = await req.em.create(Dividend, {
-				...toBeAdded,
-				owner: user,
-				local,
-				federal,
-				state,
-				capitalGains,
-				fica,
-				asset: finAsset,
+				...validateDividendInputBody(toBeAdded, app, req),
 			});
 
 			await req.em.flush();
-
 			return reply.send(dividend);
 		} catch (err) {
+			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
 			return reply.status(500).send(err);
 		}
 	});
@@ -48,7 +31,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 		const { userId, id } = req.body;
 
 		try {
-			const item = await req.em.findOneOrFail(Dividend, { id, owner: userId }, { strict: true });
+			const item = await req.em.getReference(Dividend, id);
 			console.log(item);
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
