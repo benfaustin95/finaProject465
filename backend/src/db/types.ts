@@ -45,6 +45,11 @@ export interface RFBaseBody extends BaseInputBody {
 	wPriority: number;
 }
 
+export interface RentalAssetBody extends RFBaseBody {
+	owed: number;
+	expense: number;
+	grossIncome: number;
+}
 export interface TaxBody extends RFBaseBody {
 	level: Level;
 	location: string;
@@ -54,7 +59,6 @@ export interface TaxBody extends RFBaseBody {
 export interface OneTimeIncomeBody extends BaseInputBody {
 	date: Date;
 	cashBasis: number;
-	email: string;
 }
 
 export interface DividendBody extends BaseInputBody {

@@ -42,7 +42,7 @@ export const BudgetItemForm = () => {
 		<>
 			{submit != 0 ? <h5>Submit Failed</h5> : null}
 			<Form onSubmit={submitExpense}>
-				<BaseInputForm type={"budgetItem"} nameChanger={setName} noteChanger={setNote} />
+				<BaseInputForm nameChanger={setName} noteChanger={setNote} />
 				<Form.Label htmlFor="amount">Expense Amount:</Form.Label>
 				<Form.Control
 					id="amount"

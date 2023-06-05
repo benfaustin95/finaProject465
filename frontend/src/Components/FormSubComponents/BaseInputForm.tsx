@@ -3,7 +3,6 @@ import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
 import { useState } from "react";
 
 export type baseInputForm = {
-	type: string;
 	nameChanger;
 	noteChanger;
 	growthRateChanger?;
@@ -15,7 +14,6 @@ export type baseInputForm = {
 };
 export const BaseInputForm = (props: baseInputForm) => {
 	const {
-		type,
 		nameChanger,
 		noteChanger,
 		growthRateChanger,
@@ -42,27 +40,29 @@ export const BaseInputForm = (props: baseInputForm) => {
 				placeholder="item note...."
 				onChange={(e) => noteChanger(e.target.value)}
 			/>
-			{type != "budgetItem" ? (
+			{growthRateChanger != undefined ? (
 				<>
-					{type != "dividend" ? (
-						<>
-							<Form.Label htmlFor="itemGrowthRate">Growth Rate:</Form.Label>
-							<Form.Control
-								id="itemGrowthRate"
-								type="text"
-								placeholder="item note...."
-								onChange={(e) => growthRateChanger(Number.parseFloat(e.target.value))}
-							/>
-						</>
-					) : null}
-					<TaxSelector stateChanger={federalChanger} level={"federal"} />
-					{type != "capitalAsset" && type != "dividend" ? (
-						<TaxSelector stateChanger={capitalGainsChanger} level={"capitalGains"} />
-					) : null}
-					{type != "dividend" ? <TaxSelector level={"fica"} stateChanger={ficaChanger} /> : null}
-					<TaxSelector level={"state"} stateChanger={stateChanger} />
-					<TaxSelector level={"local"} stateChanger={localChanger} />
+					<Form.Label htmlFor="itemGrowthRate">Growth Rate:</Form.Label>
+					<Form.Control
+						id="itemGrowthRate"
+						type="text"
+						placeholder="item note...."
+						onChange={(e) => growthRateChanger(Number.parseFloat(e.target.value))}
+					/>
 				</>
+			) : null}
+			{federalChanger != undefined ? (
+				<TaxSelector stateChanger={federalChanger} level={"federal"} />
+			) : null}
+			{capitalGainsChanger != undefined ? (
+				<TaxSelector stateChanger={capitalGainsChanger} level={"capitalGains"} />
+			) : null}
+			{ficaChanger != undefined ? <TaxSelector level={"fica"} stateChanger={ficaChanger} /> : null}
+			{stateChanger != undefined ? (
+				<TaxSelector level={"state"} stateChanger={stateChanger} />
+			) : null}
+			{localChanger != undefined ? (
+				<TaxSelector level={"local"} stateChanger={localChanger} />
 			) : null}
 		</>
 	);

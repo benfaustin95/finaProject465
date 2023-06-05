@@ -55,7 +55,6 @@ export const CapitalAssetForm = () => {
 			{submit == 0 ? <h5>Submit Failed</h5> : null}
 			<Form onSubmit={submitExpense}>
 				<BaseInputForm
-					type={"capitalAsset"}
 					nameChanger={setName}
 					noteChanger={setNote}
 					growthRateChanger={setGrowthRate}

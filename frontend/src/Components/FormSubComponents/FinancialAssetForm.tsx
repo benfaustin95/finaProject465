@@ -1,18 +1,15 @@
+import { RFBaseForm } from "@/Components/FormSubComponents/RFBase.tsx";
 import { useState } from "react";
-import { RentalAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
+import { CAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
-import { RFBaseForm } from "@/Components/FormSubComponents/RFBase.tsx";
 import { Button } from "react-bootstrap";
 
-export const RentalAssetForm = () => {
+export const FinancialAssetForm = () => {
 	const [name, setName] = useState("");
 	const [note, setNote] = useState("");
 	const [costBasis, setCostBasis] = useState(0);
 	const [totalValue, setTotalValue] = useState(0);
-	const [owed, setOwed] = useState(0);
-	const [expense, setExpense] = useState(0);
-	const [grossIncome, setGrossIncome] = useState(0);
 	const [submit, setSubmit] = useState(1);
 	const [growthRate, setGrowthRate] = useState(0);
 	const [wPriority, setWPriority] = useState(0);
@@ -21,9 +18,8 @@ export const RentalAssetForm = () => {
 	const [ficaTax, setFicaTax] = useState("");
 	const [stateTax, setStateTax] = useState("");
 	const [localTax, setLocalTax] = useState("");
-
 	function submitExpense(event) {
-		const item: RentalAssetBody = {
+		const item: RFBaseBody = {
 			name: name,
 			note: note,
 			totalValue: totalValue,
@@ -36,9 +32,6 @@ export const RentalAssetForm = () => {
 			state: stateTax,
 			local: localTax,
 			wPriority: wPriority,
-			owed: owed,
-			expense: expense,
-			grossIncome: grossIncome,
 		};
 
 		event.preventDefault();
@@ -53,7 +46,6 @@ export const RentalAssetForm = () => {
 				setSubmit(0);
 			});
 	}
-
 	return (
 		<Form onSubmit={submitExpense}>
 			<RFBaseForm
@@ -69,28 +61,7 @@ export const RentalAssetForm = () => {
 				costBasisChanger={setCostBasis}
 				wPriorityChanger={setWPriority}
 			/>
-			<Form.Label htmlFor={"owed"}>Remainder Owed on Property</Form.Label>
-			<Form.Control
-				type="text"
-				id="owed"
-				placeholder={"amount owed......"}
-				onChange={(e) => setOwed(Number.parseFloat(e.target.value))}
-			/>
-			<Form.Label htmlFor={"expense"}>Monthly Property Expenses</Form.Label>
-			<Form.Control
-				type="text"
-				id="expense"
-				placeholder={"monthly property expense......"}
-				onChange={(e) => setExpense(Number.parseFloat(e.target.value))}
-			/>
-			<Form.Label htmlFor={"grossIncome"}>Monthly Gross Income</Form.Label>
-			<Form.Control
-				type="text"
-				id="grossIncome"
-				placeholder={"monthly gross income......"}
-				onChange={(e) => setGrossIncome(Number.parseFloat(e.target.value))}
-			/>
-			<Button type={"submit"}>Submit Rental Asset</Button>
+			<Button type={"submit"}>Submit Financial Asset</Button>
 		</Form>
 	);
 };

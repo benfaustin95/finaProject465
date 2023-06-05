@@ -68,7 +68,6 @@ export const DividendForm = () => {
 			{submit == 0 ? <h5>Submit Failed</h5> : null}
 			<Form onSubmit={submitExpense}>
 				<BaseInputForm
-					type={"dividend"}
 					nameChanger={setName}
 					noteChanger={setNote}
 					federalChanger={setFederalTax}
