@@ -1,14 +1,15 @@
 import { DoggrRouter } from "@/DoggrRoutes.tsx";
 import { Link, Route, Routes, Router, BrowserRouter } from "react-router-dom";
 import "@css/DoggrStyles.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // This is our base React Component
 export function App() {
 	return (
 		<BrowserRouter>
-				<div className="App retMaybe">
-					<DoggrRouter/>
-				</div>
+			<div className="App retMaybe">
+				<DoggrRouter />
+			</div>
 		</BrowserRouter>
 	);
 }

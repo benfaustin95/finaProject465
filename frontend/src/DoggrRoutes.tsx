@@ -51,7 +51,7 @@ export function DoggrRouter() {
 				<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
 				<Route path="/microReportLoaded" element={<MicroReportLoad />} />
 				<Route path="/budgetItemPost" element={<BudgetItemForm />} />
-				{/*<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />*/}
+				<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />
 				{/*<Route path="/dividendPost" element={<DividendForm />} />*/}
 				{/*<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />*/}
 				{/*<Route path="/financialAssetPost" element={<FinancialAssetForm />} />*/}

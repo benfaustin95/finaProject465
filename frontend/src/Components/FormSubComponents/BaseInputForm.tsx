@@ -3,67 +3,75 @@ import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
 import { useState } from "react";
 
 export type baseInputForm = {
-	nameChanger;
-	noteChanger;
-	growthRateChanger?;
-	federalChanger?;
-	capitalGainsChanger?;
-	ficaChanger?;
-	stateChanger?;
-	localChanger?;
+	handleChange: any;
+	valuesNote: any;
+	valuesName: any;
+	valuesGrowthRate?: any;
+	touchedNote: any;
+	touchedName: any;
+	touchedGrowthRate?: any;
+	errorsName: any;
+	errorsNote: any;
+	errorsGrowth?: any;
+	type: string;
 };
 export const BaseInputForm = (props: baseInputForm) => {
 	const {
-		nameChanger,
-		noteChanger,
-		growthRateChanger,
-		federalChanger,
-		capitalGainsChanger,
-		ficaChanger,
-		stateChanger,
-		localChanger,
+		handleChange,
+		valuesGrowthRate,
+		valuesNote,
+		valuesName,
+		touchedNote,
+		touchedName,
+		touchedGrowthRate,
+		errorsNote,
+		errorsName,
+		errorsGrowth,
+		type,
 	} = props;
 
 	return (
 		<>
-			<Form.Label htmlFor="itemName">Name:</Form.Label>
+			<Form.Label htmlFor="name">Name:</Form.Label>
 			<Form.Control
-				id="itemName"
+				id="name"
 				type="text"
+				name={"name"}
+				value={valuesName}
 				placeholder="item name...."
-				onChange={(e) => nameChanger(e.target.value)}
+				isInvalid={!!errorsName}
+				isValid={touchedName && !errorsName}
+				onChange={handleChange}
 			/>
-			<Form.Label htmlFor="itemNote">Note:</Form.Label>
+			<Form.Control.Feedback type={"invalid"}>{errorsName}</Form.Control.Feedback>
+			<Form.Label htmlFor="note">Note:</Form.Label>
 			<Form.Control
-				id="itemNote"
+				id="note"
 				type="text"
+				name={"note"}
+				value={valuesNote}
 				placeholder="item note...."
-				onChange={(e) => noteChanger(e.target.value)}
+				isValid={touchedNote && !errorsNote}
+				isInvalid={!!errorsNote}
+				onChange={handleChange}
 			/>
-			{growthRateChanger != undefined ? (
+			<Form.Control.Feedback type={"invalid"}>{errorsNote}</Form.Control.Feedback>
+			{type != "budget" ? (
 				<>
-					<Form.Label htmlFor="itemGrowthRate">Growth Rate:</Form.Label>
+					<Form.Label htmlFor="growthRate">Growth Rate:</Form.Label>
 					<Form.Control
-						id="itemGrowthRate"
-						type="text"
-						placeholder="item note...."
-						onChange={(e) => growthRateChanger(Number.parseFloat(e.target.value))}
+						id="note"
+						type="number"
+						name={"growthRate"}
+						value={valuesGrowthRate}
+						placeholder="item growth rate...."
+						isValid={touchedGrowthRate && !errorsGrowth}
+						isInvalid={!!errorsGrowth}
+						onChange={handleChange}
 					/>
 				</>
 			) : null}
-			{federalChanger != undefined ? (
-				<TaxSelector stateChanger={federalChanger} level={"federal"} />
-			) : null}
-			{capitalGainsChanger != undefined ? (
-				<TaxSelector stateChanger={capitalGainsChanger} level={"capitalGains"} />
-			) : null}
-			{ficaChanger != undefined ? <TaxSelector level={"fica"} stateChanger={ficaChanger} /> : null}
-			{stateChanger != undefined ? (
-				<TaxSelector level={"state"} stateChanger={stateChanger} />
-			) : null}
-			{localChanger != undefined ? (
-				<TaxSelector level={"local"} stateChanger={localChanger} />
-			) : null}
+			<Form.Control.Feedback type={"invalid"}>{errorsGrowth}</Form.Control.Feedback>
 		</>
 	);
 };

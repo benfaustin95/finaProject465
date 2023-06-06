@@ -1,103 +1,141 @@
 import Form from "react-bootstrap/Form";
-import { Button, FormControl } from "react-bootstrap";
-import { useState } from "react";
+import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
-import { BudgetBody, CAssetBody } from "../../../../backend/src/db/types.ts";
-import { CapAsset } from "../../../../backend/src/db/entities/capasset.ts";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { date, number, string } from "yup";
+import { CAssetBody } from "../../../../backend/src/db/types.ts";
+import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
 
 export const CapitalAssetForm = () => {
-	const [name, setName] = useState("");
-	const [note, setNote] = useState("");
-	const [amount, setAmount] = useState(0);
-	const [recurrence, setRecurrence] = useState("");
-	const [type, setType] = useState("");
-	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
-	const [submit, setSubmit] = useState(1);
-	const [growthRate, setGrowthRate] = useState(0);
-	const [federalTax, setFederalTax] = useState("");
-	const [ficaTax, setFicaTax] = useState("");
-	const [stateTax, setStateTax] = useState("");
-	const [localTax, setLocalTax] = useState("");
-	function submitExpense(event) {
-		const item: CAssetBody = {
-			name: name,
-			note: note,
-			income: amount,
-			growthRate: growthRate,
-			recurrence: recurrence,
-			start: startDate,
-			end: endDate,
-			owner_id: 2,
-			federal: federalTax,
-			capitalGains: "",
-			fica: ficaTax,
-			state: stateTax,
-			local: localTax,
-			type: type,
+	function submitForm(event) {
+		const toSubmit: CAssetBody = {
+			...event,
+			owner_id: 3,
 		};
 
-		event.preventDefault();
-
-		PostInputService.send("/capitalAsset", item)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) setSubmit(0);
-			})
-			.catch((err) => {
-				console.log(err);
-				setSubmit(0);
-			});
+		console.log(event);
+		// PostInputService.send("/capitalAsset", toSubmit)
+		// 	.then((res) => {
+		// 		console.log(res);
+		// 		if (res.status != 200) console.log("fix error");
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
 	}
+
+	const capitalItemSchema = yup.object().shape({
+		name: string().required(),
+		note: string(),
+		amount: number().positive().required(),
+		recurrence: string().required(),
+		start: date().required(),
+		end: date().required(),
+		type: string().required(),
+		growthRate: number().required().positive().max(10),
+		federal: string(),
+	});
+
 	return (
-		<>
-			{submit == 0 ? <h5>Submit Failed</h5> : null}
-			<Form onSubmit={submitExpense}>
-				<BaseInputForm
-					nameChanger={setName}
-					noteChanger={setNote}
-					growthRateChanger={setGrowthRate}
-					federalChanger={setFederalTax}
-					ficaChanger={setFicaTax}
-					stateChanger={setStateTax}
-					localChanger={setLocalTax}
-				/>
-				<Form.Label htmlFor="amount">Expense Amount:</Form.Label>
-				<Form.Control
-					id="amount"
-					type="text"
-					placeholder="expense amount...."
-					onChange={(e) => setAmount(Number.parseFloat(e.target.value))}
-				/>
-				<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
-				<Form.Select id="type" onChange={(e) => setType(e.target.value)}>
-					<option value="Human Capital">Human Capital</option>
-					<option value="Non-Taxable Annuity">NonTaxable</option>
-					<option value="Social Capital">Social</option>
-				</Form.Select>
-				<Form.Label htmlFor="recurrence">Recurrence</Form.Label>
-				<Form.Select id="recurrence" onChange={(e) => setRecurrence(e.target.value)}>
-					<option value="monthly">Monthly</option>
-					<option value="non-reocurring">Non-Reoccurring</option>
-					<option value="annually">Annually</option>
-					<option value="weekly">Weekly</option>
-					<option value="daily">Daily</option>
-				</Form.Select>
-				<Form.Label htmlFor="startDate">Start Date:</Form.Label>
-				<FormControl
-					id="startDate"
-					type="date"
-					onChange={(e) => setStartDate(new Date(e.target.value))}
-				/>
-				<Form.Label htmlFor="endDate">Start Date:</Form.Label>
-				<FormControl
-					id="endDate"
-					type="date"
-					onChange={(e) => setEndDate(new Date(e.target.value))}
-				/>
-				<Button type="submit">Create Expense</Button>
-			</Form>
-		</>
+		<Container>
+			<Formik
+				validationSchema={capitalItemSchema}
+				onSubmit={submitForm}
+				initialValues={{
+					name: "",
+					note: "",
+					amount: 0,
+					recurrence: "monthly",
+					start: "2023-1-1",
+					end: "2032-1-1",
+					type: "Human Capital",
+					growthRate: 1,
+				}}>
+				{({ handleSubmit, handleChange, values, touched, errors }) => (
+					<Form onSubmit={handleSubmit}>
+						<BaseInputForm
+							handleChange={handleChange}
+							valuesNote={values.note}
+							valuesName={values.name}
+							touchedNote={touched.note}
+							touchedName={touched.name}
+							errorsName={errors.name}
+							errorsNote={errors.note}
+							touchedGrowthRate={touched.growthRate}
+							valuesGrowthRate={values.growthRate}
+							errorsGrowth={errors.growthRate}
+							type={"capital"}
+						/>
+						<Form.Label htmlFor="amount">Amount: </Form.Label>
+						<InputGroup hasValidation>
+							<InputGroup.Text>$</InputGroup.Text>
+							<Form.Control
+								id="amount"
+								type="number"
+								name={"amount"}
+								value={values.amount}
+								placeholder="item amount...."
+								isValid={touched.amount && !errors.amount}
+								isInvalid={!!errors.amount}
+								onChange={handleChange}
+							/>
+							<Form.Control.Feedback type={"invalid"}>{errors.amount}</Form.Control.Feedback>
+						</InputGroup>
+						<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
+						<Form.Select
+							id="type"
+							name={"type"}
+							onChange={handleChange}
+							value={values.type}
+							isInvalid={!!errors.type}
+							isValid={touched.type && !errors.type}>
+							<option value="Human Capital">Human Capital</option>
+							<option value="Non-Taxable Annuity">NonTaxable</option>
+							<option value="Social Capital">Social</option>
+						</Form.Select>
+						<Form.Label htmlFor="reccurrence">Recurrence</Form.Label>
+						<Form.Select
+							id="recurrence"
+							onChange={handleChange}
+							name={"recurrence"}
+							value={values.recurrence}
+							isInvalid={!!errors.recurrence}
+							isValid={touched.recurrence && !errors.recurrence}>
+							<option value="monthly">Monthly</option>
+							<option value="non-reocurring">Non-Reoccurring</option>
+							<option value="annually">Annually</option>
+							<option value="weekly">Weekly</option>
+							<option value="daily">Daily</option>
+						</Form.Select>
+						<Form.Label htmlFor="start">Start: </Form.Label>
+						<Form.Control
+							id="start"
+							type="date"
+							name={"start"}
+							value={values.start}
+							isValid={touched.start && !errors.start}
+							isInvalid={!!errors.start}
+							onChange={handleChange}
+						/>
+						<Form.Control.Feedback type={"invalid"}>{errors.start}</Form.Control.Feedback>
+						<Form.Label htmlFor="end">End: </Form.Label>
+						<Form.Control
+							id="end"
+							type="date"
+							name={"end"}
+							value={values.end}
+							isValid={touched.end && !errors.end}
+							isInvalid={!!errors.end}
+							onChange={handleChange}
+						/>
+						<Form.Control.Feedback type={"invalid"}>{errors.end}</Form.Control.Feedback>
+						<TaxSelector level={"federal"} stateChanger={handleChange} errors={errors.federal} />
+						<Button type="submit">Create Expense</Button>
+					</Form>
+				)}
+			</Formik>
+		</Container>
 	);
 };

@@ -18,8 +18,8 @@ export type BudgetBody = {
 	amount: number;
 	growthRate: number;
 	recurrence: string;
-	start: Date;
-	end: Date;
+	start: string;
+	end: string;
 	owner_id: number;
 };
 

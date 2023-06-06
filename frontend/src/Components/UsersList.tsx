@@ -35,7 +35,8 @@ export const MacroReportSet = () => {
 				<Button
 					className="btn btn-primary btn-circle ml-2 col-span-1 text-white border-4"
 					type="submit"
-					id="send">
+					id="send"
+				>
 					Send
 				</Button>
 			</Form>

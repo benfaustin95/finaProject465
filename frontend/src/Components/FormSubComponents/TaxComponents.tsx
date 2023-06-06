@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { TaxService } from "@/Services/TaxService.tsx";
 import { TaxRate } from "../../../../backend/src/db/entities/Tax.ts";
 
-export const TaxSelector = (props: { level: string; stateChanger: any }) => {
-	const { level, stateChanger } = props;
+export const TaxSelector = (props: { level: string; stateChanger: any; errors: any }) => {
+	const { level, stateChanger, errors } = props;
 	const [tax, setTax] = useState<Array<TaxRate>>([]);
 
 	useEffect(() => {
@@ -24,14 +24,10 @@ export const TaxSelector = (props: { level: string; stateChanger: any }) => {
 		loadTax();
 	});
 
-	function setTaxLevel(value: string) {
-		stateChanger(value);
-	}
-
 	return (
 		<>
 			<Form.Label htmlFor={level}>{level}: </Form.Label>
-			<Form.Select id={level} onChange={(e) => setTaxLevel(e.target.value)}>
+			<Form.Select id={level} name={level} onChange={stateChanger} isInvalid={!!errors}>
 				{tax.length != 0
 					? tax.map((x) => (
 							<option key={x.level + x.location} value={x.location}>
