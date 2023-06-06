@@ -13,7 +13,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: OneTimeIncomeBody }>("/oneTimeIncome", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const toBeAddedInit = validateOneTimeIncomeBody(toBeAdded, app, req);
+			const toBeAddedInit = await validateOneTimeIncomeBody(toBeAdded, app, req);
 			toBeAdded.date = new Date(toBeAdded.date) ?? toBeAddedInit.owner.start;
 
 			const oti = await req.em.create(OneTimeIncome, {
@@ -37,7 +37,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -49,7 +49,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 			console.log(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }

@@ -24,35 +24,35 @@ const fastifyTax = async (app: FastifyInstance, options) => {
 		ficaName: string
 	) => {
 		const local =
-			localName != ""
+			localName != "" && localName != undefined
 				? await req.em.findOne(TaxRate, {
 						location: localName,
 						level: Level.LOCAL,
 				  })
 				: null;
 		const state =
-			stateName != ""
+			stateName != "" && stateName != undefined
 				? await req.em.findOne(TaxRate, {
 						location: stateName,
 						level: Level.STATE,
 				  })
 				: null;
 		const federal =
-			federalName != ""
+			federalName != "" && federalName != undefined
 				? await req.em.findOne(TaxRate, {
 						location: federalName,
 						level: Level.FEDERAL,
 				  })
 				: null;
 		const capitalGains =
-			capitalGainsName != ""
+			capitalGainsName != "" && capitalGainsName != undefined
 				? await req.em.findOne(TaxRate, {
 						location: capitalGainsName,
 						level: Level.CAPGAINS,
 				  })
 				: null;
 		const fica =
-			ficaName != ""
+			ficaName != "" && ficaName != undefined
 				? await req.em.findOne(TaxRate, {
 						location: ficaName,
 						level: Level.FICA,

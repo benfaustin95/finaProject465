@@ -14,7 +14,7 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 		try {
 			const rentalAsset = await req.em.create(RentalAsset, {
-				...validateRentalAsset(toBeAdded, app, req),
+				...(await validateRentalAsset(toBeAdded, app, req)),
 			});
 
 			await req.em.flush();
@@ -35,7 +35,7 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -47,7 +47,7 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 			console.log(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }

@@ -13,7 +13,7 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 		try {
 			const finAsset = await req.em.create(FinancialAsset, {
-				...validateRFBaseBody(toBeAdded, app, req),
+				...(await validateRFBaseBody(toBeAdded, app, req)),
 			});
 
 			await req.em.flush();
@@ -33,7 +33,7 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 

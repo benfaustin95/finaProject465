@@ -15,7 +15,6 @@ export const httpClient = axios.create({
 });
 
 export async function getNextProfileFromServer() {
-	const profile =
-		await httpClient.get<ProfileType>("/profile");
+	const profile = await httpClient.get<ProfileType>("/profile");
 	return profile.data;
 }

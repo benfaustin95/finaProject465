@@ -17,6 +17,17 @@ export type BudgetBody = {
 	name: string;
 	amount: number;
 	growthRate: number;
+	recurrence: string;
+	start: Date;
+	end: Date;
+	owner_id: number;
+};
+
+export type BudgetBodyInit = {
+	note: string;
+	name: string;
+	amount: number;
+	growthRate: number;
 	recurrence: Recurrence;
 	start: Date;
 	end: Date;
@@ -49,8 +60,8 @@ export interface CAssetBody extends BaseInputBody {
 	start: Date;
 	end: Date;
 	income: number;
-	recurrence: Recurrence;
-	type: CapAssetType;
+	recurrence: string;
+	type: string;
 }
 
 export interface CAssetBodyInit extends BaseInputBodyInit {

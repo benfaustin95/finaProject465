@@ -15,8 +15,9 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 
 		try {
+			const toAddInit = await validateDividendInputBody(toBeAdded, app, req);
 			const dividend = await req.em.create(Dividend, {
-				...validateDividendInputBody(toBeAdded, app, req),
+				...toAddInit,
 			});
 
 			await req.em.flush();
@@ -36,7 +37,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -48,7 +49,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 			console.log(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }

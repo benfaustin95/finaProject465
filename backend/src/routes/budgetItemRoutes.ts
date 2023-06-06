@@ -14,7 +14,6 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		const toAdd: BudgetBody = req.body;
 		try {
 			const user = await req.em.getReference(User, toAdd.owner_id);
-			validateBudgetBody(toAdd, user);
 
 			const item = await req.em.create(BudgetItem, {
 				...validateBudgetBody(toAdd, user),
@@ -40,7 +39,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -52,7 +51,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 			console.log(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }

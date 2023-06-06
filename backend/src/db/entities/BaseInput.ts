@@ -9,7 +9,6 @@ export class BaseInput extends BaseEntity {
 	owner!: Rel<User>;
 
 	@Property()
-	@Unique()
 	name!: string;
 
 	@Property()

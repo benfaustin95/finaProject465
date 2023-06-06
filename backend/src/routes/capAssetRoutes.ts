@@ -5,6 +5,7 @@ import { CapAsset } from "../db/entities/capasset.js";
 import { Recurrence } from "../db/entities/budgetItem.js";
 import { validateCapitalAssetInputBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
+import { toolbar } from "typedoc/dist/lib/output/themes/default/partials/toolbar.js";
 
 async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -15,12 +16,12 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 		const toAdd: CAssetBody = req.body;
 
 		try {
+			const toAddInit = await validateCapitalAssetInputBody(toAdd, app, req);
 			const asset = req.em.create(CapAsset, {
-				...validateCapitalAssetInputBody(toAdd, app, req),
+				...toAddInit,
 			});
 
 			await req.em.flush();
-
 			return reply.send(asset);
 		} catch (err) {
 			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
@@ -37,7 +38,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.removeAndFlush(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -49,7 +50,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 			console.log(item);
 			return reply.send(item);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }

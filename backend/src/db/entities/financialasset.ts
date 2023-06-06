@@ -1,7 +1,5 @@
-import { BaseInput } from "./BaseInput.js";
 import { Cascade, Collection, Entity, Enum, OneToMany, OneToOne, Property } from "@mikro-orm/core";
 import { RFBase } from "./RFBase.js";
-import { Recurrence } from "./budgetItem.js";
 import { Dividend } from "./Dividend.js";
 
 @Entity()

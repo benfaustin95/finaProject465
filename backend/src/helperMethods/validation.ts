@@ -2,6 +2,7 @@ import {
 	BaseInputBody,
 	BaseInputBodyInit,
 	BudgetBody,
+	BudgetBodyInit,
 	CAssetBody,
 	CAssetBodyInit,
 	DividendBody,
@@ -87,8 +88,8 @@ export function getRecurrence(recurrence: string) {
 	}
 }
 
-export function validateBudgetBody(item: BudgetBody, user: User): BudgetBody {
-	const toReturn: BudgetBody = {
+export function validateBudgetBody(item: BudgetBody, user: User): BudgetBodyInit {
+	const toReturn: BudgetBodyInit = {
 		name: validateName(item.name, "budget"),
 		note: item.note != undefined ? item.note : "",
 		amount: validateExpense(item.amount, "expense"),
@@ -103,19 +104,29 @@ export function validateBudgetBody(item: BudgetBody, user: User): BudgetBody {
 	return toReturn;
 }
 
-export function validateBaseInputBody(
+export async function validateBaseInputBody(
 	item: BaseInputBody,
 	req: FastifyRequest,
 	app: FastifyInstance
-): BaseInputBodyInit {
+): Promise<BaseInputBodyInit> {
 	try {
-		return {
+		const owner = await req.em.getReference(User, item.owner_id);
+		const tax = await app.getTaxItems(
+			req,
+			item.local,
+			item.state,
+			item.federal,
+			item.capitalGains,
+			item.fica
+		);
+		const toReturn = {
 			name: validateName(item.name, "Capital Asset"),
 			note: item.note ?? "",
 			growthRate: validateGrowthRate(item.growthRate, "Capital Asset"),
-			...app.getTaxItems(req, item.local, item.state, item.federal, item.capitalGains, item.fica),
-			owner: req.em.getReference(User, item.owner_id),
+			...tax,
+			owner,
 		};
+		return toReturn;
 	} catch (err) {
 		if (!(err instanceof InvalidDataError))
 			throw new InvalidDataError({ status: 422, message: err.message, cause: err });
@@ -140,12 +151,12 @@ export function getType(type: string) {
 	}
 }
 
-export function validateCapitalAssetInputBody(
+export async function validateCapitalAssetInputBody(
 	item: CAssetBody,
 	app: FastifyInstance,
 	req: FastifyRequest
-): CAssetBodyInit {
-	const toReturn = validateBaseInputBody(item, req, app);
+): Promise<CAssetBodyInit> {
+	const toReturn = await validateBaseInputBody(item, req, app);
 	return {
 		...toReturn,
 		start: validateDate(item.start, "start"),
@@ -166,16 +177,17 @@ function validateRate(rate: number) {
 	return rate;
 }
 
-export function validateDividendInputBody(
+export async function validateDividendInputBody(
 	item: DividendBody,
 	app: FastifyInstance,
 	req: FastifyRequest
-): DividendBodyInit {
+): Promise<DividendBodyInit> {
 	try {
+		const base = await validateBaseInputBody(item, req, app);
 		return {
-			...validateBaseInputBody(item, req, app),
+			...base,
 			rate: validateRate(item.rate),
-			finAsset: req.em.getReference(FinancialAsset, item.finAsset),
+			finAsset: await req.em.getReference(FinancialAsset, item.finAsset),
 		};
 	} catch (err) {
 		if (!(err instanceof InvalidDataError))
@@ -184,16 +196,17 @@ export function validateDividendInputBody(
 	}
 }
 
-export function validateOneTimeIncomeBody(
+export async function validateOneTimeIncomeBody(
 	item: OneTimeIncomeBody,
 	app: FastifyInstance,
 	req: FastifyRequest
-): OneTimeIncomeBodyInit {
-	return {
-		...validateBaseInputBody(item, req, app),
+): Promise<OneTimeIncomeBodyInit> {
+	const toReturn = {
+		...(await validateBaseInputBody(item, req, app)),
 		date: validateDate(item.date, "Date of one time income"),
 		cashBasis: validateExpense(item.cashBasis, "one time income cash basis"),
 	};
+	return toReturn;
 }
 
 function validateWithdrawalPriority(wPriority: number) {
@@ -206,26 +219,26 @@ function validateWithdrawalPriority(wPriority: number) {
 	return wPriority;
 }
 
-export function validateRFBaseBody(
+export async function validateRFBaseBody(
 	item: RFBaseBody,
 	app: FastifyInstance,
 	req: FastifyRequest
-): RFBaseBodyInit {
+): Promise<RFBaseBodyInit> {
 	return {
-		...validateBaseInputBody(item, req, app),
+		...(await validateBaseInputBody(item, req, app)),
 		totalValue: validateExpense(item.totalValue, "Asset Total Value"),
 		costBasis: validateExpense(item.costBasis, "Asset Cost Basis"),
 		wPriority: validateWithdrawalPriority(item.wPriority),
 	};
 }
 
-export function validateRentalAsset(
+export async function validateRentalAsset(
 	item: RentalAssetBody,
 	app: FastifyInstance,
 	req: FastifyRequest
-): RentalAssetBodyInit {
+): Promise<RentalAssetBodyInit> {
 	return {
-		...validateRFBaseBody(item, app, req),
+		...(await validateRFBaseBody(item, app, req)),
 		owed: validateExpense(item.owed, `amount owed on ${item.name}`),
 		expense: validateExpense(item.expense, `monthly expense for ${item.name}`),
 		grossIncome: validateExpense(item.grossIncome, `monthly gross income ${item.name}`),

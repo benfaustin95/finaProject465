@@ -29,7 +29,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 
 			return reply.send(taxRate);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -38,7 +38,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 			const taxRates = await req.em.find(TaxRate, { level: Level.FICA });
 			return reply.send(taxRates);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -47,7 +47,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 			const taxRates = await req.em.find(TaxRate, { level: Level.CAPGAINS });
 			return reply.send(taxRates);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -56,7 +56,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 			const taxRates = await req.em.find(TaxRate, { level: Level.FEDERAL });
 			return reply.send(taxRates);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -65,7 +65,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 			const taxRates = await req.em.find(TaxRate, { level: Level.STATE });
 			return reply.send(taxRates);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 
@@ -74,7 +74,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 			const taxRates = await req.em.find(TaxRate, { level: Level.LOCAL });
 			return reply.send(taxRates);
 		} catch (err) {
-			reply.status(500).send(err);
+			return reply.status(500).send(err);
 		}
 	});
 }
