@@ -1,50 +1,56 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
 import { MacroReportSet } from "@/Components/UsersList.tsx";
 import { MicroReportLoad } from "@/Components/MicroReportLoad.tsx";
 import { MacroReportLoad } from "@/Components/MacroReportLoad.tsx";
 import { BudgetItemForm } from "@/Components/FormSubComponents/BudgetItemForm.tsx";
-import { CapitalAssetForm } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import { CapitalAssetForm, SubmitButton } from "@/Components/FormSubComponents/CapAssetForm.tsx";
 import { DividendForm } from "@/Components/FormSubComponents/DividendForm.tsx";
 import { OneTimeIncomeForm } from "@/Components/FormSubComponents/OneTimeIncomeForm.tsx";
 import { FinancialAssetForm } from "@/Components/FormSubComponents/FinancialAssetForm.tsx";
 import { RentalAssetForm } from "@/Components/FormSubComponents/RentalAsset.tsx";
+import {
+	Button,
+	Col,
+	Container,
+	Nav,
+	Navbar,
+	NavbarBrand,
+	NavDropdown,
+	NavLink,
+} from "react-bootstrap";
+import NavbarCollapse from "react-bootstrap/NavbarCollapse";
 
 export function DoggrRouter() {
 	return (
 		<main className={"bg-dark"}>
-			<nav className="bg-blue-800 rounded-b shadow-lg mb-4">
-				<div className="navbar justify-center">
-					<div className={"navbar-center lg:flex"}>
-						<ul className={"menu menu-horizontal"}>
-							<li>
-								<Link to="/">Load Report</Link>
-							</li>
-							<li>
-								<Link to="/microReportLoaded">Load Micro Report</Link>
-							</li>
-							<li>
-								<Link to="/budgetItemPost">Budget Item Post</Link>
-							</li>
-							<li>
-								<Link to="/capitalAssetPost">Capital Asset Post</Link>
-							</li>
-							<li>
-								<Link to="/dividendPost">Dividend Post</Link>
-							</li>
-							<li>
-								<Link to="/oneTimeIncomePost"> One Time INcome Post</Link>
-							</li>
-							<li>
-								<Link to="/FinancialAssetPost">Financial Asset Post</Link>
-							</li>
-							<li>
-								<Link to="/RentalAssetPost">Rental Asset Post</Link>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+			<Navbar bg={"light"} expand={"lg"}>
+				<Container>
+					<NavbarBrand>Retire Maybe?</NavbarBrand>
+					<Navbar.Toggle aria-controls="basic-navbar-nav" />
+					<NavbarCollapse>
+						<Col xs={10} className={"d-flex flex-row justify-content-center"}>
+							<Nav>
+								<NavLink href={"/"}>Macro Report</NavLink>
+								<NavLink href={"/microReportLoaded"}>Micro Report</NavLink>
+								<NavDropdown title={"Financial Items"}>
+									<NavDropdown.Item href={"/budgetItemPost"}>Budget Item</NavDropdown.Item>
+									<NavDropdown.Item href={"/capitalAssetPost"}>Capital Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/dividendPost"}>Dividend</NavDropdown.Item>
+									<NavDropdown.Item href={"/oneTimeIncomePost"}>One Time Income</NavDropdown.Item>
+									<NavDropdown.Item href={"/FinancialAssetPost"}>Financial Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/RentalAssetPost"}>Rental Asset</NavDropdown.Item>
+								</NavDropdown>
+							</Nav>
+						</Col>
+						<Col xs={2} className={"d-flex flex-row justify-content-end"}>
+							<Nav>
+								<Button>Login</Button>
+							</Nav>
+						</Col>
+					</NavbarCollapse>
+				</Container>
+			</Navbar>
 
 			<Routes>
 				<Route path="/" element={<MacroReportSet />} />
