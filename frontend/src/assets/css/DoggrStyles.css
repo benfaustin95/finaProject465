@@ -1,6 +1,16 @@
 @tailwind components;
 @tailwind utilities;
 
+body, main{
+	width:100vw;
+	height: 100vh;
+}
+
+#root{
+	width:100vw;
+	height: 100vh;
+}
+
 .doggrfancy {
 	background-color: #181a1b;
 	position: fixed;

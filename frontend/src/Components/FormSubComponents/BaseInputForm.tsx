@@ -1,6 +1,8 @@
 import Form from "react-bootstrap/Form";
 import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
 import { useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import { InputControl } from "@/Components/FormSubComponents/CapAssetForm.tsx";
 
 export type baseInputForm = {
 	handleChange: any;
@@ -32,46 +34,54 @@ export const BaseInputForm = (props: baseInputForm) => {
 
 	return (
 		<>
-			<Form.Label htmlFor="name">Name:</Form.Label>
-			<Form.Control
-				id="name"
-				type="text"
-				name={"name"}
-				value={valuesName}
-				placeholder="item name...."
-				isInvalid={!!errorsName}
-				isValid={touchedName && !errorsName}
-				onChange={handleChange}
-			/>
-			<Form.Control.Feedback type={"invalid"}>{errorsName}</Form.Control.Feedback>
-			<Form.Label htmlFor="note">Note:</Form.Label>
-			<Form.Control
-				id="note"
-				type="text"
-				name={"note"}
-				value={valuesNote}
-				placeholder="item note...."
-				isValid={touchedNote && !errorsNote}
-				isInvalid={!!errorsNote}
-				onChange={handleChange}
-			/>
-			<Form.Control.Feedback type={"invalid"}>{errorsNote}</Form.Control.Feedback>
-			{type != "budget" ? (
-				<>
-					<Form.Label htmlFor="growthRate">Growth Rate:</Form.Label>
+			<Row className={"mb-4"}>
+				<Col xs={12} md={4}>
+					<Form.Label htmlFor="name">Name:</Form.Label>
+				</Col>
+				<Col xs={12} md={8}>
 					<Form.Control
-						id="note"
-						type="number"
-						name={"growthRate"}
-						value={valuesGrowthRate}
-						placeholder="item growth rate...."
-						isValid={touchedGrowthRate && !errorsGrowth}
-						isInvalid={!!errorsGrowth}
+						id="name"
+						type="text"
+						name={"name"}
+						value={valuesName}
+						placeholder="item name...."
+						isInvalid={!!errorsName}
+						isValid={touchedName && !errorsName}
 						onChange={handleChange}
 					/>
-				</>
+					<Form.Control.Feedback type={"invalid"}>{errorsName}</Form.Control.Feedback>
+				</Col>
+			</Row>
+			<Row className={"mb-4"}>
+				<Col xs={12} md={4}>
+					<Form.Label htmlFor="note">Note:</Form.Label>
+				</Col>
+				<Col xs={12} md={8}>
+					<Form.Control
+						id="note"
+						type="text"
+						name={"note"}
+						value={valuesNote}
+						placeholder="item note...."
+						isValid={touchedNote && !errorsNote}
+						isInvalid={!!errorsNote}
+						onChange={handleChange}
+					/>
+					<Form.Control.Feedback type={"invalid"}>{errorsNote}</Form.Control.Feedback>
+				</Col>
+			</Row>
+			{type != "budget" && type != "dividend" ? (
+				<Row className={"mb-4"}>
+					<InputControl
+						handleChange={handleChange}
+						type={"number"}
+						name={"growthRate"}
+						values={valuesGrowthRate}
+						touched={touchedGrowthRate}
+						errors={errorsGrowth}
+					/>
+				</Row>
 			) : null}
-			<Form.Control.Feedback type={"invalid"}>{errorsGrowth}</Form.Control.Feedback>
 		</>
 	);
 };

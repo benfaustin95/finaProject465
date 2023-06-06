@@ -12,7 +12,7 @@ import { RentalAssetForm } from "@/Components/FormSubComponents/RentalAsset.tsx"
 
 export function DoggrRouter() {
 	return (
-		<main>
+		<main className={"bg-dark"}>
 			<nav className="bg-blue-800 rounded-b shadow-lg mb-4">
 				<div className="navbar justify-center">
 					<div className={"navbar-center lg:flex"}>
@@ -52,11 +52,10 @@ export function DoggrRouter() {
 				<Route path="/microReportLoaded" element={<MicroReportLoad />} />
 				<Route path="/budgetItemPost" element={<BudgetItemForm />} />
 				<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />
-				{/*<Route path="/dividendPost" element={<DividendForm />} />*/}
-				{/*<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />*/}
-				{/*<Route path="/financialAssetPost" element={<FinancialAssetForm />} />*/}
-				{/*<Route path="/rentalAssetPost" element={<RentalAssetForm />} />*/}
-				{/*<Route path="/rentalAssetPost" element={<CreateUserForm />} />*/}
+				<Route path="/dividendPost" element={<DividendForm />} />
+				<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />
+				<Route path="/financialAssetPost" element={<FinancialAssetForm />} />
+				<Route path="/rentalAssetPost" element={<RentalAssetForm />} />
 			</Routes>
 		</main>
 	);

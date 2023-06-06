@@ -1,75 +1,135 @@
 import Form from "react-bootstrap/Form";
-import { Button, FormControl } from "react-bootstrap";
+import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useState } from "react";
 import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { OneTimeIncome } from "../../../../backend/src/db/entities/OneTimeIncome.ts";
 import { OneTimeIncomeBody } from "../../../../backend/src/db/types.ts";
+import { Formik } from "formik";
+import { CapAssetType, Recurrence } from "@/DoggrTypes.ts";
+import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import {
+	InputControl,
+	RecurrenceSelector,
+	SubmitButton,
+} from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import * as yup from "yup";
+import { date, number, string } from "yup";
 
 export const OneTimeIncomeForm = () => {
-	const [name, setName] = useState("");
-	const [note, setNote] = useState("");
-	const [amount, setAmount] = useState(0);
-	const [date, setDate] = useState(new Date());
-	const [submit, setSubmit] = useState(1);
-	const [growthRate, setGrowthRate] = useState(0);
-	const [federalTax, setFederalTax] = useState("");
-	const [ficaTax, setFicaTax] = useState("");
-	const [stateTax, setStateTax] = useState("");
-	const [localTax, setLocalTax] = useState("");
-	const [capitalGainsTax, setCapitalGainsTax] = useState("");
-	function submitExpense(event) {
-		const item: OneTimeIncomeBody = {
-			name: name,
-			note: note,
-			cashBasis: amount,
-			growthRate: growthRate,
-			date: date,
-			owner_id: 2,
-			federal: federalTax,
-			capitalGains: capitalGainsTax,
-			fica: ficaTax,
-			state: stateTax,
-			local: localTax,
+	function submitForm(event) {
+		const toSubmit: OneTimeIncomeBody = {
+			...event,
+			owner_id: 3,
 		};
 
-		event.preventDefault();
-
-		PostInputService.send("/oneTimeIncome", item)
+		PostInputService.send("/oneTimeIncome", toSubmit)
 			.then((res) => {
 				console.log(res);
-				if (res.status != 200) setSubmit(0);
+				if (res.status != 200) console.log(res);
 			})
 			.catch((err) => {
 				console.log(err);
-				setSubmit(0);
 			});
 	}
+	const oneTimeIncomeSchema = yup.object().shape({
+		name: string().required(),
+		note: string(),
+		cashBasis: number().positive().required(),
+		date: date().default(null).required(),
+		growthRate: number().required().positive().max(10),
+		federal: string().default(""),
+		state: string().default(""),
+		local: string().default(""),
+		fica: string().default(""),
+	});
+
 	return (
-		<>
-			{submit == 0 ? <h5>Submit Failed</h5> : null}
-			<Form onSubmit={submitExpense}>
-				<BaseInputForm
-					nameChanger={setName}
-					noteChanger={setNote}
-					growthRateChanger={setGrowthRate}
-					federalChanger={setFederalTax}
-					capitalGainsChanger={setCapitalGainsTax}
-					ficaChanger={setFicaTax}
-					stateChanger={setStateTax}
-					localChanger={setLocalTax}
-				/>
-				<Form.Label htmlFor="amount">Cash Basis:</Form.Label>
-				<Form.Control
-					id="amount"
-					type="text"
-					placeholder="expense amount...."
-					onChange={(e) => setAmount(Number.parseFloat(e.target.value))}
-				/>
-				<Form.Label htmlFor="date">Date:</Form.Label>
-				<FormControl id="date" type="date" onChange={(e) => setDate(new Date(e.target.value))} />
-				<Button type="submit">Create OneTimeIncome</Button>
-			</Form>
-		</>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+			<Formik
+				validationSchema={oneTimeIncomeSchema}
+				onSubmit={submitForm}
+				initialValues={{
+					name: "",
+					note: "",
+					date: new Date().toISOString().slice(0, 10),
+					cashBasis: 0,
+					growthRate: 1,
+				}}>
+				{({ handleSubmit, handleChange, values, touched, errors }) => (
+					<Form onSubmit={handleSubmit} className={"p-4"}>
+						<Row className={"m-4 justify-content-center"}>
+							<h1 className={"text-center"}>Create One Time Income</h1>
+						</Row>
+						<BaseInputForm
+							handleChange={handleChange}
+							valuesNote={values.note}
+							valuesName={values.name}
+							touchedNote={touched.note}
+							touchedName={touched.name}
+							errorsName={errors.name}
+							errorsNote={errors.note}
+							touchedGrowthRate={touched.growthRate}
+							valuesGrowthRate={values.growthRate}
+							errorsGrowth={errors.growthRate}
+							type={"oneTimeIncome"}
+						/>
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"cashBasis"}
+								type={"number"}
+								values={values.cashBasis}
+								touched={touched.cashBasis}
+								errors={errors.cashBasis}
+							/>
+						</Row>
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"date"}
+								type={"date"}
+								values={values.end}
+								touched={touched.end}
+								errors={errors.end}
+							/>
+						</Row>
+						<TaxSelector
+							level={"Federal"}
+							stateChanger={handleChange}
+							errors={errors.federal}
+							touched={touched.federal}
+							values={values.federal}
+						/>
+						<TaxSelector
+							level={"State"}
+							stateChanger={handleChange}
+							errors={errors.state}
+							touched={touched.state}
+							values={values.state}
+						/>
+						<TaxSelector
+							level={"Local"}
+							stateChanger={handleChange}
+							errors={errors.local}
+							touched={touched.local}
+							values={values.local}
+						/>
+						<TaxSelector
+							level={"FICA"}
+							stateChanger={handleChange}
+							errors={errors.fica}
+							touched={touched.fica}
+							values={values.fica}
+						/>
+						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
+							<Col className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={"Create Income"} />
+							</Col>
+						</Row>
+					</Form>
+				)}
+			</Formik>
+		</Container>
 	);
 };

@@ -1,12 +1,102 @@
 import Form from "react-bootstrap/Form";
-import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import { Button, Col, Container, FormControl, InputGroup, Row } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
-import { Formik } from "formik";
+import { Formik, useFormikContext } from "formik";
+import * as formik from "formik";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { CAssetBody } from "../../../../backend/src/db/types.ts";
 import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import { CapAssetType, Recurrence } from "../../DoggrTypes.ts";
+import { useState } from "react";
+
+export function SubmitButton(props: { name: string }) {
+	const { dirty, isValid } = useFormikContext();
+	const { name } = props;
+	return (
+		<Button
+			as="input"
+			className={"btn-lg"}
+			type="submit"
+			value={name}
+			disabled={!isValid || !dirty}
+		/>
+	);
+}
+
+export function RecurrenceSelector(props: { handleChange; values; errors; touched }) {
+	const { handleChange, values, errors, touched } = props;
+	return (
+		<>
+			<Col xs={12} md={4}>
+				<Form.Label htmlFor="recurrence">Recurrence</Form.Label>
+			</Col>
+			<Col xs={12} md={8}>
+				<Form.Select
+					id="recurrence"
+					onChange={handleChange}
+					name={"recurrence"}
+					value={values}
+					isInvalid={!!errors}
+					isValid={touched && !errors}>
+					<option value={Recurrence.MONTHLY}>Monthly</option>
+					<option value={Recurrence.NON}>Non-Reoccurring</option>
+					<option value={Recurrence.ANNUALLY}>Annually</option>
+					<option value={Recurrence.WEEKLY}>Weekly</option>
+					<option value={Recurrence.DAILY}>Daily</option>
+				</Form.Select>
+			</Col>
+		</>
+	);
+}
+
+export function InputControl(props: {
+	handleChange;
+	type: string;
+	name: string;
+	values;
+	touched;
+	errors;
+}) {
+	const { handleChange, type, name, values, touched, errors } = props;
+	const [dollarInputs, setDollarInputs] = useState([
+		"income",
+		"expense",
+		"totalValue",
+		"costBasis",
+		"cashBasis",
+		"owed",
+		"grossIncome",
+	]);
+	return (
+		<>
+			<Col xs={12} md={4}>
+				<Form.Label htmlFor={name}>{name}: </Form.Label>
+			</Col>
+			<Col xs={12} md={8}>
+				<InputGroup hasValidation>
+					{dollarInputs.includes(name) ? (
+						<InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
+					) : null}
+					<Form.Control
+						id={name}
+						type={type}
+						name={name}
+						value={values}
+						isValid={touched && !errors}
+						isInvalid={!!errors}
+						onChange={handleChange}
+					/>
+					{name.toLowerCase().includes("rate") ? (
+						<InputGroup.Text id="inputGroupPrepend">%</InputGroup.Text>
+					) : null}
+					<Form.Control.Feedback type={"invalid"}>{errors}</Form.Control.Feedback>
+				</InputGroup>
+			</Col>
+		</>
+	);
+}
 
 export const CapitalAssetForm = () => {
 	function submitForm(event) {
@@ -16,45 +106,59 @@ export const CapitalAssetForm = () => {
 		};
 
 		console.log(event);
-		// PostInputService.send("/capitalAsset", toSubmit)
-		// 	.then((res) => {
-		// 		console.log(res);
-		// 		if (res.status != 200) console.log("fix error");
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
+		PostInputService.send("/capitalAsset", toSubmit)
+			.then((res) => {
+				console.log(res);
+				if (res.status != 200) console.log("fix error");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	const capitalItemSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
-		amount: number().positive().required(),
+		income: number().positive().required(),
 		recurrence: string().required(),
-		start: date().required(),
-		end: date().required(),
+		start: date()
+			.required()
+			.default(() => new Date()),
+		end: date()
+			.default(null)
+			.when(
+				"start",
+				(start, yup) => start != null && yup.min(start, "End Date cannot be before start time")
+			)
+			.required(),
 		type: string().required(),
 		growthRate: number().required().positive().max(10),
-		federal: string(),
+		federal: string().default(""),
+		state: string().default(""),
+		local: string().default(""),
+		fica: string().default(""),
 	});
 
 	return (
-		<Container>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
 			<Formik
 				validationSchema={capitalItemSchema}
 				onSubmit={submitForm}
 				initialValues={{
 					name: "",
 					note: "",
-					amount: 0,
-					recurrence: "monthly",
-					start: "2023-1-1",
-					end: "2032-1-1",
-					type: "Human Capital",
+					start: new Date().toISOString().slice(0, 10),
+					end: new Date().toISOString().slice(0, 10),
+					income: 0,
 					growthRate: 1,
+					recurrence: Recurrence.MONTHLY,
+					type: CapAssetType.HUMAN,
 				}}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
-					<Form onSubmit={handleSubmit}>
+					<Form onSubmit={handleSubmit} className={"p-4"}>
+						<Row className={"m-4 justify-content-center"}>
+							<h1 className={"text-center"}>Create Capital Income</h1>
+						</Row>
 						<BaseInputForm
 							handleChange={handleChange}
 							valuesNote={values.note}
@@ -68,71 +172,95 @@ export const CapitalAssetForm = () => {
 							errorsGrowth={errors.growthRate}
 							type={"capital"}
 						/>
-						<Form.Label htmlFor="amount">Amount: </Form.Label>
-						<InputGroup hasValidation>
-							<InputGroup.Text>$</InputGroup.Text>
-							<Form.Control
-								id="amount"
-								type="number"
-								name={"amount"}
-								value={values.amount}
-								placeholder="item amount...."
-								isValid={touched.amount && !errors.amount}
-								isInvalid={!!errors.amount}
-								onChange={handleChange}
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"income"}
+								type={"number"}
+								values={values.income}
+								touched={touched.income}
+								errors={errors.income}
 							/>
-							<Form.Control.Feedback type={"invalid"}>{errors.amount}</Form.Control.Feedback>
-						</InputGroup>
-						<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
-						<Form.Select
-							id="type"
-							name={"type"}
-							onChange={handleChange}
-							value={values.type}
-							isInvalid={!!errors.type}
-							isValid={touched.type && !errors.type}>
-							<option value="Human Capital">Human Capital</option>
-							<option value="Non-Taxable Annuity">NonTaxable</option>
-							<option value="Social Capital">Social</option>
-						</Form.Select>
-						<Form.Label htmlFor="reccurrence">Recurrence</Form.Label>
-						<Form.Select
-							id="recurrence"
-							onChange={handleChange}
-							name={"recurrence"}
-							value={values.recurrence}
-							isInvalid={!!errors.recurrence}
-							isValid={touched.recurrence && !errors.recurrence}>
-							<option value="monthly">Monthly</option>
-							<option value="non-reocurring">Non-Reoccurring</option>
-							<option value="annually">Annually</option>
-							<option value="weekly">Weekly</option>
-							<option value="daily">Daily</option>
-						</Form.Select>
-						<Form.Label htmlFor="start">Start: </Form.Label>
-						<Form.Control
-							id="start"
-							type="date"
-							name={"start"}
-							value={values.start}
-							isValid={touched.start && !errors.start}
-							isInvalid={!!errors.start}
-							onChange={handleChange}
+						</Row>
+						<Row className={"mb-4"}>
+							<Col xs={12} md={4}>
+								<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
+							</Col>
+							<Col xs={12} md={8}>
+								<Form.Select
+									id="type"
+									name={"type"}
+									onChange={handleChange}
+									value={values.type}
+									isInvalid={!!errors.type}
+									isValid={touched.type && !errors.type}>
+									<option value={CapAssetType.HUMAN}>Human Capital</option>
+									<option value={CapAssetType.NONTAXABLEANNUITY}>NonTaxable</option>
+									<option value={CapAssetType.SOCIAL}>Social</option>
+								</Form.Select>
+							</Col>
+						</Row>
+						<Row className={"mb-4"}>
+							<RecurrenceSelector
+								handleChange={handleChange}
+								values={values.recurrence}
+								errors={errors.recurrence}
+								touched={touched.recurrence}
+							/>
+						</Row>
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"start"}
+								type={"date"}
+								values={values.start}
+								touched={touched.start}
+								errors={errors.start}
+							/>
+						</Row>
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"end"}
+								type={"date"}
+								values={values.end}
+								touched={touched.end}
+								errors={errors.end}
+							/>
+						</Row>
+						<TaxSelector
+							level={"Federal"}
+							stateChanger={handleChange}
+							errors={errors.federal}
+							touched={touched.federal}
+							values={values.federal}
 						/>
-						<Form.Control.Feedback type={"invalid"}>{errors.start}</Form.Control.Feedback>
-						<Form.Label htmlFor="end">End: </Form.Label>
-						<Form.Control
-							id="end"
-							type="date"
-							name={"end"}
-							value={values.end}
-							isValid={touched.end && !errors.end}
-							isInvalid={!!errors.end}
-							onChange={handleChange}
+						<TaxSelector
+							level={"State"}
+							stateChanger={handleChange}
+							errors={errors.state}
+							touched={touched.state}
+							values={values.state}
 						/>
-						<Form.Control.Feedback type={"invalid"}>{errors.end}</Form.Control.Feedback>
-						<TaxSelector level={"federal"} stateChanger={handleChange} errors={errors.federal} />
-						<Button type="submit">Create Expense</Button>
+						<TaxSelector
+							level={"Local"}
+							stateChanger={handleChange}
+							errors={errors.local}
+							touched={touched.local}
+							values={values.local}
+						/>
+						<TaxSelector
+							level={"FICA"}
+							stateChanger={handleChange}
+							errors={errors.fica}
+							touched={touched.fica}
+							values={values.fica}
+						/>
+						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
+							<Col className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={"Create Income"} />
+							</Col>
+						</Row>
 					</Form>
 				)}
 			</Formik>

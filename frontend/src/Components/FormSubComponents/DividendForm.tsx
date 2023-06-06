@@ -1,23 +1,18 @@
 import Form from "react-bootstrap/Form";
-import { Button, FormControl } from "react-bootstrap";
+import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
-import { BudgetBody, CAssetBody, DividendBody } from "../../../../backend/src/db/types.ts";
-import { CapAsset } from "../../../../backend/src/db/entities/capasset.ts";
 import { FinancialAsset } from "../../../../backend/src/db/entities/financialasset.ts";
-import { TaxService } from "@/Services/TaxService.tsx";
 import { FinAssetService } from "@/Services/FinAssetService.tsx";
+import { Formik } from "formik";
+import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import { InputControl, SubmitButton } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import * as yup from "yup";
+import { number, string } from "yup";
+import { DividendBody } from "../../../../backend/src/db/types.ts";
 
 export const DividendForm = () => {
-	const [name, setName] = useState("");
-	const [note, setNote] = useState("");
-	const [submit, setSubmit] = useState(1);
-	const [federalTax, setFederalTax] = useState("");
-	const [stateTax, setStateTax] = useState("");
-	const [localTax, setLocalTax] = useState("");
-	const [rate, setRate] = useState(0);
-	const [finAsset, setFinAsset] = useState(0);
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
 
 	useEffect(() => {
@@ -36,61 +31,118 @@ export const DividendForm = () => {
 		};
 		loadFinAssets();
 	}, []);
-	function submitExpense(event) {
-		const item: DividendBody = {
-			owner_id: 2,
-			name: name,
-			note: note,
-			growthRate: 0,
-			federal: federalTax,
-			capitalGains: "",
-			fica: "",
-			state: stateTax,
-			local: localTax,
-			rate: rate,
-			finAsset: finAsset,
+
+	const dividendSchema = yup.object().shape({
+		name: string().required(),
+		note: string(),
+		rate: number().positive().required(),
+		finAsset: number().positive().required().integer(),
+		federal: string().default(""),
+		state: string().default(""),
+		local: string().default(""),
+	});
+
+	function submitForm(event) {
+		const toSubmit: DividendBody = {
+			...event,
+			owner_id: 3,
+			growthRate: 1,
 		};
-
-		event.preventDefault();
-
-		PostInputService.send("/dividend", item)
+		PostInputService.send("/dividend", toSubmit)
 			.then((res) => {
 				console.log(res);
-				if (res.status != 200) setSubmit(0);
+				if (res.status != 200) console.log(res);
 			})
 			.catch((err) => {
 				console.log(err);
-				setSubmit(0);
 			});
 	}
+
 	return (
-		<>
-			{submit == 0 ? <h5>Submit Failed</h5> : null}
-			<Form onSubmit={submitExpense}>
-				<BaseInputForm
-					nameChanger={setName}
-					noteChanger={setNote}
-					federalChanger={setFederalTax}
-					stateChanger={setStateTax}
-					localChanger={setLocalTax}
-				/>
-				<Form.Label htmlFor="rate">Rate of Return:</Form.Label>
-				<Form.Control
-					id="rate"
-					type="text"
-					placeholder="rate of return...."
-					onChange={(e) => setRate(Number.parseFloat(e.target.value))}
-				/>
-				<Form.Label htmlFor="finAsset">Financial Asset: </Form.Label>
-				<Form.Select id="finAsset" onChange={(e) => setFinAsset(Number.parseInt(e.target.value))}>
-					{finAssets.map((x) => (
-						<option key={x.id} value={x.id}>
-							{x.name}
-						</option>
-					))}
-				</Form.Select>
-				<Button type="submit">Create Dividend</Button>
-			</Form>
-		</>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+			<Formik
+				validationSchema={dividendSchema}
+				onSubmit={submitForm}
+				initialValues={{
+					name: "",
+					note: "",
+					rate: 1,
+					finAsset: finAssets != undefined && finAssets.length > 0 ? finAssets[0] : 0,
+				}}>
+				{({ handleSubmit, handleChange, values, touched, errors }) => (
+					<Form onSubmit={handleSubmit} className={"p-4"}>
+						<Row className={"m-4 justify-content-center"}>
+							<h1 className={"text-center"}>Create Dividend</h1>
+						</Row>
+						<BaseInputForm
+							handleChange={handleChange}
+							valuesNote={values.note}
+							valuesName={values.name}
+							touchedNote={touched.note}
+							touchedName={touched.name}
+							errorsName={errors.name}
+							errorsNote={errors.note}
+							type={"dividend"}
+						/>
+						<Row className={"mb-4"}>
+							<InputControl
+								handleChange={handleChange}
+								name={"rate"}
+								type={"number"}
+								values={values.rate}
+								touched={touched.rate}
+								errors={errors.rate}
+							/>
+						</Row>
+						<Row className={"mb-4"}>
+							<Col xs={12} md={4}>
+								<Form.Label htmlFor="finAsset">Financial Asset: </Form.Label>
+							</Col>
+							<Col xs={12} md={8}>
+								<Form.Select
+									id="finAsset"
+									name={"finAsset"}
+									value={values.finAsset}
+									isValid={touched.finAsset && !errors.finAsset}
+									isInvalid={!!errors.finAsset}
+									onChange={handleChange}>
+									{finAssets.map((x) => (
+										<option key={x.id} value={x.id}>
+											{x.name}
+										</option>
+									))}
+								</Form.Select>
+							</Col>
+						</Row>
+						<TaxSelector
+							level={"Federal"}
+							stateChanger={handleChange}
+							errors={errors.federal}
+							touched={touched.federal}
+							values={values.federal}
+						/>
+						<TaxSelector
+							level={"State"}
+							stateChanger={handleChange}
+							errors={errors.state}
+							touched={touched.state}
+							values={values.state}
+						/>
+						<TaxSelector
+							level={"Local"}
+							stateChanger={handleChange}
+							errors={errors.local}
+							touched={touched.local}
+							values={values.local}
+						/>
+						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
+							<Col className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={"Create Dividend"} />
+							</Col>
+						</Row>
+					</Form>
+				)}
+			</Formik>
+		</Container>
 	);
 };

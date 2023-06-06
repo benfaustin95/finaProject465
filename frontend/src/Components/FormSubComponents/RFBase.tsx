@@ -1,47 +1,66 @@
 import Form from "react-bootstrap/Form";
-import { FormControl } from "react-bootstrap";
+import { FormControl, InputGroup, Row } from "react-bootstrap";
 import { baseInputForm, BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
+import { InputControl } from "@/Components/FormSubComponents/CapAssetForm.tsx";
 
-export type rfBaseForm = baseInputForm & {
-	totalValueChanger;
-	costBasisChanger;
-	wPriorityChanger;
+export type rfBaseForm = {
+	handleChange;
+	errorsTotalValue;
+	touchedTotalValue;
+	valuesTotalValue;
+	errorsCostBasis;
+	touchedCostBasis;
+	valuesCostBasis;
+	errorsWPriority;
+	valuesWPriority;
+	touchedWPriority;
 };
 
 export const RFBaseForm = (props: rfBaseForm) => {
+	const {
+		handleChange,
+		errorsTotalValue,
+		errorsWPriority,
+		errorsCostBasis,
+		touchedTotalValue,
+		touchedWPriority,
+		touchedCostBasis,
+		valuesWPriority,
+		valuesTotalValue,
+		valuesCostBasis,
+	} = props;
 	return (
 		<>
-			<BaseInputForm
-				nameChanger={props.nameChanger}
-				noteChanger={props.noteChanger}
-				growthRateChanger={props.growthRateChanger}
-				federalChanger={props.federalChanger}
-				ficaChanger={props.ficaChanger}
-				stateChanger={props.stateChanger}
-				localChanger={props.localChanger}
-				capitalGainsChanger={props.capitalGainsChanger}
-			/>
-			<Form.Label htmlFor="totalValue">Total Value: </Form.Label>
-			<Form.Control
-				id="totalValue"
-				type="text"
-				placeholder="total value ...."
-				onChange={(e) => props.totalValueChanger(Number.parseFloat(e.target.value))}
-			/>
-			<Form.Label htmlFor="costBasis">Cost Basis: </Form.Label>
-			<Form.Control
-				id="costBasis"
-				type="text"
-				placeholder="cost basis....."
-				onChange={(e) => props.costBasisChanger(Number.parseFloat(e.target.value))}
-			/>
-			<Form.Label htmlFor="withdrawalPriority">Withdrawal Priority: </Form.Label>
-			<Form.Control
-				id="costBasis"
-				type="text"
-				placeholder="withdrawal priority....."
-				onChange={(e) => props.wPriorityChanger(Number.parseFloat(e.target.value))}
-			/>
+			<Row className={"mb-4"}>
+				<InputControl
+					handleChange={handleChange}
+					type={"number"}
+					name={"totalValue"}
+					values={valuesTotalValue}
+					touched={touchedTotalValue}
+					errors={errorsTotalValue}
+				/>
+			</Row>
+			<Row className={"mb-4"}>
+				<InputControl
+					handleChange={handleChange}
+					type={"number"}
+					name={"costBasis"}
+					values={valuesCostBasis}
+					touched={touchedCostBasis}
+					errors={errorsCostBasis}
+				/>
+			</Row>
+			<Row className={"mb-4"}>
+				<InputControl
+					handleChange={handleChange}
+					type={"number"}
+					name={"wPriority"}
+					values={valuesWPriority}
+					touched={touchedWPriority}
+					errors={errorsWPriority}
+				/>
+			</Row>
 		</>
 	);
 };
