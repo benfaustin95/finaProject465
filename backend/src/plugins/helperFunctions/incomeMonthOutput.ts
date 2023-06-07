@@ -79,34 +79,32 @@ export const incomeMonthOutput = (
 	const taxes: Map<string, taxAccumulator> = new Map<string, taxAccumulator>();
 	const monthlyIncome: monthOutputRow = mkMonthOutputRow("monthly income");
 
-	capitalIncomes.forEach((x) => {
-		let currentMap: Map<number, monthOutputRow>;
+	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
+		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
+			const key = JSON.stringify({ month, year });
+			let currentMonthIncome = 0;
+			let currentTax = new taxAccumulator();
+			capitalIncomes.forEach((x) => {
+				let currentMap: Map<number, monthOutputRow>;
 
-		switch (x.type) {
-			case CapAssetType.HUMAN:
-				currentMap = salary;
-				break;
-			case CapAssetType.NONTAXABLEANNUITY:
-				currentMap = nonTaxable;
-				break;
-			case CapAssetType.SOCIAL:
-				currentMap = retirementIncome;
-				break;
-		}
+				switch (x.type) {
+					case CapAssetType.HUMAN:
+						currentMap = salary;
+						break;
+					case CapAssetType.NONTAXABLEANNUITY:
+						currentMap = nonTaxable;
+						break;
+					case CapAssetType.SOCIAL:
+						currentMap = retirementIncome;
+						break;
+				}
 
-		let currentItem = currentMap.get(x.id);
+				let currentItem = currentMap.get(x.id);
 
-		if (currentItem == undefined) {
-			currentItem = mkMonthOutputRow(x.name, x.note);
-			currentMap.set(x.id, currentItem);
-		}
-
-		for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-			const toAdd = incomeCalculation(x, year, 0);
-			for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
-				const key = JSON.stringify({ month, year });
-				let currentMonthIncome = monthlyIncome.amounts.get(key);
-				if (currentMonthIncome == undefined) currentMonthIncome = 0;
+				if (currentItem == undefined) {
+					currentItem = mkMonthOutputRow(x.name, x.note);
+					currentMap.set(x.id, currentItem);
+				}
 
 				if (
 					!currentYear(x.start.getFullYear(), x.end.getFullYear(), year) ||
@@ -114,73 +112,50 @@ export const incomeMonthOutput = (
 					(year == x.end.getFullYear() && afterEndMonth(month, x.end.getMonth()))
 				) {
 					currentItem.amounts.set(key, 0);
-					monthlyIncome.amounts.set(key, currentMonthIncome);
-					continue;
+					return;
 				}
 
-				currentItem.amounts.set(key, toAdd.income);
-				monthlyIncome.amounts.set(key, currentMonthIncome + toAdd.income);
-				taxes.set(key, taxAccumulate(toAdd.tax, taxes.get(key), toAdd.income));
-			}
-		}
-	});
-
-	rentalIncomes.forEach((x) => {
-		let currentItem = investments.get(x.id);
-
-		if (currentItem == undefined) {
-			currentItem = mkMonthOutputRow(x.name, x.note);
-			investments.set(x.id, currentItem);
-		}
-
-		for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-			const toAdd = rentalCalculation(x, year, 1);
-			for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
-				const key = JSON.stringify({ month, year });
-				let currentMonthIncome = monthlyIncome.amounts.get(key);
-				if (currentMonthIncome == undefined) currentMonthIncome = 0;
+				const toAdd = incomeCalculation(x, year, 0);
 
 				currentItem.amounts.set(key, toAdd.income);
-				monthlyIncome.amounts.set(key, currentMonthIncome + toAdd.income);
-				taxes.set(key, taxAccumulate(toAdd.tax, taxes.get(key), toAdd.income));
-			}
-		}
-	});
+				currentMonthIncome += toAdd.income;
+				currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
+			});
 
-	oneTime.forEach((x) => {
-		let currentItem = oneTimeIncome.get(x.id);
-		if (currentItem == undefined) {
-			currentItem = mkMonthOutputRow(x.name, x.note);
-			oneTimeIncome.set(x.id, currentItem);
-		}
+			rentalIncomes.forEach((x) => {
+				let currentItem = investments.get(x.id);
 
-		for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-			const toAdd = oneTimeCalculation(x, year);
-			for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
-				const key = JSON.stringify({ month, year });
-				let currentMonthIncome = monthlyIncome.amounts.get(key);
-				if (currentMonthIncome == undefined) currentMonthIncome = 0;
+				if (currentItem == undefined) {
+					currentItem = mkMonthOutputRow(x.name, x.note);
+					investments.set(x.id, currentItem);
+				}
+				const toAdd = rentalCalculation(x, year, 1);
+				currentItem.amounts.set(key, toAdd.income);
+				currentMonthIncome += toAdd.income;
+				currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
+			});
+
+			oneTime.forEach((x) => {
+				let currentItem = oneTimeIncome.get(x.id);
+				if (currentItem == undefined) {
+					currentItem = mkMonthOutputRow(x.name, x.note);
+					oneTimeIncome.set(x.id, currentItem);
+				}
+
+				const toAdd = oneTimeCalculation(x, year);
 
 				if (x.date.getFullYear() != year || x.date.getMonth() != month) {
-					monthlyIncome.amounts.set(key, currentMonthIncome);
 					currentItem.amounts.set(key, 0);
-					continue;
+					return;
 				}
 				currentItem.amounts.set(key, toAdd.income);
-				monthlyIncome.amounts.set(key, currentMonthIncome + toAdd.income);
-				taxes.set(key, taxAccumulate(toAdd.tax, taxes.get(key), toAdd.income));
-			}
-		}
+				currentMonthIncome += toAdd.income;
+				currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
+			});
 
-		if (monthlyIncome.amounts.size == 0) {
-			for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-				for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
-					const key = JSON.stringify({ month, year });
-					monthlyIncome.amounts.set(key, 0);
-				}
-			}
+			monthlyIncome.amounts.set(key, currentMonthIncome);
+			taxes.set(key, currentTax);
 		}
-	});
-
+	}
 	return { salary, investments, retirementIncome, nonTaxable, oneTimeIncome, taxes, monthlyIncome };
 };
