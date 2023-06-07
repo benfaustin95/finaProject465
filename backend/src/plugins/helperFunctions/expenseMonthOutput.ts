@@ -13,8 +13,8 @@ export const expenseMonthOutput = (
 	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key: string = JSON.stringify({ month, year });
-			outReccuring.amounts.set(key, 0);
-			outNonReccuring.amounts.set(key, 0);
+			let outReccuringCurrent = 0;
+			let outNonReccuringCurrent = 0;
 
 			expenses.forEach((x) => {
 				if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), year)) return;
@@ -24,17 +24,12 @@ export const expenseMonthOutput = (
 				)
 					return;
 
-				if (x.recurrence != Recurrence.NON)
-					outReccuring.amounts.set(
-						key,
-						outReccuring.amounts.get(key) + expenseCalculation(x, year)
-					);
-				else
-					outNonReccuring.amounts.set(
-						key,
-						outNonReccuring.amounts.get(key) + expenseCalculation(x, year)
-					);
+				if (x.recurrence != Recurrence.NON) outReccuringCurrent += expenseCalculation(x, year);
+				else outNonReccuringCurrent += expenseCalculation(x, year);
 			});
+
+			outReccuring.amounts.set(key, outReccuringCurrent);
+			outNonReccuring.amounts.set(key, outNonReccuringCurrent);
 		}
 	}
 	return { outReccuring, outNonReccuring };

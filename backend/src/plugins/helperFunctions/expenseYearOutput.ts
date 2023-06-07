@@ -22,43 +22,41 @@ export const expenseYearOutput = (
 	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
 	const annualExpense: outputRow = mkOutputRow("Annual Expense");
 
-	expenses.forEach((x) => {
-		const recurrence = x.recurrence != Recurrence.NON;
-		const row: outputRow = mkOutputRow(x.name, x.note);
-		for (let i = start; i <= end; ++i) {
-			let currentMonthly: number = monthlyExpense.amounts.get(i) ?? 0;
-			let currentYearly: number = annualExpense.amounts.get(i) ?? 0;
+	for (let i = start; i <= end; ++i) {
+		let currentMonthly: number = 0;
+		let currentYearly: number = 0;
+		expenses.forEach((x) => {
+			const recurrence = x.recurrence != Recurrence.NON;
+			let row;
+
+			if (recurrence)
+				row =
+					outputRecurring.get(i) == undefined
+						? mkOutputRow(x.name, x.note)
+						: outputRecurring.get(i);
+			else {
+				row =
+					outputNonRecurring.get(i) == undefined
+						? mkOutputRow(x.name, x.note)
+						: outputNonRecurring.get(i);
+			}
 
 			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) {
 				row.amounts.set(i, 0);
-				monthlyExpense.amounts.set(i, currentMonthly);
-				annualExpense.amounts.set(i, currentYearly);
-				continue;
+				return;
 			}
 
 			const toAdd: number = expenseCalculation(x, i);
 
 			if (recurrence) {
-				currentMonthly = currentMonthly == undefined ? toAdd : currentMonthly + toAdd;
-				currentYearly =
-					currentYearly == undefined
-						? annualExpenseCalculation(x, i, toAdd)
-						: currentYearly + annualExpenseCalculation(x, i, toAdd);
-			} else currentYearly = currentYearly == undefined ? toAdd : currentYearly + toAdd;
+				currentMonthly += toAdd;
+				currentYearly += annualExpenseCalculation(x, i, toAdd);
+			} else currentYearly += toAdd;
 
 			row.amounts.set(i, toAdd);
-			monthlyExpense.amounts.set(i, currentMonthly);
-			annualExpense.amounts.set(i, currentYearly);
-		}
-		if (recurrence) outputRecurring.set(x.id, row);
-		else outputNonRecurring.set(x.id, row);
-	});
-
-	if (monthlyExpense.amounts.size == 0) {
-		for (let year = start; year <= end; ++year) {
-			monthlyExpense.amounts.set(year, 0);
-			annualExpense.amounts.set(year, 0);
-		}
+		});
+		monthlyExpense.amounts.set(i, currentMonthly);
+		annualExpense.amounts.set(i, currentYearly);
 	}
 	return { outputRecurring, outputNonRecurring, monthlyExpense, annualExpense };
 };
