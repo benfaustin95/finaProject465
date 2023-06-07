@@ -51,18 +51,19 @@ export function DoggrRouter() {
 					</NavbarCollapse>
 				</Container>
 			</Navbar>
-
-			<Routes>
-				<Route path="/" element={<MacroReportSet />} />
-				<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
-				<Route path="/microReportLoaded" element={<MicroReportLoad />} />
-				<Route path="/budgetItemPost" element={<BudgetItemForm />} />
-				<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />
-				<Route path="/dividendPost" element={<DividendForm />} />
-				<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />
-				<Route path="/financialAssetPost" element={<FinancialAssetForm />} />
-				<Route path="/rentalAssetPost" element={<RentalAssetForm />} />
-			</Routes>
+			<Container>
+				<Routes>
+					<Route path="/" element={<MacroReportSet />} />
+					<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
+					<Route path="/microReportLoaded" element={<MicroReportLoad />} />
+					<Route path="/budgetItemPost" element={<BudgetItemForm />} />
+					<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />
+					<Route path="/dividendPost" element={<DividendForm />} />
+					<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />
+					<Route path="/financialAssetPost" element={<FinancialAssetForm />} />
+					<Route path="/rentalAssetPost" element={<RentalAssetForm />} />
+				</Routes>
+			</Container>
 		</main>
 	);
 }

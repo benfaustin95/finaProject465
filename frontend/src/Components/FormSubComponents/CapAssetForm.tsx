@@ -29,10 +29,10 @@ export function RecurrenceSelector(props: { handleChange; values; errors; touche
 	const { handleChange, values, errors, touched } = props;
 	return (
 		<>
-			<Col xs={12} md={4}>
+			<Col xs={12} md={4} lg={2}>
 				<Form.Label htmlFor="recurrence">Recurrence</Form.Label>
 			</Col>
-			<Col xs={12} md={8}>
+			<Col xs={12} md={8} lg={4}>
 				<Form.Select
 					id="recurrence"
 					onChange={handleChange}
@@ -71,10 +71,10 @@ export function InputControl(props: {
 	]);
 	return (
 		<>
-			<Col xs={12} md={4}>
+			<Col xs={12} md={4} lg={2} className={"mb-4"}>
 				<Form.Label htmlFor={name}>{name}: </Form.Label>
 			</Col>
-			<Col xs={12} md={8}>
+			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<InputGroup hasValidation>
 					{dollarInputs.includes(name) ? (
 						<InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
@@ -140,7 +140,7 @@ export const CapitalAssetForm = () => {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={capitalItemSchema}
 				onSubmit={submitForm}
@@ -159,20 +159,20 @@ export const CapitalAssetForm = () => {
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create Capital Income</h1>
 						</Row>
-						<BaseInputForm
-							handleChange={handleChange}
-							valuesNote={values.note}
-							valuesName={values.name}
-							touchedNote={touched.note}
-							touchedName={touched.name}
-							errorsName={errors.name}
-							errorsNote={errors.note}
-							touchedGrowthRate={touched.growthRate}
-							valuesGrowthRate={values.growthRate}
-							errorsGrowth={errors.growthRate}
-							type={"capital"}
-						/>
-						<Row className={"mb-4"}>
+						<Row>
+							<BaseInputForm
+								handleChange={handleChange}
+								valuesNote={values.note}
+								valuesName={values.name}
+								touchedNote={touched.note}
+								touchedName={touched.name}
+								errorsName={errors.name}
+								errorsNote={errors.note}
+								touchedGrowthRate={touched.growthRate}
+								valuesGrowthRate={values.growthRate}
+								errorsGrowth={errors.growthRate}
+								type={"capital"}
+							/>
 							<InputControl
 								handleChange={handleChange}
 								name={"income"}
@@ -181,12 +181,10 @@ export const CapitalAssetForm = () => {
 								touched={touched.income}
 								errors={errors.income}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
-							<Col xs={12} md={4}>
+							<Col xs={12} md={4} lg={2} className={"mb-4"}>
 								<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
 							</Col>
-							<Col xs={12} md={8}>
+							<Col xs={12} md={8} lg={4} className={"mb-4"}>
 								<Form.Select
 									id="type"
 									name={"type"}
@@ -199,16 +197,12 @@ export const CapitalAssetForm = () => {
 									<option value={CapAssetType.SOCIAL}>Social</option>
 								</Form.Select>
 							</Col>
-						</Row>
-						<Row className={"mb-4"}>
 							<RecurrenceSelector
 								handleChange={handleChange}
 								values={values.recurrence}
 								errors={errors.recurrence}
 								touched={touched.recurrence}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								name={"start"}
@@ -217,8 +211,6 @@ export const CapitalAssetForm = () => {
 								touched={touched.start}
 								errors={errors.start}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								name={"end"}
@@ -227,35 +219,35 @@ export const CapitalAssetForm = () => {
 								touched={touched.end}
 								errors={errors.end}
 							/>
+							<TaxSelector
+								level={"Federal"}
+								stateChanger={handleChange}
+								errors={errors.federal}
+								touched={touched.federal}
+								values={values.federal}
+							/>
+							<TaxSelector
+								level={"State"}
+								stateChanger={handleChange}
+								errors={errors.state}
+								touched={touched.state}
+								values={values.state}
+							/>
+							<TaxSelector
+								level={"Local"}
+								stateChanger={handleChange}
+								errors={errors.local}
+								touched={touched.local}
+								values={values.local}
+							/>
+							<TaxSelector
+								level={"FICA"}
+								stateChanger={handleChange}
+								errors={errors.fica}
+								touched={touched.fica}
+								values={values.fica}
+							/>
 						</Row>
-						<TaxSelector
-							level={"Federal"}
-							stateChanger={handleChange}
-							errors={errors.federal}
-							touched={touched.federal}
-							values={values.federal}
-						/>
-						<TaxSelector
-							level={"State"}
-							stateChanger={handleChange}
-							errors={errors.state}
-							touched={touched.state}
-							values={values.state}
-						/>
-						<TaxSelector
-							level={"Local"}
-							stateChanger={handleChange}
-							errors={errors.local}
-							touched={touched.local}
-							values={values.local}
-						/>
-						<TaxSelector
-							level={"FICA"}
-							stateChanger={handleChange}
-							errors={errors.fica}
-							touched={touched.fica}
-							values={values.fica}
-						/>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
 							<Col className={"d-flex flex-row justify-content-center"}>
 								<SubmitButton name={"Create Income"} />

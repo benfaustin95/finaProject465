@@ -32,11 +32,11 @@ export const TaxSelector = (props: {
 	});
 
 	return (
-		<Row className={"mb-4"}>
-			<Col xs={12} md={4}>
+		<>
+			<Col xs={12} md={4} lg={2} className={"mb-4"}>
 				<Form.Label htmlFor={level}>{level}: </Form.Label>
 			</Col>
-			<Col xs={12} md={8}>
+			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<Form.Select
 					id={level}
 					name={level.toLowerCase()}
@@ -55,6 +55,6 @@ export const TaxSelector = (props: {
 				</Form.Select>
 				<Form.Control.Feedback type={"invalid"}>{errors}</Form.Control.Feedback>
 			</Col>
-		</Row>
+		</>
 	);
 };

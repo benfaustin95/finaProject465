@@ -146,8 +146,8 @@ export function MacroYear(props: destructuredMacroYearReport) {
 	});
 
 	return (
-		<Container>
-			<Table responsive>
+		<Container className={"p-4 mx-auto my-4"}>
+			<Table responsive striped bordered hover>
 				<thead>
 					<tr>
 						<th>Name</th>

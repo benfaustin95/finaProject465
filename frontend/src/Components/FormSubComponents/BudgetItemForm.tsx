@@ -46,7 +46,7 @@ export const BudgetItemForm = () => {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={budgetItemSchema}
 				onSubmit={submitForm}
@@ -63,17 +63,17 @@ export const BudgetItemForm = () => {
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create Expense</h1>
 						</Row>
-						<BaseInputForm
-							handleChange={handleChange}
-							valuesNote={values.note}
-							valuesName={values.name}
-							touchedNote={touched.note}
-							touchedName={touched.name}
-							errorsName={errors.name}
-							errorsNote={errors.note}
-							type={"budget"}
-						/>
-						<Row className={"mb-4"}>
+						<Row>
+							<BaseInputForm
+								handleChange={handleChange}
+								valuesNote={values.note}
+								valuesName={values.name}
+								touchedNote={touched.note}
+								touchedName={touched.name}
+								errorsName={errors.name}
+								errorsNote={errors.note}
+								type={"budget"}
+							/>
 							<InputControl
 								handleChange={handleChange}
 								name={"income"}
@@ -82,34 +82,12 @@ export const BudgetItemForm = () => {
 								touched={touched.income}
 								errors={errors.income}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
-							<Col xs={12} md={4}>
-								<Form.Label htmlFor="type">Type of Capital Asset: </Form.Label>
-							</Col>
-							<Col xs={12} md={8}>
-								<Form.Select
-									id="type"
-									name={"type"}
-									onChange={handleChange}
-									value={values.type}
-									isInvalid={!!errors.type}
-									isValid={touched.type && !errors.type}>
-									<option value={CapAssetType.HUMAN}>Human Capital</option>
-									<option value={CapAssetType.NONTAXABLEANNUITY}>NonTaxable</option>
-									<option value={CapAssetType.SOCIAL}>Social</option>
-								</Form.Select>
-							</Col>
-						</Row>
-						<Row className={"mb-4"}>
 							<RecurrenceSelector
 								handleChange={handleChange}
 								values={values.recurrence}
 								errors={errors.recurrence}
 								touched={touched.recurrence}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								name={"start"}
@@ -118,8 +96,6 @@ export const BudgetItemForm = () => {
 								touched={touched.start}
 								errors={errors.start}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								name={"end"}
@@ -128,11 +104,11 @@ export const BudgetItemForm = () => {
 								touched={touched.end}
 								errors={errors.end}
 							/>
-						</Row>
-						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Expense"} />
-							</Col>
+							<Row className={"mb-4 d-flex flex-row justify-content-center"}>
+								<Col className={"d-flex flex-row justify-content-center"}>
+									<SubmitButton name={"Create Expense"} />
+								</Col>
+							</Row>
 						</Row>
 					</Form>
 				)}

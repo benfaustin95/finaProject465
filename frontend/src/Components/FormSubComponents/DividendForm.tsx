@@ -59,7 +59,7 @@ export const DividendForm = () => {
 	}
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={dividendSchema}
 				onSubmit={submitForm}
@@ -74,17 +74,17 @@ export const DividendForm = () => {
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create Dividend</h1>
 						</Row>
-						<BaseInputForm
-							handleChange={handleChange}
-							valuesNote={values.note}
-							valuesName={values.name}
-							touchedNote={touched.note}
-							touchedName={touched.name}
-							errorsName={errors.name}
-							errorsNote={errors.note}
-							type={"dividend"}
-						/>
-						<Row className={"mb-4"}>
+						<Row>
+							<BaseInputForm
+								handleChange={handleChange}
+								valuesNote={values.note}
+								valuesName={values.name}
+								touchedNote={touched.note}
+								touchedName={touched.name}
+								errorsName={errors.name}
+								errorsNote={errors.note}
+								type={"dividend"}
+							/>
 							<InputControl
 								handleChange={handleChange}
 								name={"rate"}
@@ -93,12 +93,10 @@ export const DividendForm = () => {
 								touched={touched.rate}
 								errors={errors.rate}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
-							<Col xs={12} md={4}>
+							<Col xs={12} md={4} lg={2} className={"mb-4"}>
 								<Form.Label htmlFor="finAsset">Financial Asset: </Form.Label>
 							</Col>
-							<Col xs={12} md={8}>
+							<Col xs={12} md={8} lg={4}>
 								<Form.Select
 									id="finAsset"
 									name={"finAsset"}
@@ -113,28 +111,28 @@ export const DividendForm = () => {
 									))}
 								</Form.Select>
 							</Col>
+							<TaxSelector
+								level={"Federal"}
+								stateChanger={handleChange}
+								errors={errors.federal}
+								touched={touched.federal}
+								values={values.federal}
+							/>
+							<TaxSelector
+								level={"State"}
+								stateChanger={handleChange}
+								errors={errors.state}
+								touched={touched.state}
+								values={values.state}
+							/>
+							<TaxSelector
+								level={"Local"}
+								stateChanger={handleChange}
+								errors={errors.local}
+								touched={touched.local}
+								values={values.local}
+							/>
 						</Row>
-						<TaxSelector
-							level={"Federal"}
-							stateChanger={handleChange}
-							errors={errors.federal}
-							touched={touched.federal}
-							values={values.federal}
-						/>
-						<TaxSelector
-							level={"State"}
-							stateChanger={handleChange}
-							errors={errors.state}
-							touched={touched.state}
-							values={values.state}
-						/>
-						<TaxSelector
-							level={"Local"}
-							stateChanger={handleChange}
-							errors={errors.local}
-							touched={touched.local}
-							values={values.local}
-						/>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
 							<Col className={"d-flex flex-row justify-content-center"}>
 								<SubmitButton name={"Create Dividend"} />

@@ -45,7 +45,7 @@ export const RentalAssetForm = () => {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={financialAssetSchema}
 				onSubmit={submitForm}
@@ -65,32 +65,32 @@ export const RentalAssetForm = () => {
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create Rental Asset</h1>
 						</Row>
-						<BaseInputForm
-							handleChange={handleChange}
-							valuesNote={values.note}
-							valuesName={values.name}
-							touchedNote={touched.note}
-							touchedName={touched.name}
-							errorsName={errors.name}
-							errorsNote={errors.note}
-							touchedGrowthRate={touched.growthRate}
-							valuesGrowthRate={values.growthRate}
-							errorsGrowth={errors.growthRate}
-							type={"financialAsset"}
-						/>
-						<RFBaseForm
-							handleChange={handleChange}
-							errorsTotalValue={errors.totalValue}
-							touchedTotalValue={touched.totalValue}
-							valuesTotalValue={values.totalValue}
-							errorsCostBasis={errors.costBasis}
-							touchedCostBasis={touched.costBasis}
-							valuesCostBasis={values.costBasis}
-							errorsWPriority={errors.wPriority}
-							valuesWPriority={values.wPriority}
-							touchedWPriority={touched.wPriority}
-						/>
-						<Row className={"mb-4"}>
+						<Row>
+							<BaseInputForm
+								handleChange={handleChange}
+								valuesNote={values.note}
+								valuesName={values.name}
+								touchedNote={touched.note}
+								touchedName={touched.name}
+								errorsName={errors.name}
+								errorsNote={errors.note}
+								touchedGrowthRate={touched.growthRate}
+								valuesGrowthRate={values.growthRate}
+								errorsGrowth={errors.growthRate}
+								type={"financialAsset"}
+							/>
+							<RFBaseForm
+								handleChange={handleChange}
+								errorsTotalValue={errors.totalValue}
+								touchedTotalValue={touched.totalValue}
+								valuesTotalValue={values.totalValue}
+								errorsCostBasis={errors.costBasis}
+								touchedCostBasis={touched.costBasis}
+								valuesCostBasis={values.costBasis}
+								errorsWPriority={errors.wPriority}
+								valuesWPriority={values.wPriority}
+								touchedWPriority={touched.wPriority}
+							/>
 							<InputControl
 								handleChange={handleChange}
 								type={"number"}
@@ -99,8 +99,6 @@ export const RentalAssetForm = () => {
 								touched={touched.owed}
 								errors={errors.owed}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								type={"number"}
@@ -109,8 +107,6 @@ export const RentalAssetForm = () => {
 								touched={touched.expense}
 								errors={errors.expense}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								type={"number"}
@@ -119,42 +115,42 @@ export const RentalAssetForm = () => {
 								touched={touched.grossIncome}
 								errors={errors.grossIncome}
 							/>
+							<TaxSelector
+								level={"Federal"}
+								stateChanger={handleChange}
+								errors={errors.federal}
+								touched={touched.federal}
+								values={values.federal}
+							/>
+							<TaxSelector
+								level={"State"}
+								stateChanger={handleChange}
+								errors={errors.state}
+								touched={touched.state}
+								values={values.state}
+							/>
+							<TaxSelector
+								level={"Local"}
+								stateChanger={handleChange}
+								errors={errors.local}
+								touched={touched.local}
+								values={values.local}
+							/>
+							<TaxSelector
+								level={"FICA"}
+								stateChanger={handleChange}
+								errors={errors.fica}
+								touched={touched.fica}
+								values={values.fica}
+							/>
+							<TaxSelector
+								level={"capitalgains"}
+								stateChanger={handleChange}
+								errors={errors.capitalgains}
+								touched={touched.capitalgains}
+								values={values.capitalgains}
+							/>
 						</Row>
-						<TaxSelector
-							level={"Federal"}
-							stateChanger={handleChange}
-							errors={errors.federal}
-							touched={touched.federal}
-							values={values.federal}
-						/>
-						<TaxSelector
-							level={"State"}
-							stateChanger={handleChange}
-							errors={errors.state}
-							touched={touched.state}
-							values={values.state}
-						/>
-						<TaxSelector
-							level={"Local"}
-							stateChanger={handleChange}
-							errors={errors.local}
-							touched={touched.local}
-							values={values.local}
-						/>
-						<TaxSelector
-							level={"FICA"}
-							stateChanger={handleChange}
-							errors={errors.fica}
-							touched={touched.fica}
-							values={values.fica}
-						/>
-						<TaxSelector
-							level={"capitalgains"}
-							stateChanger={handleChange}
-							errors={errors.capitalgains}
-							touched={touched.capitalgains}
-							values={values.capitalgains}
-						/>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
 							<Col className={"d-flex flex-row justify-content-center"}>
 								<SubmitButton name={"Create Asset"} />

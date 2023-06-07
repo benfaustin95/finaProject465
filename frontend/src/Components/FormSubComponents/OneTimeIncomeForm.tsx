@@ -45,7 +45,7 @@ export const OneTimeIncomeForm = () => {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-50"}>
+		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={oneTimeIncomeSchema}
 				onSubmit={submitForm}
@@ -61,20 +61,20 @@ export const OneTimeIncomeForm = () => {
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create One Time Income</h1>
 						</Row>
-						<BaseInputForm
-							handleChange={handleChange}
-							valuesNote={values.note}
-							valuesName={values.name}
-							touchedNote={touched.note}
-							touchedName={touched.name}
-							errorsName={errors.name}
-							errorsNote={errors.note}
-							touchedGrowthRate={touched.growthRate}
-							valuesGrowthRate={values.growthRate}
-							errorsGrowth={errors.growthRate}
-							type={"oneTimeIncome"}
-						/>
-						<Row className={"mb-4"}>
+						<Row>
+							<BaseInputForm
+								handleChange={handleChange}
+								valuesNote={values.note}
+								valuesName={values.name}
+								touchedNote={touched.note}
+								touchedName={touched.name}
+								errorsName={errors.name}
+								errorsNote={errors.note}
+								touchedGrowthRate={touched.growthRate}
+								valuesGrowthRate={values.growthRate}
+								errorsGrowth={errors.growthRate}
+								type={"oneTimeIncome"}
+							/>
 							<InputControl
 								handleChange={handleChange}
 								name={"cashBasis"}
@@ -83,8 +83,6 @@ export const OneTimeIncomeForm = () => {
 								touched={touched.cashBasis}
 								errors={errors.cashBasis}
 							/>
-						</Row>
-						<Row className={"mb-4"}>
 							<InputControl
 								handleChange={handleChange}
 								name={"date"}
@@ -93,35 +91,35 @@ export const OneTimeIncomeForm = () => {
 								touched={touched.end}
 								errors={errors.end}
 							/>
+							<TaxSelector
+								level={"Federal"}
+								stateChanger={handleChange}
+								errors={errors.federal}
+								touched={touched.federal}
+								values={values.federal}
+							/>
+							<TaxSelector
+								level={"State"}
+								stateChanger={handleChange}
+								errors={errors.state}
+								touched={touched.state}
+								values={values.state}
+							/>
+							<TaxSelector
+								level={"Local"}
+								stateChanger={handleChange}
+								errors={errors.local}
+								touched={touched.local}
+								values={values.local}
+							/>
+							<TaxSelector
+								level={"FICA"}
+								stateChanger={handleChange}
+								errors={errors.fica}
+								touched={touched.fica}
+								values={values.fica}
+							/>
 						</Row>
-						<TaxSelector
-							level={"Federal"}
-							stateChanger={handleChange}
-							errors={errors.federal}
-							touched={touched.federal}
-							values={values.federal}
-						/>
-						<TaxSelector
-							level={"State"}
-							stateChanger={handleChange}
-							errors={errors.state}
-							touched={touched.state}
-							values={values.state}
-						/>
-						<TaxSelector
-							level={"Local"}
-							stateChanger={handleChange}
-							errors={errors.local}
-							touched={touched.local}
-							values={values.local}
-						/>
-						<TaxSelector
-							level={"FICA"}
-							stateChanger={handleChange}
-							errors={errors.fica}
-							touched={touched.fica}
-							values={values.fica}
-						/>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
 							<Col className={"d-flex flex-row justify-content-center"}>
 								<SubmitButton name={"Create Income"} />

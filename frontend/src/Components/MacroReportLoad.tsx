@@ -4,6 +4,7 @@ import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { httpClient } from "@/Services/HttpClient.tsx";
 import { MacroYear } from "@/Components/MacroYear.tsx";
 import { destructuredMacroYearReport, macroYearReport } from "../../../backend/src/db/types.ts";
+import { Container } from "react-bootstrap";
 
 export const MacroReportLoad = () => {
 	const location = useLocation();
@@ -31,6 +32,10 @@ export const MacroReportLoad = () => {
 		void loadReport();
 	}, []);
 
-	const report = <MacroYear {...macroReport} />;
+	const report = (
+		<Container>
+			<MacroYear {...macroReport} />
+		</Container>
+	);
 	return <>{report}</>;
 };
