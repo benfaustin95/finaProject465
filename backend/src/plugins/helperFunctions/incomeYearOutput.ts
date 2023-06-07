@@ -32,11 +32,7 @@ export const incomeYearOutput = (
 	start: number,
 	end: number
 ): incomeYear => {
-	const outHuman: outputRow = {
-		name: "Salaries",
-		note: "",
-		amounts: new Map<number, number>(),
-	};
+	const outHuman: outputRow = mkOutputRow("Salaries");
 	const outSocial: outputRow = mkOutputRow("Social Income");
 	const outNonTaxable: outputRow = mkOutputRow("Non Taxable");
 	const outRental: outputRow = mkOutputRow("Rental Income");
@@ -44,55 +40,50 @@ export const incomeYearOutput = (
 	const taxes: Map<number, taxAccumulator> = new Map<number, taxAccumulator>();
 
 	for (let i = start; i <= end; ++i) {
-		let taxYear = new taxAccumulator();
-
-		outHuman.amounts.set(i, 0);
-		outSocial.amounts.set(i, 0);
-		outNonTaxable.amounts.set(i, 0);
-		outRental.amounts.set(i, 0);
-		outOneTime.amounts.set(i, 0);
+		let currentHuman = 0;
+		let currentSocical = 0;
+		let currentNonTax = 0;
+		let currentRental = 0;
+		let currentOneTime = 0;
+		let currentTax = new taxAccumulator();
 
 		capitalIncomes.forEach((x) => {
-			let row: outputRow;
+			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) return;
+
+			const toAdd = incomeCalculation(x, i);
 
 			switch (x.type) {
 				case CapAssetType.SOCIAL:
-					row = outSocial;
+					currentSocical += toAdd.income;
 					break;
 				case CapAssetType.NONTAXABLEANNUITY:
-					row = outNonTaxable;
+					currentNonTax += toAdd.income;
 					break;
 				case CapAssetType.HUMAN:
-					row = outHuman;
+					currentHuman += toAdd.income;
 					break;
 			}
-
-			const current = row.amounts.get(i);
-			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) {
-				row.amounts.set(i, current == undefined ? 0 : current);
-				return;
-			}
-
-			const toAdd = incomeCalculation(x, i);
-			row.amounts.set(i, current == undefined ? toAdd.income : current + toAdd.income);
-			taxYear = taxAccumulate(toAdd.tax, taxYear, toAdd.income);
+			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 		});
 
 		rentalIncome.forEach((x) => {
-			const current = outRental.amounts.get(i);
 			const toAdd = rentalCalculation(x, i);
-			outRental.amounts.set(i, current == undefined ? toAdd.income : current + toAdd.income);
-			taxYear = taxAccumulate(toAdd.tax, taxYear, toAdd.income);
+			currentRental += toAdd.income;
+			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 		});
 
 		oneTime.forEach((x) => {
-			const current = outOneTime.amounts.get(i);
 			const toAdd = oneTimeCalculation(x, i);
-			outOneTime.amounts.set(i, current == undefined ? toAdd.income : current + toAdd.income);
-			taxYear = taxAccumulate(toAdd.tax, taxYear, toAdd.income);
+			currentOneTime += toAdd.income;
+			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 		});
 
-		taxes.set(i, taxYear);
+		outHuman.amounts.set(i, currentHuman);
+		outSocial.amounts.set(i, currentSocical);
+		outNonTaxable.amounts.set(i, currentNonTax);
+		outRental.amounts.set(i, currentRental);
+		outOneTime.amounts.set(i, currentOneTime);
+		taxes.set(i, currentTax);
 	}
 	return { outHuman, outSocial, outNonTaxable, outRental, outOneTime, taxes };
 };
