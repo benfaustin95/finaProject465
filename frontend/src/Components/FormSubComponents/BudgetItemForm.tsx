@@ -31,7 +31,7 @@ export const BudgetItemForm = () => {
 	const budgetItemSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
-		income: number().positive().required(),
+		amount: number().positive().required(),
 		recurrence: string().required(),
 		start: date()
 			.required()
@@ -76,11 +76,11 @@ export const BudgetItemForm = () => {
 							/>
 							<InputControl
 								handleChange={handleChange}
-								name={"income"}
+								name={"amount"}
 								type={"number"}
-								values={values.income}
-								touched={touched.income}
-								errors={errors.income}
+								values={values.amount}
+								touched={touched.amount}
+								errors={errors.amount}
 							/>
 							<RecurrenceSelector
 								handleChange={handleChange}

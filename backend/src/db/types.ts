@@ -111,12 +111,12 @@ export interface OneTimeIncomeBodyInit extends BaseInputBodyInit {
 
 export interface DividendBody extends BaseInputBody {
 	rate: number;
-	finAsset: number;
+	asset: number;
 }
 
 export interface DividendBodyInit extends BaseInputBodyInit {
 	rate: number;
-	finAsset: FinancialAsset;
+	asset: FinancialAsset;
 }
 
 export class taxOutput {
@@ -248,20 +248,24 @@ export interface destructuredExpenseMonth {
 export interface withdrawal {
 	outputWithdrawal: Map<number, withdrawalOutputRow>;
 	outDividend: Map<number, outputRow>;
+	remainder: outputRow;
 }
 
 export interface withdrawalMonth {
 	outputWithdrawal: Map<number, withdrawalMonthOutputRow>;
 	outDividend: Map<number, monthOutputRow>;
+	remainder: monthOutputRow;
 }
 export interface destructuredWithdrawal {
 	outputWithdrawal: [number, destructuredWithOutputRow][];
 	outDividend: [number, destructuredOutputRow][];
+	remainder: destructuredOutputRow;
 }
 
 export interface destructuredMicroWithdrawal {
 	outputWithdrawal: [number, destructuredWithdrawalMonthOutputRow][];
 	outDividend: [number, destructuredMonthOutputRow][];
+	remainder: destructuredMonthOutputRow;
 }
 export interface row {
 	name: string;

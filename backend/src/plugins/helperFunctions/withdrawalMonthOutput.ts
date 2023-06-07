@@ -12,7 +12,7 @@ import {
 } from "../../db/types.js";
 import { calculateTax, dividendCalculation } from "./incomeYearOutput.js";
 import { Dividend } from "../../db/entities/Dividend.js";
-import { current } from "tap";
+import { mkMonthOutputRow } from "./incomeMonthOutput.js";
 
 function calculatePostTaxLiquidity(item: FinancialAsset) {
 	if (item.totalValue == 0) return 0;
@@ -64,6 +64,7 @@ export const withdrawalMonthOutput = (
 		number,
 		withdrawalMonthOutputRow
 	>();
+	const remainder: monthOutputRow = mkMonthOutputRow("remainder", "if < 0 retirment failed");
 
 	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
@@ -130,7 +131,9 @@ export const withdrawalMonthOutput = (
 					} else currentOutputWithdrawal.amounts.set(key, 0);
 					currentOutputWithdrawal.updatedValue.set(key, toAdd.totalValue);
 				});
+
+			remainder.amounts.set(key, currentDeficit);
 		}
 	}
-	return { outputWithdrawal, outDividend };
+	return { outputWithdrawal, outDividend, remainder };
 };

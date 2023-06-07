@@ -14,7 +14,15 @@ body, main{
 	width:100vw;
 	height: 100vh;
 }
-
+table{
+	width:100%;
+}
+table td{
+	white-space: nowrap;  /** added **/
+}
+table td:last-child{
+	width:100%;
+}
 .doggrfancy {
 	background-color: #181a1b;
 	position: fixed;

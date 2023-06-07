@@ -26,11 +26,13 @@ export const expenseYearOutput = (
 		const recurrence = x.recurrence != Recurrence.NON;
 		const row: outputRow = mkOutputRow(x.name, x.note);
 		for (let i = start; i <= end; ++i) {
-			let currentMonthly: number = monthlyExpense.amounts.get(i);
-			let currentYearly: number = annualExpense.amounts.get(i);
+			let currentMonthly: number = monthlyExpense.amounts.get(i) ?? 0;
+			let currentYearly: number = annualExpense.amounts.get(i) ?? 0;
 
 			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) {
 				row.amounts.set(i, 0);
+				monthlyExpense.amounts.set(i, currentMonthly);
+				annualExpense.amounts.set(i, currentYearly);
 				continue;
 			}
 
@@ -51,6 +53,13 @@ export const expenseYearOutput = (
 		if (recurrence) outputRecurring.set(x.id, row);
 		else outputNonRecurring.set(x.id, row);
 	});
+
+	if (monthlyExpense.amounts.size == 0) {
+		for (let year = start; year <= end; ++year) {
+			monthlyExpense.amounts.set(year, 0);
+			annualExpense.amounts.set(year, 0);
+		}
+	}
 	return { outputRecurring, outputNonRecurring, monthlyExpense, annualExpense };
 };
 

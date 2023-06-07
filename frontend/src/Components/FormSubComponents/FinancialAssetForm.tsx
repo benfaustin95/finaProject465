@@ -18,6 +18,7 @@ import {
 
 export const FinancialAssetForm = () => {
 	function submitForm(event) {
+		console.log(event);
 		const toSubmit = {
 			...event,
 			owner_id: 3,

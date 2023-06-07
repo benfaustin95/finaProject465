@@ -36,7 +36,7 @@ export const DividendForm = () => {
 		name: string().required(),
 		note: string(),
 		rate: number().positive().required(),
-		finAsset: number().positive().required().integer(),
+		asset: number().positive().required().integer(),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),
@@ -67,7 +67,7 @@ export const DividendForm = () => {
 					name: "",
 					note: "",
 					rate: 1,
-					finAsset: finAssets != undefined && finAssets.length > 0 ? finAssets[0] : 0,
+					asset: finAssets != undefined && finAssets.length > 0 ? finAssets[0] : 0,
 				}}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
@@ -99,10 +99,10 @@ export const DividendForm = () => {
 							<Col xs={12} md={8} lg={4}>
 								<Form.Select
 									id="finAsset"
-									name={"finAsset"}
-									value={values.finAsset}
-									isValid={touched.finAsset && !errors.finAsset}
-									isInvalid={!!errors.finAsset}
+									name={"asset"}
+									value={values.asset}
+									isValid={touched.asset && !errors.asset}
+									isInvalid={!!errors.asset}
 									onChange={handleChange}>
 									{finAssets.map((x) => (
 										<option key={x.id} value={x.id}>

@@ -9,6 +9,5 @@ export class RFBase extends BaseInput {
 	costBasis: number = 0;
 
 	@Property()
-	@Unique()
 	wPriority!: number;
 }

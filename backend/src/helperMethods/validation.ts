@@ -51,7 +51,7 @@ function validateGrowthRate(growthRate: number, type: string) {
 	return growthRate;
 }
 
-function validateDate(start: Date, type: string) {
+function validateDate(start: string | Date, type: string | Date) {
 	const toReturn = new Date(start);
 	if (isNaN(toReturn.getTime()))
 		throw new InvalidDataError({
@@ -62,7 +62,7 @@ function validateDate(start: Date, type: string) {
 	return toReturn;
 }
 
-function validateBoundedDate(start: Date, end: Date, user) {
+function validateBoundedDate(start: string, end: string, user) {
 	const validStart = start == undefined ? user.start : start;
 	const validEnd = end == undefined ? new Date("1/1/3000") : end;
 
@@ -187,7 +187,7 @@ export async function validateDividendInputBody(
 		return {
 			...base,
 			rate: validateRate(item.rate),
-			finAsset: await req.em.getReference(FinancialAsset, item.finAsset),
+			asset: await req.em.getReference(FinancialAsset, item.asset),
 		};
 	} catch (err) {
 		if (!(err instanceof InvalidDataError))

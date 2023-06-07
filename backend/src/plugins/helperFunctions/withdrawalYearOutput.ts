@@ -1,7 +1,7 @@
 import { FinancialAsset } from "../../db/entities/financialasset.js";
 import { compoundGrowthRate } from "./expenseYearOutput.js";
 import { amount, outputRow, row, withdrawal, withdrawalOutputRow } from "../../db/types.js";
-import { calculateTax, dividendCalculation } from "./incomeYearOutput.js";
+import { calculateTax, dividendCalculation, mkOutputRow } from "./incomeYearOutput.js";
 import { Dividend } from "../../db/entities/Dividend.js";
 import { current } from "tap";
 
@@ -53,6 +53,7 @@ export const withdrawalYearOutput = (
 ): withdrawal => {
 	const outDividend: Map<number, outputRow> = new Map<number, outputRow>();
 	const outputWithdrawal: Map<number, withdrawalOutputRow> = new Map<number, withdrawalOutputRow>();
+	const remainder: outputRow = mkOutputRow("remainder", "unaccounted for expense");
 
 	for (let year = start; year <= end; ++year) {
 		let currentDeficit = deficit.amounts.get(year);
@@ -117,6 +118,7 @@ export const withdrawalYearOutput = (
 				} else currentOutputWithdrawal.amounts.set(year, 0);
 				currentOutputWithdrawal.updatedValue.set(year, toAdd.totalValue);
 			});
+		remainder.amounts.set(year, currentDeficit);
 	}
-	return { outputWithdrawal, outDividend };
+	return { outputWithdrawal, outDividend, remainder };
 };

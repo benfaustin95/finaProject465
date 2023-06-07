@@ -171,6 +171,16 @@ export const incomeMonthOutput = (
 				taxes.set(key, taxAccumulate(toAdd.tax, taxes.get(key), toAdd.income));
 			}
 		}
+
+		if (monthlyIncome.amounts.size == 0) {
+			for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
+				for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
+					const key = JSON.stringify({ month, year });
+					monthlyIncome.amounts.set(key, 0);
+				}
+			}
+		}
 	});
+
 	return { salary, investments, retirementIncome, nonTaxable, oneTimeIncome, taxes, monthlyIncome };
 };

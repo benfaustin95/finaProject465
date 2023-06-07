@@ -126,6 +126,7 @@ function sendWithdrawals(withdrawals: withdrawal): destructuredWithdrawal {
 	return {
 		outputWithdrawal: sendWithdrawalRows(withdrawals.outputWithdrawal),
 		outDividend: sendRowGroup(withdrawals.outDividend),
+		remainder: sendRow(withdrawals.remainder),
 	};
 }
 
@@ -269,6 +270,7 @@ function sendWithdrawalMonth(withdrawal: withdrawalMonth): destructuredMicroWith
 	return {
 		outputWithdrawal: sendWithMonthRows(withdrawal.outputWithdrawal),
 		outDividend: sendMonthRowGroup(withdrawal.outDividend),
+		remainder: sendMonthOutputRow(withdrawal.remainder),
 	};
 }
 

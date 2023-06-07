@@ -16,7 +16,7 @@ import {
 	taxAccumulator,
 	withdrawal,
 } from "../../../backend/src/db/types.js";
-import { Container, Table } from "react-bootstrap";
+import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { Simulate } from "react-dom/test-utils";
 import waiting = Simulate.waiting;
@@ -42,6 +42,25 @@ function MicroRow(props: destructuredMonthOutputRow) {
 		</tr>
 	);
 }
+
+function Remainder(props: destructuredMonthOutputRow) {
+	const { name, note, amounts } = props;
+	const formater = new Intl.NumberFormat("em-US", {
+		style: "currency",
+		currency: "USD",
+	});
+
+	return (
+		<tr>
+			<td key={name + "cell"}>{name}</td>
+			<td key={note + "cell"}>{note}</td>
+			{amounts.map(([[month, year], x]) => {
+				return <td key={year + month + name + note + "cell"}>{formater.format(x)}</td>;
+			})}
+		</tr>
+	);
+}
+
 function MicroRowGroup(props: microRowGroup) {
 	const { group } = props;
 	return (
@@ -172,15 +191,31 @@ function Taxes(props: destructuredMonthlyTaxAccumulator) {
 	);
 	return taxOutput;
 }
+
+function FillerRow(props: { name: string }) {
+	const { name } = props;
+	return (
+		<tr>
+			<td>{name}</td>
+		</tr>
+	);
+}
+
 function MicroIncomes(props: destructuredIncomeMonth) {
 	const { salary, investments, retirementIncome, nonTaxable, oneTimeIncome, taxes, monthlyIncome } =
 		props;
 	return (
 		<>
+			{/*<FillerRow name={"Income/Disbursements - by source"} />*/}
+			{/*<FillerRow name={"Salary"} />*/}
 			<MicroRowGroup key={"salary"} group={salary} />
+			{/*<FillerRow name={"Investments"} />*/}
 			<MicroRowGroup key={"investments"} group={investments} />
+			{/*<FillerRow name={"Retirement Income"} />*/}
 			<MicroRowGroup key={"retirementIncome"} group={retirementIncome} />
+			{/*<FillerRow name={"Non-Tax Assets"} />*/}
 			<MicroRowGroup key={"nonTaxable"} group={nonTaxable} />
+			{/*<FillerRow name={"One Time Incomes"} />*/}
 			<MicroRowGroup key={"outOneTime"} group={oneTimeIncome} />
 			<MicroRow key={"Monthly Sum"} {...monthlyIncome} />
 			{taxes != undefined ? <Taxes {...taxes} /> : null}
@@ -189,11 +224,14 @@ function MicroIncomes(props: destructuredIncomeMonth) {
 }
 
 function MicroWithdrawals(props: destructuredMicroWithdrawal) {
-	const { outDividend, outputWithdrawal } = props;
+	const { outDividend, outputWithdrawal, remainder } = props;
 	return (
 		<>
 			<MicroRowGroup group={outDividend} />
 			<MicroWithdrawalRowGroup group={outputWithdrawal} />
+			{remainder != undefined && remainder.amounts.filter((x) => x[1] != 0).length > 0 ? (
+				<MicroRow {...remainder} />
+			) : null}
 		</>
 	);
 }
@@ -206,15 +244,18 @@ export function MicroYear(props: destructuredMicroReport) {
 	});
 
 	return (
-		<Container>
-			<Table responsive>
-				<thead>
+		<Container className={"bg-light rounded-4 m-5 p-5"}>
+			<Row className={"text-center pb-4"}>
+				<h1>Monthly CashFlow Estimate</h1>
+			</Row>
+			<Table className={"border-dark"} responsive striped bordered hover>
+				<thead className={"table-dark border-white"}>
 					<tr>
 						<th>Name</th>
 						<th>Note</th>
 						{expense != undefined
 							? expense.outNonRecurring.amounts.map(([[month, year]]) => (
-									<th>{`${month + 1}/${year}`}</th>
+									<th key={"header-name-note" + month + year + "cell"}>{`${month + 1}/${year}`}</th>
 							  ))
 							: null}
 					</tr>

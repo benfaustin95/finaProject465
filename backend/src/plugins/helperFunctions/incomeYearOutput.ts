@@ -45,6 +45,13 @@ export const incomeYearOutput = (
 
 	for (let i = start; i <= end; ++i) {
 		let taxYear = new taxAccumulator();
+
+		outHuman.amounts.set(i, 0);
+		outSocial.amounts.set(i, 0);
+		outNonTaxable.amounts.set(i, 0);
+		outRental.amounts.set(i, 0);
+		outOneTime.amounts.set(i, 0);
+
 		capitalIncomes.forEach((x) => {
 			let row: outputRow;
 

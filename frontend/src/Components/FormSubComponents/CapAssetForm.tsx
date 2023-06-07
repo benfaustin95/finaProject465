@@ -68,6 +68,7 @@ export function InputControl(props: {
 		"cashBasis",
 		"owed",
 		"grossIncome",
+		"amount",
 	]);
 	return (
 		<>

@@ -10,6 +10,7 @@ import {
 } from "../../../backend/src/db/types.ts";
 import { MicroReportService } from "@/Services/MicroReportService.tsx";
 import { MicroYear } from "@/Components/MicroYear.tsx";
+import { Container } from "react-bootstrap";
 
 export const MicroReportLoad = () => {
 	const location = useLocation();

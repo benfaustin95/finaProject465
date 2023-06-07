@@ -12,7 +12,7 @@ export const MacroReportLoad = () => {
 	// const { end } = location.state;
 	const [macroReport, setMacroReport] = useState<destructuredMacroYearReport>();
 	const loadReport = () => {
-		MacroReportService.send(1, new Date("1/1/2105"))
+		MacroReportService.send(3, new Date("1/1/2105"))
 			.then((res) => {
 				if (res.status != 200) navigate("/");
 				console.log(res);
@@ -32,10 +32,6 @@ export const MacroReportLoad = () => {
 		void loadReport();
 	}, []);
 
-	const report = (
-		<Container>
-			<MacroYear {...macroReport} />
-		</Container>
-	);
+	const report = <MacroYear {...macroReport} />;
 	return <>{report}</>;
 };
