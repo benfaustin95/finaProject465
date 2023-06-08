@@ -8,7 +8,7 @@ import {
 	destructuredWithOutputRow,
 	taxAccumulator,
 	withdrawal,
-} from "../../../backend/src/db/types.js";
+} from "../../../../backend/src/db/types.js";
 import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { Simulate } from "react-dom/test-utils";

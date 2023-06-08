@@ -1,13 +1,13 @@
 import Form from "react-bootstrap/Form";
 import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
+import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { FinancialAsset } from "../../../../backend/src/db/entities/financialasset.ts";
-import { FinAssetService } from "@/Services/FinAssetService.tsx";
+import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { Formik } from "formik";
-import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
-import { InputControl, SubmitButton } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
+import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { number, string } from "yup";
 import { DividendBody } from "../../../../backend/src/db/types.ts";
@@ -16,8 +16,8 @@ export const DividendForm = () => {
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
 
 	useEffect(() => {
-		const loadFinAssets = () => {
-			FinAssetService.send(1)
+		const loadSearchItem = () => {
+			SearchItemService.send(3, "dividend")
 				.then((res) => {
 					if (res.status != 200) throw Error();
 					return res.data;
@@ -29,7 +29,7 @@ export const DividendForm = () => {
 					console.log(err);
 				});
 		};
-		loadFinAssets();
+		loadSearchItem();
 	}, []);
 
 	const dividendSchema = yup.object().shape({

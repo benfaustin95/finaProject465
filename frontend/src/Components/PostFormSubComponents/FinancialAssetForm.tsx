@@ -1,29 +1,29 @@
-import Form from "react-bootstrap/Form";
-import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
+import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
 import { useState } from "react";
-import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
+import { CAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
-import { OneTimeIncome } from "../../../../backend/src/db/entities/OneTimeIncome.ts";
-import { OneTimeIncomeBody } from "../../../../backend/src/db/types.ts";
+import Form from "react-bootstrap/Form";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import * as yup from "yup";
+import { date, number, string } from "yup";
 import { Formik } from "formik";
 import { CapAssetType, Recurrence } from "@/DoggrTypes.ts";
-import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
+import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import {
 	InputControl,
 	RecurrenceSelector,
 	SubmitButton,
-} from "@/Components/FormSubComponents/CapAssetForm.tsx";
-import * as yup from "yup";
-import { date, number, string } from "yup";
+} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 
-export const OneTimeIncomeForm = () => {
+export const FinancialAssetForm = () => {
 	function submitForm(event) {
-		const toSubmit: OneTimeIncomeBody = {
+		console.log(event);
+		const toSubmit = {
 			...event,
 			owner_id: 3,
 		};
-
-		PostInputService.send("/oneTimeIncome", toSubmit)
+		PostInputService.send("/financialAsset", toSubmit)
 			.then((res) => {
 				console.log(res);
 				if (res.status != 200) console.log(res);
@@ -32,34 +32,38 @@ export const OneTimeIncomeForm = () => {
 				console.log(err);
 			});
 	}
-	const oneTimeIncomeSchema = yup.object().shape({
+
+	const financialAssetSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
-		cashBasis: number().positive().required(),
-		date: date().default(null).required(),
 		growthRate: number().required().positive().max(10),
+		totalValue: number().required().positive(),
+		costBasis: number().required().min(0),
+		wPriority: number().required().integer().positive(),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),
 		fica: string().default(""),
+		capitalgains: string().default(""),
 	});
 
 	return (
 		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
-				validationSchema={oneTimeIncomeSchema}
+				validationSchema={financialAssetSchema}
 				onSubmit={submitForm}
 				initialValues={{
 					name: "",
 					note: "",
-					date: new Date().toISOString().slice(0, 10),
-					cashBasis: 0,
 					growthRate: 1,
+					totalValue: 0,
+					costBasis: 0,
+					wPriority: 1,
 				}}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
-							<h1 className={"text-center"}>Create One Time Income</h1>
+							<h1 className={"text-center"}>Create Financial Asset</h1>
 						</Row>
 						<Row>
 							<BaseInputForm
@@ -73,23 +77,19 @@ export const OneTimeIncomeForm = () => {
 								touchedGrowthRate={touched.growthRate}
 								valuesGrowthRate={values.growthRate}
 								errorsGrowth={errors.growthRate}
-								type={"oneTimeIncome"}
+								type={"financialAsset"}
 							/>
-							<InputControl
+							<RFBaseForm
 								handleChange={handleChange}
-								name={"cashBasis"}
-								type={"number"}
-								values={values.cashBasis}
-								touched={touched.cashBasis}
-								errors={errors.cashBasis}
-							/>
-							<InputControl
-								handleChange={handleChange}
-								name={"date"}
-								type={"date"}
-								values={values.end}
-								touched={touched.end}
-								errors={errors.end}
+								errorsTotalValue={errors.totalValue}
+								touchedTotalValue={touched.totalValue}
+								valuesTotalValue={values.totalValue}
+								errorsCostBasis={errors.costBasis}
+								touchedCostBasis={touched.costBasis}
+								valuesCostBasis={values.costBasis}
+								errorsWPriority={errors.wPriority}
+								valuesWPriority={values.wPriority}
+								touchedWPriority={touched.wPriority}
 							/>
 							<TaxSelector
 								level={"Federal"}
@@ -119,10 +119,17 @@ export const OneTimeIncomeForm = () => {
 								touched={touched.fica}
 								values={values.fica}
 							/>
+							<TaxSelector
+								level={"capitalgains"}
+								stateChanger={handleChange}
+								errors={errors.capitalgains}
+								touched={touched.capitalgains}
+								values={values.capitalgains}
+							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
 							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Income"} />
+								<SubmitButton name={"Create Asset"} />
 							</Col>
 						</Row>
 					</Form>

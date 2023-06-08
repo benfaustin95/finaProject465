@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import { FormControl, InputGroup, Row } from "react-bootstrap";
-import { baseInputForm, BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
-import { InputControl } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import { baseInputForm, BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
+import { InputControl } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 
 export type rfBaseForm = {
 	handleChange;

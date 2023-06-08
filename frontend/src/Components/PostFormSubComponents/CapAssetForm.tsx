@@ -1,13 +1,13 @@
 import Form from "react-bootstrap/Form";
 import { Button, Col, Container, FormControl, InputGroup, Row } from "react-bootstrap";
-import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
+import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { Formik, useFormikContext } from "formik";
 import * as formik from "formik";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { CAssetBody } from "../../../../backend/src/db/types.ts";
-import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { CapAssetType, Recurrence } from "../../DoggrTypes.ts";
 import { useState } from "react";
 
@@ -29,10 +29,10 @@ export function RecurrenceSelector(props: { handleChange; values; errors; touche
 	const { handleChange, values, errors, touched } = props;
 	return (
 		<>
-			<Col xs={12} md={4} lg={2}>
+			<Col xs={12} md={4} lg={2} className={"mb-4"}>
 				<Form.Label htmlFor="recurrence">Recurrence</Form.Label>
 			</Col>
-			<Col xs={12} md={8} lg={4}>
+			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<Form.Select
 					id="recurrence"
 					onChange={handleChange}

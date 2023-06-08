@@ -2,17 +2,23 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { httpClient } from "@/Services/HttpClient.tsx";
-import { MacroYear } from "@/Components/MacroYear.tsx";
-import { destructuredMacroYearReport, macroYearReport } from "../../../backend/src/db/types.ts";
+import { MacroYear } from "@/Components/GetReportSubComponenets/MacroYear.tsx";
+import {
+	destructuredMacroYearReport,
+	destructuredMicroReport,
+	macroYearReport,
+} from "../../../../backend/src/db/types.ts";
+import { MicroReportService } from "@/Services/MicroReportService.tsx";
+import { MicroYear } from "@/Components/GetReportSubComponenets/MicroYear.tsx";
 import { Container } from "react-bootstrap";
 
-export const MacroReportLoad = () => {
+export const MicroReportLoad = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	// const { end } = location.state;
-	const [macroReport, setMacroReport] = useState<destructuredMacroYearReport>();
+	const [microReport, setMicroReport] = useState<destructuredMicroReport>();
 	const loadReport = () => {
-		MacroReportService.send(3, new Date("1/1/2105"))
+		MicroReportService.send(1)
 			.then((res) => {
 				if (res.status != 200) navigate("/");
 				console.log(res);
@@ -20,7 +26,7 @@ export const MacroReportLoad = () => {
 			})
 			.then((res) => {
 				console.log(res);
-				setMacroReport(res);
+				setMicroReport(res);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -32,6 +38,6 @@ export const MacroReportLoad = () => {
 		void loadReport();
 	}, []);
 
-	const report = <MacroYear {...macroReport} />;
+	const report = <MicroYear {...microReport} />;
 	return <>{report}</>;
 };

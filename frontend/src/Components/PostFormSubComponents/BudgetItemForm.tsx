@@ -4,13 +4,13 @@ import { PostInputService } from "@/Services/PostInputService.tsx";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
-import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
+import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { CapAssetType } from "@/DoggrTypes.ts";
 import {
 	InputControl,
 	RecurrenceSelector,
 	SubmitButton,
-} from "@/Components/FormSubComponents/CapAssetForm.tsx";
+} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 export const BudgetItemForm = () => {
 	function submitForm(event) {
 		const toSubmit = {

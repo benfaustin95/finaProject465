@@ -1,8 +1,8 @@
 import Form from "react-bootstrap/Form";
-import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
+import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { InputControl } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import { InputControl } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 
 export type baseInputForm = {
 	handleChange: any;

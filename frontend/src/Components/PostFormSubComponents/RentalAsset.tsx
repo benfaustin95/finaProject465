@@ -2,14 +2,14 @@ import { useState } from "react";
 import { RentalAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
-import { RFBaseForm } from "@/Components/FormSubComponents/RFBase.tsx";
+import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { number, string } from "yup";
 import { Formik } from "formik";
-import { BaseInputForm } from "@/Components/FormSubComponents/BaseInputForm.tsx";
-import { TaxSelector } from "@/Components/FormSubComponents/TaxComponents.tsx";
-import { InputControl, SubmitButton } from "@/Components/FormSubComponents/CapAssetForm.tsx";
+import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
+import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
+import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 
 export const RentalAssetForm = () => {
 	function submitForm(event) {

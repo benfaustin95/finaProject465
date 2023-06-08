@@ -41,7 +41,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.search<{ Body: { userId: number } }>("/OneTimeIncome", async (req, reply) => {
+	app.search<{ Body: { userId: number } }>("/oneTimeIncome", async (req, reply) => {
 		const { userId } = req.body;
 
 		try {

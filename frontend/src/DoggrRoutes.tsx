@@ -1,14 +1,17 @@
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
-import { MacroReportSet } from "@/Components/UsersList.tsx";
-import { MicroReportLoad } from "@/Components/MicroReportLoad.tsx";
-import { MacroReportLoad } from "@/Components/MacroReportLoad.tsx";
-import { BudgetItemForm } from "@/Components/FormSubComponents/BudgetItemForm.tsx";
-import { CapitalAssetForm, SubmitButton } from "@/Components/FormSubComponents/CapAssetForm.tsx";
-import { DividendForm } from "@/Components/FormSubComponents/DividendForm.tsx";
-import { OneTimeIncomeForm } from "@/Components/FormSubComponents/OneTimeIncomeForm.tsx";
-import { FinancialAssetForm } from "@/Components/FormSubComponents/FinancialAssetForm.tsx";
-import { RentalAssetForm } from "@/Components/FormSubComponents/RentalAsset.tsx";
+import { MacroReportSet } from "@/Components/GetReportSubComponenets/UsersList.tsx";
+import { MicroReportLoad } from "@/Components/GetReportSubComponenets/MicroReportLoad.tsx";
+import { MacroReportLoad } from "@/Components/GetReportSubComponenets/MacroReportLoad.tsx";
+import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
+import {
+	CapitalAssetForm,
+	SubmitButton,
+} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
+import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
+import { FinancialAssetForm } from "@/Components/PostFormSubComponents/FinancialAssetForm.tsx";
+import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAsset.tsx";
 import {
 	Button,
 	Col,
@@ -20,6 +23,14 @@ import {
 	NavLink,
 } from "react-bootstrap";
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
+import { DeleteItemForm } from "@/Components/DeleteFormSubComponents/DeleteItemForm.tsx";
+import { FinancialAsset } from "../../backend/src/db/entities/financialasset.ts";
+import { BudgetItemPage } from "@/Components/EntityPageComponents/BudgetItemPage.tsx";
+import { CapitalAssetPage } from "@/Components/EntityPageComponents/CapitalAssetPage.tsx";
+import { DividendPage } from "@/Components/EntityPageComponents/DividendPage.tsx";
+import { OneTimeIncomePage } from "@/Components/EntityPageComponents/OneTimeIncomePage.tsx";
+import { FinancialAssetPage } from "@/Components/EntityPageComponents/FinancialAssetPage.tsx";
+import { RentalAssetPage } from "@/Components/EntityPageComponents/RentalAssetPage.tsx";
 
 export function DoggrRouter() {
 	return (
@@ -34,12 +45,12 @@ export function DoggrRouter() {
 								<NavLink href={"/"}>Macro Report</NavLink>
 								<NavLink href={"/microReportLoaded"}>Micro Report</NavLink>
 								<NavDropdown title={"Financial Items"}>
-									<NavDropdown.Item href={"/budgetItemPost"}>Budget Item</NavDropdown.Item>
-									<NavDropdown.Item href={"/capitalAssetPost"}>Capital Asset</NavDropdown.Item>
-									<NavDropdown.Item href={"/dividendPost"}>Dividend</NavDropdown.Item>
-									<NavDropdown.Item href={"/oneTimeIncomePost"}>One Time Income</NavDropdown.Item>
-									<NavDropdown.Item href={"/FinancialAssetPost"}>Financial Asset</NavDropdown.Item>
-									<NavDropdown.Item href={"/RentalAssetPost"}>Rental Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/budgetItem"}>Budget Item</NavDropdown.Item>
+									<NavDropdown.Item href={"/capitalAsset"}>Capital Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/dividend"}>Dividend</NavDropdown.Item>
+									<NavDropdown.Item href={"/oneTimeIncome"}>One Time Income</NavDropdown.Item>
+									<NavDropdown.Item href={"/financialAsset"}>Financial Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/RentalAsset"}>Rental Asset</NavDropdown.Item>
 								</NavDropdown>
 							</Nav>
 						</Col>
@@ -56,12 +67,12 @@ export function DoggrRouter() {
 					<Route path="/" element={<MacroReportSet />} />
 					<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
 					<Route path="/microReportLoaded" element={<MicroReportLoad />} />
-					<Route path="/budgetItemPost" element={<BudgetItemForm />} />
-					<Route path="/capitalAssetPost" element={<CapitalAssetForm />} />
-					<Route path="/dividendPost" element={<DividendForm />} />
-					<Route path="/oneTimeIncomePost" element={<OneTimeIncomeForm />} />
-					<Route path="/financialAssetPost" element={<FinancialAssetForm />} />
-					<Route path="/rentalAssetPost" element={<RentalAssetForm />} />
+					<Route path="/budgetItem" element={<BudgetItemPage />} />
+					<Route path="/capitalAsset" element={<CapitalAssetPage />} />
+					<Route path="/dividend" element={<DividendPage />} />
+					<Route path="/oneTimeIncome" element={<OneTimeIncomePage />} />
+					<Route path="/financialAsset" element={<FinancialAssetPage />} />
+					<Route path="/rentalAsset" element={<RentalAssetPage />} />
 				</Routes>
 			</Container>
 		</main>
