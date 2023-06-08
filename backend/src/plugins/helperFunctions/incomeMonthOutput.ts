@@ -78,12 +78,18 @@ export const incomeMonthOutput = (
 	const oneTimeIncome: Map<number, monthOutputRow> = new Map<number, monthOutputRow>();
 	const taxes: Map<string, taxAccumulator> = new Map<string, taxAccumulator>();
 	const monthlyIncome: monthOutputRow = mkMonthOutputRow("monthly income");
-
+	oneTime = oneTime.filter(
+		(x) => x.date.getFullYear() >= start.getFullYear() && x.date.getFullYear() <= end.getFullYear()
+	);
+	capitalIncomes = capitalIncomes.filter(
+		(x) => x.start.getFullYear() <= end.getFullYear() && x.end.getFullYear() >= start.getFullYear()
+	);
 	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key = JSON.stringify({ month, year });
 			let currentMonthIncome = 0;
 			let currentTax = new taxAccumulator();
+
 			capitalIncomes.forEach((x) => {
 				let currentMap: Map<number, monthOutputRow>;
 

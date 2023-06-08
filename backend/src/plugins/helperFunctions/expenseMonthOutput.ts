@@ -10,6 +10,9 @@ export const expenseMonthOutput = (
 ): expenseMonth => {
 	const outReccuring: monthOutputRow = mkMonthOutputRow("Reccuring Expenses");
 	const outNonReccuring: monthOutputRow = mkMonthOutputRow("NonReccuring Expenses");
+	expenses = expenses.filter(
+		(x) => x.start.getFullYear() <= end.getFullYear() && x.end.getFullYear() >= start.getFullYear()
+	);
 	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
 		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key: string = JSON.stringify({ month, year });

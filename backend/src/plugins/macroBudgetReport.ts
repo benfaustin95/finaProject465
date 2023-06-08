@@ -31,7 +31,8 @@ declare module "fastify" {
 			oneTimeIncomes: Array<OneTimeIncome>,
 			rentals: Array<RentalAsset>,
 			start: number,
-			end: number
+			end: number,
+			rStartMonth: number
 		) => macroYearReport;
 	}
 }
@@ -97,9 +98,10 @@ const macroBudgetReport = async (app: FastifyInstance, _options = {}) => {
 		oneTimeIncomes: Array<OneTimeIncome>,
 		rentals: Array<RentalAsset>,
 		start: number,
-		end: number
+		end: number,
+		rStartMonth: number
 	): macroYearReport => {
-		const expense = expenseYearOutput(expenses, start, end);
+		const expense = expenseYearOutput(expenses, start, end, rStartMonth);
 		const income = incomeYearOutput(
 			capitalAssets,
 			rentals,

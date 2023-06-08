@@ -25,8 +25,7 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 			const budgetItems = user.budgetItems.getItems();
 			const capAssets = user.capitalAssets.getItems();
 			const oneTimeIncome = user.oneTimeIncomes.getItems();
-
-			// for(let year = user.start.getFullYear(); year<=user.start.getFullYear()+5;++year){
+			const end = new Date(user.start.getFullYear() + 4, 11, 31);
 			const toSend = app.microYearReport(
 				budgetItems,
 				capAssets,
@@ -35,10 +34,11 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 				finAssets,
 				rentalAssets,
 				user.start,
-				user.start
+				end
 			);
 			reply.send(toSend);
 		} catch (err) {
+			console.log(err);
 			reply.status(500).send(err);
 		}
 	});

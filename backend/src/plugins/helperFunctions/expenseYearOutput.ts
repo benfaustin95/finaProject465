@@ -15,30 +15,25 @@ export function currentYear(fullYear: number, fullYear2: number, i: number) {
 export const expenseYearOutput = (
 	expenses: Array<BudgetItem>,
 	start: number,
-	end: number
+	end: number,
+	rStartMonth: number
 ): expenseYear => {
 	const outputRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const outputNonRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
 	const annualExpense: outputRow = mkOutputRow("Annual Expense");
-
+	expenses = expenses.filter((x) => x.start.getFullYear() <= end && x.end.getFullYear() >= start);
 	for (let i = start; i <= end; ++i) {
 		let currentMonthly: number = 0;
 		let currentYearly: number = 0;
 		expenses.forEach((x) => {
 			const recurrence = x.recurrence != Recurrence.NON;
-			let row;
+			const map = recurrence ? outputRecurring : outputNonRecurring;
+			let row = map.get(x.id);
 
-			if (recurrence)
-				row =
-					outputRecurring.get(i) == undefined
-						? mkOutputRow(x.name, x.note)
-						: outputRecurring.get(i);
-			else {
-				row =
-					outputNonRecurring.get(i) == undefined
-						? mkOutputRow(x.name, x.note)
-						: outputNonRecurring.get(i);
+			if (row == undefined) {
+				row = mkOutputRow(x.name, x.note);
+				map.set(x.id, row);
 			}
 
 			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) {
@@ -50,7 +45,7 @@ export const expenseYearOutput = (
 
 			if (recurrence) {
 				currentMonthly += toAdd;
-				currentYearly += annualExpenseCalculation(x, i, toAdd);
+				currentYearly += annualExpenseCalculation(x, i, toAdd, rStartMonth, start);
 			} else currentYearly += toAdd;
 
 			row.amounts.set(i, toAdd);
@@ -83,11 +78,24 @@ export const expenseCalculation = (item: BudgetItem, year: number): number => {
 	//need to get inflation amount from api and add to growth rate
 	return compoundGrowthRate(expense, item.growthRate, year - item.created_at.getFullYear());
 };
-function annualExpenseCalculation(item: BudgetItem, year: number, expense: number) {
+function annualExpenseCalculation(
+	item: BudgetItem,
+	year: number,
+	expense: number,
+	month: number,
+	startYear: number = 0
+) {
 	let monthsActive = 12;
-	if (item.start.getFullYear() < year && item.end.getFullYear() > year)
-		return monthsActive * expense;
-	if (item.start.getFullYear() == year) monthsActive -= item.start.getMonth();
-	if (item.end.getFullYear() == year) monthsActive -= 11 - item.end.getMonth();
+	const itemStartYear = item.start.getFullYear() == year;
+	const itemEndYear = item.end.getFullYear() == year;
+	if (year != startYear && !itemStartYear && itemEndYear) return monthsActive * expense;
+	if (itemEndYear && item.end.getMonth() < month) return 0;
+	if (year != startYear)
+		monthsActive -=
+			(itemStartYear ? item.start.getMonth() : 0) + (itemEndYear ? 11 - item.end.getMonth() : 0);
+	else
+		monthsActive -=
+			(itemStartYear ? (item.start.getMonth() > month ? item.start.getMonth() : month) : 0) +
+			(itemEndYear ? 11 - item.end.getMonth() : 0);
 	return monthsActive * expense;
 }
