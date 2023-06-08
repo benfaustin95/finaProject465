@@ -85,12 +85,12 @@ export interface RFBaseBodyInit extends BaseInputBodyInit {
 
 export interface RentalAssetBody extends RFBaseBody {
 	owed: number;
-	expense: number;
+	maintenanceExpense: number;
 	grossIncome: number;
 }
 export interface RentalAssetBodyInit extends RFBaseBodyInit {
 	owed: number;
-	expense: number;
+	maintenanceExpense: number;
 	grossIncome: number;
 }
 export interface TaxBody extends RFBaseBody {

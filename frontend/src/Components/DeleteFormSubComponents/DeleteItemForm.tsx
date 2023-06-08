@@ -6,6 +6,7 @@ import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { SelectItemControl } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import Form from "react-bootstrap/Form";
 import { SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { DeleteItemsService } from "@/Services/DeleteItemsService.tsx";
 
 export function DeleteItemForm<T extends BaseInput>(props: { entityName: string; type: string }) {
 	const deleteItemSchema = yup.object({
@@ -13,7 +14,14 @@ export function DeleteItemForm<T extends BaseInput>(props: { entityName: string;
 	});
 
 	function submitForm(event) {
-		console.log(event);
+		const idsToDelete = event.idsToDelete;
+		DeleteItemsService.send(idsToDelete, props.type)
+			.then((res) => {
+				if (res.status != 200) console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	return (

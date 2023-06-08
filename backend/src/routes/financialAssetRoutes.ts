@@ -5,6 +5,7 @@ import { User } from "../db/entities/User.js";
 import { CapAsset } from "../db/entities/capasset.js";
 import { validateRFBaseBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
+import { RentalAsset } from "../db/entities/rentalasset.js";
 
 async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("error with instance in gin asset");
@@ -24,18 +25,24 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
-	app.delete<{ Body: { id: number; userId: number } }>("/financialAsset", async (req, reply) => {
-		const { userId, id } = req.body;
-
-		try {
-			const item = await req.em.getReference(FinancialAsset, id);
-			console.log(item);
-			await req.em.removeAndFlush(item);
-			return reply.send(item);
-		} catch (err) {
-			return reply.status(500).send(err);
+	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+		"/financialAsset",
+		async (req, reply) => {
+			const { userId, idsToDelete } = req.body;
+			console.log(req.body, idsToDelete instanceof Array);
+			try {
+				for (const id of idsToDelete) {
+					const item = await req.em.findOne(FinancialAsset, { id, owner: userId });
+					console.log(item);
+					await req.em.remove(item);
+				}
+				await req.em.flush();
+				return reply.send(idsToDelete);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
 		}
-	});
+	);
 
 	app.search<{ Body: { userId: number } }>("/financialAsset", async (req, reply) => {
 		const { userId } = req.body;

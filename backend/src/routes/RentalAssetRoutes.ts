@@ -26,18 +26,24 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.delete<{ Body: { id: number; userId: number } }>("/rentalAsset", async (req, reply) => {
-		const { userId, id } = req.body;
-
-		try {
-			const item = await req.em.getReference(RentalAsset, id);
-			console.log(item);
-			await req.em.removeAndFlush(item);
-			return reply.send(item);
-		} catch (err) {
-			return reply.status(500).send(err);
+	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+		"/rentalAsset",
+		async (req, reply) => {
+			const { userId, idsToDelete } = req.body;
+			console.log(req.body, idsToDelete instanceof Array);
+			try {
+				for (const id of idsToDelete) {
+					const item = await req.em.findOne(RentalAsset, { id, owner: userId });
+					console.log(item);
+					await req.em.remove(item);
+				}
+				await req.em.flush();
+				return reply.send(idsToDelete);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
 		}
-	});
+	);
 
 	app.search<{ Body: { userId: number } }>("/rentalAsset", async (req, reply) => {
 		const { userId } = req.body;

@@ -240,7 +240,10 @@ export async function validateRentalAsset(
 	return {
 		...(await validateRFBaseBody(item, app, req)),
 		owed: validateExpense(item.owed, `amount owed on ${item.name}`),
-		expense: validateExpense(item.expense, `monthly expense for ${item.name}`),
+		maintenanceExpense: validateExpense(
+			item.maintenanceExpense,
+			`monthly expense for ${item.name}`
+		),
 		grossIncome: validateExpense(item.grossIncome, `monthly gross income ${item.name}`),
 	};
 }

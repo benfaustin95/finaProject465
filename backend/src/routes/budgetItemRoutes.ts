@@ -4,6 +4,7 @@ import { User } from "../db/entities/User.js";
 import { BudgetBody } from "../db/types.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
 import { validateBudgetBody } from "../helperMethods/validation.js";
+import { RentalAsset } from "../db/entities/rentalasset.js";
 
 async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -30,18 +31,24 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.delete<{ Body: { id: number; userId: number } }>("/budgetItem", async (req, reply) => {
-		const { userId, id } = req.body;
-
-		try {
-			const item = await req.em.getReference(BudgetItem, id);
-			console.log(item);
-			await req.em.removeAndFlush(item);
-			return reply.send(item);
-		} catch (err) {
-			return reply.status(500).send(err);
+	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+		"/budgetItem",
+		async (req, reply) => {
+			const { userId, idsToDelete } = req.body;
+			console.log(req.body, idsToDelete instanceof Array);
+			try {
+				for (const id of idsToDelete) {
+					const item = await req.em.findOne(BudgetItem, { id, owner: userId });
+					console.log(item);
+					await req.em.remove(item);
+				}
+				await req.em.flush();
+				return reply.send(idsToDelete);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
 		}
-	});
+	);
 
 	app.search<{ Body: { userId: number } }>("/budgetItem", async (req, reply) => {
 		const { userId } = req.body;

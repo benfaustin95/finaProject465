@@ -17,7 +17,7 @@ export const RentalAssetForm = () => {
 			...event,
 			owner_id: 3,
 		};
-		PostInputService.send("/financialAsset", toSubmit)
+		PostInputService.send("/rentalAsset", toSubmit)
 			.then((res) => {
 				console.log(res);
 				if (res.status != 200) console.log(res);
@@ -27,7 +27,7 @@ export const RentalAssetForm = () => {
 			});
 	}
 
-	const financialAssetSchema = yup.object().shape({
+	const rentalAssetSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
 		growthRate: number().required().positive().max(10),
@@ -40,14 +40,14 @@ export const RentalAssetForm = () => {
 		fica: string().default(""),
 		capitalgains: string().default(""),
 		owed: number().required().min(0),
-		expense: number().required().min(0),
+		maintenanceExpense: number().required().min(0),
 		grossIncome: number().min(0).required(),
 	});
 
 	return (
 		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
-				validationSchema={financialAssetSchema}
+				validationSchema={rentalAssetSchema}
 				onSubmit={submitForm}
 				initialValues={{
 					name: "",
@@ -57,7 +57,7 @@ export const RentalAssetForm = () => {
 					costBasis: 0,
 					wPriority: 1,
 					owed: 0,
-					expense: 0,
+					maintenanceExpense: 0,
 					grossIncome: 0,
 				}}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
@@ -102,10 +102,10 @@ export const RentalAssetForm = () => {
 							<InputControl
 								handleChange={handleChange}
 								type={"number"}
-								name={"expense"}
-								values={values.expense}
-								touched={touched.expense}
-								errors={errors.expense}
+								name={"maintenanceExpense"}
+								values={values.maintenanceExpense}
+								touched={touched.maintenanceExpense}
+								errors={errors.maintenanceExpense}
 							/>
 							<InputControl
 								handleChange={handleChange}
