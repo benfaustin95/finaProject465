@@ -15,6 +15,7 @@
     "docs:generate": "rimraf ./doc/ && typedoc --options typedoc.json"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.1.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "formik": "^2.4.1",

@@ -31,13 +31,14 @@ function MicroRow(props: destructuredMonthOutputRow) {
 		style: "currency",
 		currency: "USD",
 	});
-
 	return (
 		<tr>
 			<td key={name + "cell"}>{name}</td>
 			<td key={note + "cell"}>{note}</td>
 			{amounts.map(([[month, year], x]) => (
-				<td key={year + month + name + note + "cell"}>{formater.format(x)}</td>
+				<td key={year.toString() + month.toString() + name + note + "cell"}>
+					{formater.format(x)}
+				</td>
 			))}
 		</tr>
 	);
@@ -55,7 +56,11 @@ function Remainder(props: destructuredMonthOutputRow) {
 			<td key={name + "cell"}>{name}</td>
 			<td key={note + "cell"}>{note}</td>
 			{amounts.map(([[month, year], x]) => {
-				return <td key={year + month + name + note + "cell"}>{formater.format(x)}</td>;
+				return (
+					<td key={year.toString() + month.toString() + name + note + "cell"}>
+						{formater.format(x)}
+					</td>
+				);
 			})}
 		</tr>
 	);
@@ -83,7 +88,9 @@ function MicroWithdrawalRow(props: destructuredWithdrawalMonthOutputRow) {
 			<td key={name + "withdrawal"}>{name}</td>
 			<td key={note + "withdrawal"}>{note}</td>
 			{updatedValue.map(([[month, year], x]) => (
-				<td key={year + month + name + note + "withdrawal"}>{formater.format(x)}</td>
+				<td key={year.toString() + month.toString() + name + note + "withdrawal"}>
+					{formater.format(x)}
+				</td>
 			))}
 		</tr>
 	);
