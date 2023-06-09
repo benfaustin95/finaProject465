@@ -38,7 +38,6 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 			try {
 				for (const id of idsToDelete) {
 					const item = await req.em.findOne(CapAsset, { id, owner: userId });
-					console.log(item);
 					await req.em.remove(item);
 				}
 				await req.em.flush();
@@ -54,7 +53,6 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 
 		try {
 			const item = await req.em.find(CapAsset, { owner: userId });
-			console.log(item);
 			return reply.send(item);
 		} catch (err) {
 			return reply.status(500).send(err);

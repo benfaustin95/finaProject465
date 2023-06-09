@@ -11,14 +11,16 @@ import {
 import { MicroReportService } from "@/Services/MicroReportService.tsx";
 import { MicroYear } from "@/Components/GetReportSubComponenets/MicroYear.tsx";
 import { Container } from "react-bootstrap";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const MicroReportLoad = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { userId } = useAuth();
 	// const { end } = location.state;
 	const [microReport, setMicroReport] = useState<destructuredMicroReport>();
 	const loadReport = () => {
-		MicroReportService.send(1)
+		MicroReportService.send(userId)
 			.then((res) => {
 				if (res.status != 200) navigate("/");
 				console.log(res);
@@ -33,7 +35,6 @@ export const MicroReportLoad = () => {
 				navigate("/");
 			});
 	};
-
 	useEffect(() => {
 		void loadReport();
 	}, []);

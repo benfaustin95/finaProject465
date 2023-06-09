@@ -33,7 +33,6 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 			try {
 				for (const id of idsToDelete) {
 					const item = await req.em.findOne(FinancialAsset, { id, owner: userId });
-					console.log(item);
 					await req.em.remove(item);
 				}
 				await req.em.flush();
@@ -49,7 +48,6 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 
 		try {
 			const item = await req.em.find(FinancialAsset, { owner: userId });
-			console.log("here" + item);
 			return reply.send(item);
 		} catch (err) {
 			return reply.status(500).send(err);

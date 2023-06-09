@@ -2,14 +2,22 @@ import { DoggrRouter } from "@/DoggrRoutes.tsx";
 import { Link, Route, Routes, Router, BrowserRouter } from "react-router-dom";
 import "@css/DoggrStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { AuthProvider } from "@/Services/Auth.tsx";
+import { useAuth0 } from "@auth0/auth0-react";
 // This is our base React Component
 export function App() {
+	const { isLoading } = useAuth0();
+
+	if (isLoading) {
+		return <div>....Loading</div>;
+	}
 	return (
 		<BrowserRouter>
-			<div className="App retMaybe">
-				<DoggrRouter />
-			</div>
+			<AuthProvider>
+				<div className="App retMaybe">
+					<DoggrRouter />
+				</div>
+			</AuthProvider>
 		</BrowserRouter>
 	);
 }

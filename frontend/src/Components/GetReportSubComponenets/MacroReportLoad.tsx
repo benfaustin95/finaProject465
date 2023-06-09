@@ -5,14 +5,15 @@ import { httpClient } from "@/Services/HttpClient.tsx";
 import { MacroYear } from "@/Components/GetReportSubComponenets/MacroYear.tsx";
 import { destructuredMacroYearReport, macroYearReport } from "../../../../backend/src/db/types.ts";
 import { Container } from "react-bootstrap";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const MacroReportLoad = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	// const { end } = location.state;
+	const { userId } = useAuth();
 	const [macroReport, setMacroReport] = useState<destructuredMacroYearReport>();
 	const loadReport = () => {
-		MacroReportService.send(1, new Date("1/1/2105"))
+		MacroReportService.send(userId, new Date("1/1/2105"))
 			.then((res) => {
 				if (res.status != 200) navigate("/");
 				console.log(res);
