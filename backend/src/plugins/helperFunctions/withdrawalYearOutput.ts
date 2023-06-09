@@ -1,5 +1,5 @@
 import { FinancialAsset } from "../../db/entities/financialasset.js";
-import { compoundGrowthRate } from "./expenseYearOutput.js";
+import { compoundGrowthRateIncome } from "./expenseYearOutput.js";
 import { amount, outputRow, row, withdrawal, withdrawalOutputRow } from "../../db/types.js";
 import { calculateTax, dividendCalculation, mkOutputRow } from "./incomeYearOutput.js";
 import { Dividend } from "../../db/entities/Dividend.js";
@@ -93,7 +93,7 @@ export const withdrawalYearOutput = (
 					outputWithdrawal.set(x.id, currentOutputWithdrawal);
 				} else currentOutputWithdrawal = outputWithdrawal.get(x.id);
 
-				toAdd.totalValue = compoundGrowthRate(
+				toAdd.totalValue = compoundGrowthRateIncome(
 					toAdd.totalValue,
 					toAdd.growthRate,
 					year == start ? 0 : period

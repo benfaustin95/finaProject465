@@ -79,13 +79,17 @@ export const incomeMonthOutput = (
 	const taxes: Map<string, taxAccumulator> = new Map<string, taxAccumulator>();
 	const monthlyIncome: monthOutputRow = mkMonthOutputRow("monthly income");
 	oneTime = oneTime.filter(
-		(x) => x.date.getFullYear() >= start.getFullYear() && x.date.getFullYear() <= end.getFullYear()
+		(x) =>
+			x.date.getUTCFullYear() >= start.getUTCFullYear() &&
+			x.date.getUTCFullYear() <= end.getUTCFullYear()
 	);
 	capitalIncomes = capitalIncomes.filter(
-		(x) => x.start.getFullYear() <= end.getFullYear() && x.end.getFullYear() >= start.getFullYear()
+		(x) =>
+			x.start.getUTCFullYear() <= end.getUTCFullYear() &&
+			x.end.getUTCFullYear() >= start.getUTCFullYear()
 	);
-	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
+	for (let year = start.getUTCFullYear(); year <= end.getUTCFullYear(); ++year) {
+		for (let month = year == start.getUTCFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key = JSON.stringify({ month, year });
 			let currentMonthIncome = 0;
 			let currentTax = new taxAccumulator();
@@ -113,9 +117,9 @@ export const incomeMonthOutput = (
 				}
 
 				if (
-					!currentYear(x.start.getFullYear(), x.end.getFullYear(), year) ||
-					(year == x.start.getFullYear() && beforeStartMonth(month, x.start.getMonth())) ||
-					(year == x.end.getFullYear() && afterEndMonth(month, x.end.getMonth()))
+					!currentYear(x.start.getUTCFullYear(), x.end.getUTCFullYear(), year) ||
+					(year == x.start.getUTCFullYear() && beforeStartMonth(month, x.start.getMonth())) ||
+					(year == x.end.getUTCFullYear() && afterEndMonth(month, x.end.getMonth()))
 				) {
 					currentItem.amounts.set(key, 0);
 					return;
@@ -150,7 +154,7 @@ export const incomeMonthOutput = (
 
 				const toAdd = oneTimeCalculation(x, year);
 
-				if (x.date.getFullYear() != year || x.date.getMonth() != month) {
+				if (x.date.getUTCFullYear() != year || x.date.getMonth() != month) {
 					currentItem.amounts.set(key, 0);
 					return;
 				}

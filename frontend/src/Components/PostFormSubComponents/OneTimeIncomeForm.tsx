@@ -15,12 +15,14 @@ import {
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { date, number, string } from "yup";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const OneTimeIncomeForm = () => {
+	const { userId } = useAuth();
 	function submitForm(event) {
 		const toSubmit: OneTimeIncomeBody = {
 			...event,
-			owner_id: 3,
+			owner_id: userId,
 		};
 
 		PostInputService.send("/oneTimeIncome", toSubmit)

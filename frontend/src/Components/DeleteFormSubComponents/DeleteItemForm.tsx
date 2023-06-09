@@ -7,15 +7,17 @@ import { SelectItemControl } from "@/Components/DeleteFormSubComponents/SelectIt
 import Form from "react-bootstrap/Form";
 import { SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { DeleteItemsService } from "@/Services/DeleteItemsService.tsx";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export function DeleteItemForm<T extends BaseInput>(props: { entityName: string; type: string }) {
+	const { userId } = useAuth();
 	const deleteItemSchema = yup.object({
 		idsToDelete: yup.array().of(yup.number()).required(),
 	});
 
 	function submitForm(event) {
 		const idsToDelete = event.idsToDelete;
-		DeleteItemsService.send(idsToDelete, props.type)
+		DeleteItemsService.send(idsToDelete, userId, props.type)
 			.then((res) => {
 				if (res.status != 200) console.log(res);
 			})

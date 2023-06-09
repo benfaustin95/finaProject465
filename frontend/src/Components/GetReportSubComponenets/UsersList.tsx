@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import { Button, FormControl } from "react-bootstrap";
+import { Button, Container, FormControl } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "@/Services/Auth.tsx";
 
@@ -24,7 +24,7 @@ export const MacroReportSet = () => {
 	};
 
 	return (
-		<div>
+		<Container className={"m-4"}>
 			<Form onSubmit={loadReport} className={"bg-light"}>
 				<h1>This is the email: {email}</h1>
 				<Form.Label htmlFor="endYear " className="col-span-1 text-blue-300 ">
@@ -45,6 +45,6 @@ export const MacroReportSet = () => {
 					Send
 				</Button>
 			</Form>
-		</div>
+		</Container>
 	);
 };

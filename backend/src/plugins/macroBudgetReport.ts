@@ -9,17 +9,13 @@ import fp from "fastify-plugin";
 import { expenseYearOutput } from "./helperFunctions/expenseYearOutput.js";
 import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js";
 import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
-import de from "@faker-js/faker/locales/de/index.js";
 import {
-	amount,
 	expenseYear,
 	incomeYear,
 	macroYearReport,
 	outputRow,
-	row,
 	taxAccumulator,
 } from "../db/types.js";
-import exp from "constants";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -35,12 +31,6 @@ declare module "fastify" {
 			rStartMonth: number
 		) => macroYearReport;
 	}
-}
-
-function totalTax(incomeElement: taxAccumulator) {
-	return (
-		incomeElement.federal + incomeElement.state + incomeElement.local + incomeElement.capitalGains
-	);
 }
 
 function accumulateDeficit(

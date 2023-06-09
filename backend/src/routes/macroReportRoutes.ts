@@ -52,8 +52,8 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 				finAssets,
 				oneTimeIncome,
 				rentalAssets,
-				user.start.getFullYear(),
-				end.getFullYear(),
+				user.start.getUTCFullYear(),
+				end.getUTCFullYear(),
 				user.start.getMonth()
 			);
 			return reply.send(sendMacroReport(toSendBudget));

@@ -11,13 +11,15 @@ import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/C
 import * as yup from "yup";
 import { number, string } from "yup";
 import { DividendBody } from "../../../../backend/src/db/types.ts";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const DividendForm = () => {
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
+	const { userId } = useAuth();
 
 	useEffect(() => {
 		const loadSearchItem = () => {
-			SearchItemService.send(3, "dividend")
+			SearchItemService.send(userId, "dividend")
 				.then((res) => {
 					if (res.status != 200) throw Error();
 					return res.data;

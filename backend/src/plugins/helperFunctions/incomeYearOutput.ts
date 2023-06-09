@@ -4,7 +4,7 @@ import { Dividend } from "../../db/entities/Dividend.js";
 import { FinancialAsset } from "../../db/entities/financialasset.js";
 import { OneTimeIncome } from "../../db/entities/OneTimeIncome.js";
 import { Recurrence } from "../../db/entities/budgetItem.js";
-import { compoundGrowthRate, currentYear } from "./expenseYearOutput.js";
+import { compoundGrowthRateIncome, currentYear } from "./expenseYearOutput.js";
 import {
 	incomeCalculation,
 	incomeYear,
@@ -48,7 +48,7 @@ export const incomeYearOutput = (
 		let currentTax = new taxAccumulator();
 
 		capitalIncomes.forEach((x) => {
-			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) return;
+			if (!currentYear(x.start.getUTCFullYear(), x.end.getUTCFullYear(), i)) return;
 
 			const toAdd = incomeCalculation(x, i);
 
@@ -107,8 +107,8 @@ export function calculateTax(
 // assumption remains the same for fin assets used to calculate dividends
 export function oneTimeCalculation(x: OneTimeIncome, year: number): incomeCalculation {
 	const income =
-		x.date.getFullYear() == year
-			? compoundGrowthRate(x.cashBasis, x.growthRate, year - x.created_at.getFullYear())
+		x.date.getUTCFullYear() == year
+			? compoundGrowthRateIncome(x.cashBasis, x.growthRate, year - x.created_at.getUTCFullYear())
 			: 0;
 	const tax = calculateTax(
 		income,
@@ -157,7 +157,7 @@ export function incomeCalculation(item: CapAsset, year: number, period = 1): inc
 			income = item.income;
 			break;
 	}
-	income = compoundGrowthRate(income, item.growthRate, year - item.start.getFullYear());
+	income = compoundGrowthRateIncome(income, item.growthRate, year - item.start.getUTCFullYear());
 	//need to get inflation amount from api and add to growth rate
 	if (period == 1) income = annualIncomeCalculation(item, year, income);
 
@@ -175,10 +175,10 @@ export function incomeCalculation(item: CapAsset, year: number, period = 1): inc
 
 export function rentalCalculation(item: RentalAsset, year: number, period = 12): incomeCalculation {
 	const income =
-		compoundGrowthRate(
+		compoundGrowthRateIncome(
 			item.grossIncome - item.maintenanceExpense,
 			item.growthRate,
-			year - item.created_at.getFullYear()
+			year - item.created_at.getUTCFullYear()
 		) * period;
 	const tax = calculateTax(
 		income,
@@ -192,10 +192,10 @@ export function rentalCalculation(item: RentalAsset, year: number, period = 12):
 }
 function annualIncomeCalculation(item: CapAsset, year: number, income: number) {
 	let monthsActive = 12;
-	if (item.start.getFullYear() < year && item.end.getFullYear() > year)
+	if (item.start.getUTCFullYear() < year && item.end.getUTCFullYear() > year)
 		return monthsActive * income;
-	if (item.start.getFullYear() == year) monthsActive -= item.start.getMonth();
-	if (item.end.getFullYear() == year) monthsActive -= 11 - item.end.getMonth();
+	if (item.start.getUTCFullYear() == year) monthsActive -= item.start.getMonth();
+	if (item.end.getUTCFullYear() == year) monthsActive -= 11 - item.end.getMonth();
 
 	return monthsActive * income;
 }

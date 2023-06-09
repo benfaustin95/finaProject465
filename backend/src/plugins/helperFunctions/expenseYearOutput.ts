@@ -4,10 +4,13 @@ import { amount, expenseYear, outputRow } from "../../db/types.js";
 import { mkOutputRow } from "./incomeYearOutput.js";
 
 export const inflation: number = 1.025;
-export function compoundGrowthRate(value: number, rate: number, difference: number) {
-	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate * inflation, difference));
+export function compoundGrowthRateIncome(value: number, rate: number, difference: number) {
+	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate, difference));
 }
 
+export function compoundGrowthRateExpense(value: number, rate: number, difference: number) {
+	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate * inflation, difference));
+}
 export function currentYear(fullYear: number, fullYear2: number, i: number) {
 	return fullYear <= i && fullYear2 >= i;
 }
@@ -22,7 +25,9 @@ export const expenseYearOutput = (
 	const outputNonRecurring: Map<number, outputRow> = new Map<number, outputRow>();
 	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
 	const annualExpense: outputRow = mkOutputRow("Annual Expense");
-	expenses = expenses.filter((x) => x.start.getFullYear() <= end && x.end.getFullYear() >= start);
+	expenses = expenses.filter(
+		(x) => x.start.getUTCFullYear() <= end && x.end.getUTCFullYear() >= start
+	);
 	for (let i = start; i <= end; ++i) {
 		let currentMonthly: number = 0;
 		let currentYearly: number = 0;
@@ -36,7 +41,7 @@ export const expenseYearOutput = (
 				map.set(x.id, row);
 			}
 
-			if (!currentYear(x.start.getFullYear(), x.end.getFullYear(), i)) {
+			if (!currentYear(x.start.getUTCFullYear(), x.end.getUTCFullYear(), i)) {
 				row.amounts.set(i, 0);
 				return;
 			}
@@ -76,7 +81,11 @@ export const expenseCalculation = (item: BudgetItem, year: number): number => {
 			break;
 	}
 	//need to get inflation amount from api and add to growth rate
-	return compoundGrowthRate(expense, item.growthRate, year - item.created_at.getFullYear());
+	return compoundGrowthRateExpense(
+		expense,
+		item.growthRate,
+		year - item.created_at.getUTCFullYear()
+	);
 };
 function annualExpenseCalculation(
 	item: BudgetItem,
@@ -86,8 +95,8 @@ function annualExpenseCalculation(
 	startYear: number = 0
 ) {
 	let monthsActive = 12;
-	const itemStartYear = item.start.getFullYear() == year;
-	const itemEndYear = item.end.getFullYear() == year;
+	const itemStartYear = item.start.getUTCFullYear() == year;
+	const itemEndYear = item.end.getUTCFullYear() == year;
 	if (year != startYear && !itemStartYear && itemEndYear) return monthsActive * expense;
 	if (itemEndYear && item.end.getMonth() < month) return 0;
 	if (year != startYear)

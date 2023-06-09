@@ -11,12 +11,14 @@ import {
 	RecurrenceSelector,
 	SubmitButton,
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { useAuth } from "@/Services/Auth.tsx";
 export const BudgetItemForm = () => {
+	const { userId } = useAuth();
 	function submitForm(event) {
 		const toSubmit = {
 			...event,
 			growthRate: 1,
-			owner_id: 3,
+			owner_id: userId,
 		};
 		PostInputService.send("/budgetItem", toSubmit)
 			.then((res) => {

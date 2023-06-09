@@ -10,6 +10,7 @@ import { CAssetBody } from "../../../../backend/src/db/types.ts";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { CapAssetType, Recurrence } from "../../DoggrTypes.ts";
 import { useState } from "react";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export function SubmitButton(props: { name: string }) {
 	const { dirty, isValid } = useFormikContext();
@@ -100,10 +101,11 @@ export function InputControl(props: {
 }
 
 export const CapitalAssetForm = () => {
+	const { userId } = useAuth();
 	function submitForm(event) {
 		const toSubmit: CAssetBody = {
 			...event,
-			owner_id: 3,
+			owner_id: userId,
 		};
 
 		console.log(event);
@@ -133,7 +135,7 @@ export const CapitalAssetForm = () => {
 			)
 			.required(),
 		type: string().required(),
-		growthRate: number().required().positive().max(10),
+		growthRate: number().required().min(0).max(10),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),

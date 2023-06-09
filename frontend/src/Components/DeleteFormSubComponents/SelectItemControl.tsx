@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BaseInput } from "../../../../backend/src/db/entities/BaseInput.ts";
 import { Col, Form, Row } from "react-bootstrap";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export function SelectItemControl<T extends BaseInput>(props: {
 	type: string;
@@ -13,9 +14,10 @@ export function SelectItemControl<T extends BaseInput>(props: {
 }) {
 	const [entityArray, setEntityArray] = useState<Array<T>>([]);
 	const { type, entityName, handleChange, values, touched, errors } = props;
+	const { userId } = useAuth();
 	useEffect(() => {
 		const loadSearchItem = () => {
-			SearchItemService.send(3, type)
+			SearchItemService.send(userId, type)
 				.then((res) => {
 					if (res.status != 200) throw Error();
 					return res.data;

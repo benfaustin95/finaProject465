@@ -10,12 +10,14 @@ import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const RentalAssetForm = () => {
+	const { userId } = useAuth();
 	function submitForm(event) {
 		const toSubmit = {
 			...event,
-			owner_id: 3,
+			owner_id: userId,
 		};
 		PostInputService.send("/rentalAsset", toSubmit)
 			.then((res) => {

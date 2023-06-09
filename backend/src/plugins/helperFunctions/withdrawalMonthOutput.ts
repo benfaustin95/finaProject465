@@ -1,5 +1,5 @@
 import { FinancialAsset } from "../../db/entities/financialasset.js";
-import { compoundGrowthRate } from "./expenseYearOutput.js";
+import { compoundGrowthRateIncome } from "./expenseYearOutput.js";
 import {
 	amount,
 	monthOutputRow,
@@ -66,8 +66,8 @@ export const withdrawalMonthOutput = (
 	>();
 	const remainder: monthOutputRow = mkMonthOutputRow("remainder", "if < 0 retirment failed");
 
-	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-		for (let month = year == start.getFullYear() ? start.getMonth() : 0; month < 12; ++month) {
+	for (let year = start.getUTCFullYear(); year <= end.getUTCFullYear(); ++year) {
+		for (let month = year == start.getUTCFullYear() ? start.getMonth() : 0; month < 12; ++month) {
 			const key = JSON.stringify({ month, year });
 			let currentDeficit = deficit.amounts.get(key);
 
@@ -106,10 +106,10 @@ export const withdrawalMonthOutput = (
 						outputWithdrawal.set(x.id, currentOutputWithdrawal);
 					}
 
-					toAdd.totalValue = compoundGrowthRate(
+					toAdd.totalValue = compoundGrowthRateIncome(
 						toAdd.totalValue,
 						toAdd.growthRate,
-						year == start.getFullYear() && month == start.getMonth() ? 0 : 1 / 12
+						year == start.getUTCFullYear() && month == start.getMonth() ? 0 : 1 / 12
 					);
 					if (currentDeficit > 0) {
 						toAdd.totalValue += currentDeficit;

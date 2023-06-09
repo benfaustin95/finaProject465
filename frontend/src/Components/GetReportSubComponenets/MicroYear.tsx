@@ -25,8 +25,15 @@ export type microRowGroup = {
 	group: Array<[number, destructuredMonthOutputRow]>;
 };
 
-function MicroRow(props: destructuredMonthOutputRow) {
-	const { name, note, amounts } = props;
+export type microRow = destructuredMonthOutputRow & {
+	id: number;
+};
+
+export type microWithRow = destructuredWithdrawalMonthOutputRow & {
+	id: number;
+};
+function MicroRow(props: microRow) {
+	const { name, note, amounts, id } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
 		currency: "USD",
@@ -36,7 +43,7 @@ function MicroRow(props: destructuredMonthOutputRow) {
 			<td key={name + "cell"}>{name}</td>
 			<td key={note + "cell"}>{note}</td>
 			{amounts.map(([[month, year], x]) => (
-				<td key={year.toString() + month.toString() + name + note + "cell"}>
+				<td key={id.toString() + year.toString() + month.toString() + name + note + "cell"}>
 					{formater.format(x)}
 				</td>
 			))}
@@ -71,14 +78,14 @@ function MicroRowGroup(props: microRowGroup) {
 	return (
 		<>
 			{group != undefined
-				? group.map(([key, value]) => <MicroRow key={value.name + key + "row"} {...value} />)
+				? group.map(([id, value]) => <MicroRow key={value.name + id + "row"} {...value} id={id} />)
 				: null}
 		</>
 	);
 }
 
-function MicroWithdrawalRow(props: destructuredWithdrawalMonthOutputRow) {
-	const { name, note, amounts, updatedValue } = props;
+function MicroWithdrawalRow(props: microWithRow) {
+	const { name, note, updatedValue, id } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
 		currency: "USD",
@@ -88,7 +95,7 @@ function MicroWithdrawalRow(props: destructuredWithdrawalMonthOutputRow) {
 			<td key={name + "withdrawal"}>{name}</td>
 			<td key={note + "withdrawal"}>{note}</td>
 			{updatedValue.map(([[month, year], x]) => (
-				<td key={year.toString() + month.toString() + name + note + "withdrawal"}>
+				<td key={id.toString() + year.toString() + month.toString() + name + note + "withdrawal"}>
 					{formater.format(x)}
 				</td>
 			))}
@@ -103,11 +110,11 @@ function MicroWithdrawalRowGroup(props: {
 	return (
 		<>
 			{group != undefined
-				? group.map(([key, value]) => <MicroRow key={value.name} {...value} />)
+				? group.map(([key, value]) => <MicroRow key={value.name} {...value} id={key} />)
 				: null}
 			{group != undefined
 				? group.map(([key, value]) => (
-						<MicroWithdrawalRow key={value.name + "withdrawal row"} {...value} />
+						<MicroWithdrawalRow key={value.name + "withdrawal row"} {...value} id={key} />
 				  ))
 				: null}
 		</>
@@ -117,8 +124,8 @@ function BudgetItems(props: destructuredExpenseMonth) {
 	const { outRecurring, outNonRecurring } = props;
 	return (
 		<>
-			<MicroRow {...outRecurring} />
-			<MicroRow {...outNonRecurring} />
+			<MicroRow {...outRecurring} id={1} />
+			<MicroRow {...outNonRecurring} id={2} />
 		</>
 	);
 }
@@ -144,55 +151,64 @@ function Taxes(props: destructuredMonthlyTaxAccumulator) {
 				name={"Taxable Income - Federal"}
 				note={""}
 				amounts={federalIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"capital gains taxable income"}
 				name={"Taxable Income - Capital Gains"}
 				note={""}
 				amounts={capitalGainsIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"fica taxable income"}
 				name={"Taxable Income - FICA Tax"}
 				note={""}
 				amounts={ficaIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"state taxable income"}
 				name={"Taxable Income - State"}
 				note={""}
 				amounts={stateIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"Local taxable income"}
 				name={"Taxable Income - Local"}
 				note={""}
 				amounts={localIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"federal income tax"}
 				name={"Federal Income Tax"}
 				note={""}
 				amounts={federal}
+				id={1}
 			/>
 			<MicroRow
 				key={"capital gains tax"}
 				name={"Capital Gains Tax"}
 				note={""}
 				amounts={capitalGains}
+				id={1}
 			/>
-			<MicroRow key={"fica tax"} name={"FICA Tax"} note={""} amounts={ficaIncome} />
+			<MicroRow key={"fica tax"} name={"FICA Tax"} note={""} amounts={ficaIncome} id={1} />
 			<MicroRow
 				key={"state income tax"}
 				name={"State Income Tax"}
 				note={""}
 				amounts={stateIncome}
+				id={1}
 			/>
 			<MicroRow
 				key={"Local Income Tax"}
 				name={"Local Income Tax"}
 				note={""}
 				amounts={localIncome}
+				id={1}
 			/>
 		</>
 	);
@@ -224,7 +240,7 @@ function MicroIncomes(props: destructuredIncomeMonth) {
 			<MicroRowGroup key={"nonTaxable"} group={nonTaxable} />
 			{/*<FillerRow name={"One Time Incomes"} />*/}
 			<MicroRowGroup key={"outOneTime"} group={oneTimeIncome} />
-			<MicroRow key={"Monthly Sum"} {...monthlyIncome} />
+			<MicroRow key={"Monthly Sum"} {...monthlyIncome} id={1} />
 			{taxes != undefined ? <Taxes {...taxes} /> : null}
 		</>
 	);
@@ -237,7 +253,7 @@ function MicroWithdrawals(props: destructuredMicroWithdrawal) {
 			<MicroRowGroup group={outDividend} />
 			<MicroWithdrawalRowGroup group={outputWithdrawal} />
 			{remainder != undefined && remainder.amounts.filter((x) => x[1] != 0).length > 0 ? (
-				<MicroRow {...remainder} />
+				<MicroRow {...remainder} id={1} />
 			) : null}
 		</>
 	);
@@ -270,7 +286,7 @@ export function MicroYear(props: destructuredMicroReport) {
 				<tbody>
 					{expense != undefined ? <BudgetItems {...expense} /> : null}
 					{income != undefined ? <MicroIncomes {...income} /> : null}
-					{deficit != undefined ? <MicroRow key={"deficit row"} {...deficit} /> : null}
+					{deficit != undefined ? <MicroRow key={"deficit row"} {...deficit} id={1} /> : null}
 					{withdrawal != undefined ? <MicroWithdrawals {...withdrawal} /> : null}
 				</tbody>
 			</Table>

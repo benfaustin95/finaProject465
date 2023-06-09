@@ -15,13 +15,15 @@ import {
 	RecurrenceSelector,
 	SubmitButton,
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { useAuth } from "@/Services/Auth.tsx";
 
 export const FinancialAssetForm = () => {
+	const { userId } = useAuth();
 	function submitForm(event) {
 		console.log(event);
 		const toSubmit = {
 			...event,
-			owner_id: 3,
+			owner_id: userId,
 		};
 		PostInputService.send("/financialAsset", toSubmit)
 			.then((res) => {
