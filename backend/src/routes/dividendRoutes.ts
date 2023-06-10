@@ -4,10 +4,8 @@ import { DividendBody } from "../db/types.js";
 import { Dividend } from "../db/entities/Dividend.js";
 import * as repl from "repl";
 import { FinancialAsset } from "../db/entities/financialasset.js";
-import { BudgetItem } from "../db/entities/budgetItem.js";
 import { validateDividendInputBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
-import { RentalAsset } from "../db/entities/rentalasset.js";
 
 async function dividendRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("something");
@@ -29,17 +27,14 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+	app.delete<{ Body: { idsToDelete: number; userId: number } }>(
 		"/dividend",
+
 		async (req, reply) => {
 			const { userId, idsToDelete } = req.body;
-			console.log(req.body, idsToDelete instanceof Array);
 			try {
-				for (const id of idsToDelete) {
-					const item = await req.em.findOne(Dividend, { id, owner: userId });
-					await req.em.remove(item);
-				}
-				await req.em.flush();
+				const item = await req.em.findOneOrFail(Dividend, { id: idsToDelete, owner: userId });
+				await req.em.removeAndFlush(item);
 				return reply.send(idsToDelete);
 			} catch (err) {
 				return reply.status(500).send(err);
@@ -57,6 +52,26 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
+
+	app.put<{ Body: { userid: number; toUpdate: Dividend } }>(
+		"/dividend",
+
+		async (req, reply) => {
+			const { userid, toUpdate } = req.body;
+
+			try {
+				const item = await req.em.findOneOrFail(Dividend, { owner: userid, id: toUpdate.id });
+				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
+					item[x] = toUpdate[x];
+				});
+
+				await req.em.flush();
+				return reply.send(item);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
+		}
+	);
 }
 
 export default dividendRoutes;

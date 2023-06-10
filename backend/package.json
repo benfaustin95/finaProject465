@@ -50,6 +50,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "fastify": "^4.15.0",
+    "fastify-auth0-verify": "^1.2.0",
     "fastify-plugin": "^4.5.0",
     "jsonwebtoken": "^9.0.0",
     "mikro-orm-soft-delete": "^0.1.0"

@@ -25,7 +25,7 @@ const updateAxios = async (token: string) => {
 				Authorization: `Bearer ${token}`,
 				Accept: "application/json",
 			};
-
+			console.log("token inserted", token);
 			return config;
 		},
 		(error) => {
@@ -35,7 +35,7 @@ const updateAxios = async (token: string) => {
 	);
 };
 
-const initialToken = getToken();
+let initialToken = getToken();
 let initialEmail;
 let initialUserID;
 if (!(initialToken == null)) {
@@ -51,7 +51,8 @@ if (!(initialToken == null)) {
 				initialUserID = res;
 			});
 	} catch (err) {
-		console.log("intital token");
+		initialEmail = undefined;
+		initialToken = null;
 	}
 }
 
@@ -69,6 +70,7 @@ export const AuthProvider = ({ children }: any) => {
 		try {
 			if (isAuthenticated) {
 				token = await getAccessTokenSilently();
+				await updateAxios(token);
 				email = getUserItemFromToken(token, "http://localhost:5173/email");
 				setEmail(email);
 				saveToken(token);
@@ -87,6 +89,7 @@ export const AuthProvider = ({ children }: any) => {
 			return true;
 		} catch (err) {
 			console.error("Failed to handle login: ", err);
+			await handleLogout();
 			navigate("/");
 		}
 	};
@@ -96,6 +99,8 @@ export const AuthProvider = ({ children }: any) => {
 	const handleLogout = async () => {
 		await logout();
 		setToken(null);
+		setEmail(undefined);
+		setUserId(undefined);
 		localStorage.removeItem("token");
 	};
 
@@ -130,7 +135,7 @@ function getToken() {
 		console.error("No token found");
 		return null;
 	}
-	return tokenString;
+	return JSON.parse(tokenString);
 }
 
 function getPayloadFromToken(token: string) {

@@ -16,6 +16,7 @@ import OneTimeIncomeRoutes from "./routes/oneTimeIncomeRoutes.js";
 import { FastifyMicroReportsPlugin } from "./plugins/microBudgetReport.js";
 import MicroReportRoute from "./routes/microReportRoute.js";
 import TaxRoutes from "./routes/taxRoutes.js";
+import { AuthPlugin } from "./plugins/auth.js";
 
 const envToLogger = {
 	development: {
@@ -69,4 +70,5 @@ await app.register(OneTimeIncomeRoutes, {});
 await app.register(FastifyMicroReportsPlugin, {});
 await app.register(MicroReportRoute, {});
 await app.register(TaxRoutes, {});
+await app.register(AuthPlugin, {});
 export default app;

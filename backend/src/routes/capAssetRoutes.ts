@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { User } from "../db/entities/User.js";
 import { CAssetBody, CAssetBodyInit } from "../db/types.js";
 import { CapAsset } from "../db/entities/capasset.js";
-import { Recurrence } from "../db/entities/budgetItem.js";
+import { BudgetItem, Recurrence } from "../db/entities/budgetItem.js";
 import { validateCapitalAssetInputBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
 import { toolbar } from "typedoc/dist/lib/output/themes/default/partials/toolbar.js";
@@ -30,17 +30,14 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+	app.delete<{ Body: { idsToDelete: number; userId: number } }>(
 		"/capitalAsset",
+
 		async (req, reply) => {
 			const { userId, idsToDelete } = req.body;
-			console.log(req.body, idsToDelete instanceof Array);
 			try {
-				for (const id of idsToDelete) {
-					const item = await req.em.findOne(CapAsset, { id, owner: userId });
-					await req.em.remove(item);
-				}
-				await req.em.flush();
+				const item = await req.em.findOneOrFail(CapAsset, { id: idsToDelete, owner: userId });
+				await req.em.removeAndFlush(item);
 				return reply.send(idsToDelete);
 			} catch (err) {
 				return reply.status(500).send(err);
@@ -53,6 +50,21 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 
 		try {
 			const item = await req.em.find(CapAsset, { owner: userId });
+			return reply.send(item);
+		} catch (err) {
+			return reply.status(500).send(err);
+		}
+	});
+
+	app.put<{ Body: { userid: number; toUpdate: CapAsset } }>("/capitalAsset", async (req, reply) => {
+		const { userid, toUpdate } = req.body;
+
+		try {
+			const item = await req.em.findOneOrFail(CapAsset, { owner: userid, id: toUpdate.id });
+			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
+				item[x] = toUpdate[x];
+			});
+			await req.em.flush();
 			return reply.send(item);
 		} catch (err) {
 			return reply.status(500).send(err);

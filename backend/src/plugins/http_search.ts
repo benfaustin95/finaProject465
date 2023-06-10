@@ -12,7 +12,6 @@ const fastifySearchHttpMethod = async function (app: FastifyInstance, options) {
 		app.route<T>({
 			method: "SEARCH",
 			url: path,
-
 			handler,
 		});
 	};

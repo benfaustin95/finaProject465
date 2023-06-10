@@ -11,35 +11,36 @@ import { RentalAsset } from "../db/entities/rentalasset.js";
 async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) throw new Error("this is the worst");
 
-	app.post<{ Body: OneTimeIncomeBody }>("/oneTimeIncome", async (req, reply) => {
-		const toBeAdded = req.body;
-		try {
-			const toBeAddedInit = await validateOneTimeIncomeBody(toBeAdded, app, req);
-			toBeAdded.date = new Date(toBeAdded.date) ?? toBeAddedInit.owner.start;
-
-			const oti = await req.em.create(OneTimeIncome, {
-				...toBeAddedInit,
-			});
-
-			await req.em.flush();
-			return reply.send(oti);
-		} catch (err) {
-			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
-			return reply.status(500).send(err);
-		}
-	});
-
-	app.delete<{ Body: { idsToDelete: number[]; userId: number } }>(
+	app.post<{ Body: OneTimeIncomeBody }>(
 		"/oneTimeIncome",
+
+		async (req, reply) => {
+			const toBeAdded = req.body;
+			try {
+				const toBeAddedInit = await validateOneTimeIncomeBody(toBeAdded, app, req);
+				toBeAdded.date = new Date(toBeAdded.date) ?? toBeAddedInit.owner.start;
+
+				const oti = await req.em.create(OneTimeIncome, {
+					...toBeAddedInit,
+				});
+
+				await req.em.flush();
+				return reply.send(oti);
+			} catch (err) {
+				if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
+				return reply.status(500).send(err);
+			}
+		}
+	);
+
+	app.delete<{ Body: { idsToDelete: number; userId: number } }>(
+		"/oneTimeIncome",
+
 		async (req, reply) => {
 			const { userId, idsToDelete } = req.body;
-			console.log(req.body, idsToDelete instanceof Array);
 			try {
-				for (const id of idsToDelete) {
-					const item = await req.em.findOne(OneTimeIncome, { id, owner: userId });
-					await req.em.remove(item);
-				}
-				await req.em.flush();
+				const item = await req.em.findOneOrFail(OneTimeIncome, { id: idsToDelete, owner: userId });
+				await req.em.removeAndFlush(item);
 				return reply.send(idsToDelete);
 			} catch (err) {
 				return reply.status(500).send(err);
@@ -56,6 +57,25 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
+
+	app.put<{ Body: { userid: number; toUpdate: OneTimeIncome } }>(
+		"/oneTimeIncome",
+
+		async (req, reply) => {
+			const { userid, toUpdate } = req.body;
+
+			try {
+				const item = await req.em.findOneOrFail(OneTimeIncome, { owner: userid, id: toUpdate.id });
+				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
+					item[x] = toUpdate[x];
+				});
+				await req.em.flush();
+				return reply.send(item);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
+		}
+	);
 }
 
 export default OneTimeIncomeRoutes;

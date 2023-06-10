@@ -33,10 +33,11 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 
 	app.delete<{ Body: { idsToDelete: number; userId: number } }>(
 		"/budgetItem",
+
 		async (req, reply) => {
 			const { userId, idsToDelete } = req.body;
 			try {
-				const item = await req.em.findOne(BudgetItem, { id: idsToDelete, owner: userId });
+				const item = await req.em.findOneOrFail(BudgetItem, { id: idsToDelete, owner: userId });
 				await req.em.removeAndFlush(item);
 				return reply.send(idsToDelete);
 			} catch (err) {
@@ -56,21 +57,25 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: BudgetItem } }>("/budgetItem", async (req, reply) => {
-		const { userid, toUpdate } = req.body;
+	app.put<{ Body: { userid: number; toUpdate: BudgetItem } }>(
+		"/budgetItem",
 
-		try {
-			const item = await req.em.findOneOrFail(BudgetItem, { owner: userid, id: toUpdate.id });
-			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-				item[x] = toUpdate[x];
-			});
+		async (req, reply) => {
+			const { userid, toUpdate } = req.body;
 
-			await req.em.flush();
-			return reply.send(item);
-		} catch (err) {
-			return reply.status(500).send(err);
+			try {
+				const item = await req.em.findOneOrFail(BudgetItem, { owner: userid, id: toUpdate.id });
+				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
+					item[x] = toUpdate[x];
+				});
+
+				await req.em.flush();
+				return reply.send(item);
+			} catch (err) {
+				return reply.status(500).send(err);
+			}
 		}
-	});
+	);
 }
 
 export default budgetItemRoutes;
