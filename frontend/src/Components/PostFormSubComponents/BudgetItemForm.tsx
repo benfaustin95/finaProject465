@@ -1,34 +1,23 @@
 import Form from "react-bootstrap/Form";
-import { Button, Col, Container, FormControl, InputGroup, Row } from "react-bootstrap";
-import { PostInputService } from "@/Services/PostInputService.tsx";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { CapAssetType } from "@/DoggrTypes.ts";
 import {
 	InputControl,
 	RecurrenceSelector,
 	SubmitButton,
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-export const BudgetItemForm = () => {
+import { BudgetItem } from "@/DoggrTypes.ts";
+export const BudgetItemForm = (props: {
+	submitForm: any;
+	budgetItem?: BudgetItem;
+	deleteItem?: any;
+}) => {
+	const { submitForm, budgetItem, deleteItem } = props;
 	const { userId } = useAuth();
-	function submitForm(event) {
-		const toSubmit = {
-			...event,
-			growthRate: 1,
-			owner_id: userId,
-		};
-		PostInputService.send("/budgetItem", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log("bad");
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
 
 	const budgetItemSchema = yup.object().shape({
 		name: string().required(),
@@ -45,6 +34,8 @@ export const BudgetItemForm = () => {
 				(start, yup) => start != null && yup.min(start, "End Date cannot be before start time")
 			)
 			.required(),
+		growthRate: number().default(1),
+		owner_id: number().positive(),
 	});
 
 	return (
@@ -52,18 +43,30 @@ export const BudgetItemForm = () => {
 			<Formik
 				validationSchema={budgetItemSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					amount: 0,
-					recurrence: "monthly",
-					start: new Date().toISOString().slice(0, 10),
-					end: new Date().toISOString().slice(0, 10),
-				}}>
+				initialValues={
+					budgetItem != undefined
+						? {
+								...budgetItem,
+								start: new Date(budgetItem.start).toISOString().slice(0, 10),
+								end: new Date(budgetItem.end).toISOString().slice(0, 10),
+						  }
+						: {
+								name: "",
+								note: "",
+								amount: 0,
+								recurrence: "monthly",
+								start: new Date().toISOString().slice(0, 10),
+								end: new Date().toISOString().slice(0, 10),
+								growthRate: 1,
+								owner_id: userId,
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit}>
 						<Row className={"m-4 justify-content-center"}>
-							<h1 className={"text-center"}>Create Expense</h1>
+							<h1 className={"text-center"}>
+								{deleteItem != undefined ? "Edit Expense" : "Create Expense"}
+							</h1>
 						</Row>
 						<Row>
 							<BaseInputForm
@@ -107,9 +110,16 @@ export const BudgetItemForm = () => {
 								errors={errors.end}
 							/>
 							<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-								<Col className={"d-flex flex-row justify-content-center"}>
-									<SubmitButton name={"Create Expense"} />
+								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+									<SubmitButton
+										name={deleteItem != undefined ? "Edit Expense" : "Create Expense"}
+									/>
 								</Col>
+								{deleteItem != undefined ? (
+									<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+										<Button onClick={() => deleteItem(budgetItem.id)}>Delete</Button>
+									</Col>
+								) : null}
 							</Row>
 						</Row>
 					</Form>

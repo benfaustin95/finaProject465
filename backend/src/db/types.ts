@@ -104,6 +104,13 @@ export interface OneTimeIncomeBody extends BaseInputBody {
 	cashBasis: number;
 }
 
+export type entityType =
+	| OneTimeIncomeBody
+	| RentalAssetBody
+	| RFBaseBody
+	| DividendBody
+	| CAssetBody
+	| BudgetBody;
 export interface OneTimeIncomeBodyInit extends BaseInputBodyInit {
 	date: Date;
 	cashBasis: number;

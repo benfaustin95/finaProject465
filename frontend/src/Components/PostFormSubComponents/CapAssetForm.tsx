@@ -26,6 +26,20 @@ export function SubmitButton(props: { name: string }) {
 	);
 }
 
+export function EditButton(props: { name: string; onClickHandle: any }) {
+	const { dirty, isValid } = useFormikContext();
+	const { name, onClickHandle } = props;
+	return (
+		<Button
+			as="input"
+			className={"btn-lg"}
+			type="submit"
+			onClick={() => onClickHandle(true)}
+			value={name}
+			disabled={!isValid || !dirty}
+		/>
+	);
+}
 export function RecurrenceSelector(props: { handleChange; values; errors; touched }) {
 	const { handleChange, values, errors, touched } = props;
 	return (
