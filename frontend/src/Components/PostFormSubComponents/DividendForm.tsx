@@ -12,11 +12,12 @@ import * as yup from "yup";
 import { number, string } from "yup";
 import { DividendBody } from "../../../../backend/src/db/types.ts";
 import { useAuth } from "@/Services/Auth.tsx";
+import { Dividend } from "@/DoggrTypes.ts";
 
-export const DividendForm = () => {
+export const DividendForm = (props: { submitForm: any; dividend?: Dividend; deleteItem?: any }) => {
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
 	const { userId } = useAuth();
-
+	const { submitForm, dividend, deleteItem } = props;
 	useEffect(() => {
 		const loadSearchItem = () => {
 			SearchItemService.send(userId, "dividend")
@@ -44,33 +45,32 @@ export const DividendForm = () => {
 		local: string().default(""),
 	});
 
-	function submitForm(event) {
-		const toSubmit: DividendBody = {
-			...event,
-			owner_id: 3,
-			growthRate: 1,
-		};
-		PostInputService.send("/dividend", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
-
 	return (
 		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={dividendSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					rate: 1,
-					asset: finAssets != undefined && finAssets.length > 0 ? finAssets[0] : 0,
-				}}>
+				initialValues={
+					dividend != undefined
+						? {
+								...dividend,
+								asset:
+									finAssets != undefined && finAssets.find((x) => x.id == dividend.asset)
+										? finAssets.find((x) => x.id == dividend.asset).id
+										: 0,
+						  }
+						: {
+								name: "",
+								note: "",
+								rate: 1,
+								asset: finAssets != undefined && finAssets.length > 0 ? finAssets[0].id : 0,
+								growthRate: 1,
+								owner_id: userId,
+								state: "",
+								federal: "",
+								local: "",
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>

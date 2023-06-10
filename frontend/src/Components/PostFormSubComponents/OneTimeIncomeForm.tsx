@@ -1,39 +1,21 @@
 import Form from "react-bootstrap/Form";
 import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
-import { useState } from "react";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { PostInputService } from "@/Services/PostInputService.tsx";
-import { OneTimeIncome } from "../../../../backend/src/db/entities/OneTimeIncome.ts";
-import { OneTimeIncomeBody } from "../../../../backend/src/db/types.ts";
 import { Formik } from "formik";
-import { CapAssetType, Recurrence } from "@/DoggrTypes.ts";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import {
-	InputControl,
-	RecurrenceSelector,
-	SubmitButton,
-} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
+import { OneTimeIncome } from "@/DoggrTypes.ts";
 
-export const OneTimeIncomeForm = () => {
+export const OneTimeIncomeForm = (props: {
+	submitForm: any;
+	oneTimeIncome?: OneTimeIncome;
+	deleteItem?: any;
+}) => {
 	const { userId } = useAuth();
-	function submitForm(event) {
-		const toSubmit: OneTimeIncomeBody = {
-			...event,
-			owner_id: userId,
-		};
-
-		PostInputService.send("/oneTimeIncome", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+	const { submitForm, oneTimeIncome, deleteItem } = props;
 	const oneTimeIncomeSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
@@ -44,6 +26,7 @@ export const OneTimeIncomeForm = () => {
 		state: string().default(""),
 		local: string().default(""),
 		fica: string().default(""),
+		owner_id: number().default(userId),
 	});
 
 	return (
@@ -51,13 +34,25 @@ export const OneTimeIncomeForm = () => {
 			<Formik
 				validationSchema={oneTimeIncomeSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					date: new Date().toISOString().slice(0, 10),
-					cashBasis: 0,
-					growthRate: 1,
-				}}>
+				initialValues={
+					oneTimeIncome != undefined
+						? {
+								...oneTimeIncome,
+								date: new Date(oneTimeIncome.date).toISOString().slice(0, 10),
+						  }
+						: {
+								name: "",
+								note: "",
+								date: new Date().toISOString().slice(0, 10),
+								cashBasis: 0,
+								growthRate: 1,
+								federal: "",
+								state: "",
+								local: "",
+								fica: "",
+								owner_id: userId,
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
@@ -89,9 +84,9 @@ export const OneTimeIncomeForm = () => {
 								handleChange={handleChange}
 								name={"date"}
 								type={"date"}
-								values={values.end}
-								touched={touched.end}
-								errors={errors.end}
+								values={values.date}
+								touched={touched.date}
+								errors={errors.date}
 							/>
 							<TaxSelector
 								level={"Federal"}
@@ -123,9 +118,14 @@ export const OneTimeIncomeForm = () => {
 							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Income"} />
+							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 							</Col>
+							{deleteItem != undefined ? (
+								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+									<Button onClick={() => deleteItem(oneTimeIncome.id)}>Delete</Button>
+								</Col>
+							) : null}
 						</Row>
 					</Form>
 				)}

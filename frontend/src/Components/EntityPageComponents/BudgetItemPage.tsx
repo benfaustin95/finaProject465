@@ -2,6 +2,8 @@ import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemFor
 import { DeleteItemForm } from "@/Components/DeleteFormSubComponents/DeleteItemForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { BudgetItem } from "@/DoggrTypes.ts";
+import { Container } from "react-bootstrap";
+import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 
 export function BudgetItemPage() {
 	function submitForm(event) {
@@ -20,7 +22,13 @@ export function BudgetItemPage() {
 				<BudgetItemForm submitForm={submitForm} />
 			</div>
 			<div>
-				<DeleteItemForm<BudgetItem> entityName={"Budget Item"} type={"budgetItem"} />
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5 w-75"}>
+					<CurrentItemListGroup<BudgetItem>
+						type={"budgetItem"}
+						entityName={"Budget Item"}
+						keysToDisplay={["name", "amount", "recurrence", "start", "end"]}
+					/>
+				</Container>
 			</div>
 		</div>
 	);

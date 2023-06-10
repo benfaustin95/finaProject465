@@ -7,7 +7,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
-import { CapAssetType, Recurrence } from "@/DoggrTypes.ts";
+import { CapAssetType, Recurrence, RFBase } from "@/DoggrTypes.ts";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import {
@@ -17,24 +17,13 @@ import {
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 
-export const FinancialAssetForm = () => {
+export const FinancialAssetForm = (props: {
+	submitForm: any;
+	finAsset?: RFBase;
+	deleteItem?: any;
+}) => {
 	const { userId } = useAuth();
-	function submitForm(event) {
-		console.log(event);
-		const toSubmit = {
-			...event,
-			owner_id: userId,
-		};
-		PostInputService.send("/financialAsset", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
-
+	const { submitForm, finAsset, deleteItem } = props;
 	const financialAssetSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
@@ -46,7 +35,8 @@ export const FinancialAssetForm = () => {
 		state: string().default(""),
 		local: string().default(""),
 		fica: string().default(""),
-		capitalgains: string().default(""),
+		capitalGains: string().default(""),
+		owner_id: number().default(userId),
 	});
 
 	return (
@@ -54,14 +44,26 @@ export const FinancialAssetForm = () => {
 			<Formik
 				validationSchema={financialAssetSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					growthRate: 1,
-					totalValue: 0,
-					costBasis: 0,
-					wPriority: 1,
-				}}>
+				initialValues={
+					finAsset != undefined
+						? {
+								...finAsset,
+						  }
+						: {
+								name: "",
+								note: "",
+								growthRate: 1,
+								totalValue: 0,
+								costBasis: 0,
+								wPriority: 1,
+								owner_id: userId,
+								federal: "",
+								state: "",
+								local: "",
+								capitalGains: "",
+								fica: "",
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
@@ -124,15 +126,20 @@ export const FinancialAssetForm = () => {
 							<TaxSelector
 								level={"capitalgains"}
 								stateChanger={handleChange}
-								errors={errors.capitalgains}
-								touched={touched.capitalgains}
-								values={values.capitalgains}
+								errors={errors.capitalGains}
+								touched={touched.capitalGains}
+								values={values.capitalGains}
 							/>
-						</Row>
+						</Row>{" "}
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Asset"} />
+							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 							</Col>
+							{deleteItem != undefined ? (
+								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+									<Button onClick={() => deleteItem(finAsset.id)}>Delete</Button>
+								</Col>
+							) : null}
 						</Row>
 					</Form>
 				)}

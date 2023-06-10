@@ -1,14 +1,11 @@
 import Form from "react-bootstrap/Form";
-import { Button, Col, Container, FormControl, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, InputGroup, Row } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { PostInputService } from "@/Services/PostInputService.tsx";
 import { Formik, useFormikContext } from "formik";
-import * as formik from "formik";
 import * as yup from "yup";
 import { date, number, string } from "yup";
-import { CAssetBody } from "../../../../backend/src/db/types.ts";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { CapAssetType, Recurrence } from "../../DoggrTypes.ts";
+import { CapAsset, CapAssetType, Recurrence } from "../../DoggrTypes.ts";
 import { useState } from "react";
 import { useAuth } from "@/Services/Auth.tsx";
 
@@ -114,24 +111,13 @@ export function InputControl(props: {
 	);
 }
 
-export const CapitalAssetForm = () => {
+export const CapitalAssetForm = (props: {
+	submitForm: any;
+	capAsset?: CapAsset;
+	deleteItem?: any;
+}) => {
+	const { submitForm, capAsset, deleteItem } = props;
 	const { userId } = useAuth();
-	function submitForm(event) {
-		const toSubmit: CAssetBody = {
-			...event,
-			owner_id: userId,
-		};
-
-		console.log(event);
-		PostInputService.send("/capitalAsset", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log("fix error");
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
 
 	const capitalItemSchema = yup.object().shape({
 		name: string().required(),
@@ -154,6 +140,7 @@ export const CapitalAssetForm = () => {
 		state: string().default(""),
 		local: string().default(""),
 		fica: string().default(""),
+		owner_id: number().required().default(userId),
 	});
 
 	return (
@@ -161,16 +148,29 @@ export const CapitalAssetForm = () => {
 			<Formik
 				validationSchema={capitalItemSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					start: new Date().toISOString().slice(0, 10),
-					end: new Date().toISOString().slice(0, 10),
-					income: 0,
-					growthRate: 1,
-					recurrence: Recurrence.MONTHLY,
-					type: CapAssetType.HUMAN,
-				}}>
+				initialValues={
+					capAsset != undefined
+						? {
+								...capAsset,
+								start: new Date(capAsset.start).toISOString().slice(0, 10),
+								end: new Date(capAsset.end).toISOString().slice(0, 10),
+						  }
+						: {
+								name: "",
+								note: "",
+								start: new Date().toISOString().slice(0, 10),
+								end: new Date().toISOString().slice(0, 10),
+								income: 0,
+								growthRate: 1,
+								recurrence: Recurrence.MONTHLY,
+								type: CapAssetType.HUMAN,
+								owner_id: userId,
+								federal: "",
+								state: "",
+								local: "",
+								fica: "",
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
@@ -266,9 +266,14 @@ export const CapitalAssetForm = () => {
 							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Income"} />
+							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 							</Col>
+							{deleteItem != undefined ? (
+								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+									<Button onClick={() => deleteItem(capAsset.id)}>Delete</Button>
+								</Col>
+							) : null}
 						</Row>
 					</Form>
 				)}

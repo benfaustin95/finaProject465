@@ -6,6 +6,11 @@ import { BaseInput, BudgetItem, isBudgetItem } from "@/DoggrTypes.ts";
 import { Modal } from "react-bootstrap";
 import { entityType } from "../../../../backend/src/db/types.ts";
 import { PutInputService } from "@/Services/PutInputService.tsx";
+import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
+import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
+import { FinancialAssetForm } from "@/Components/PostFormSubComponents/FinancialAssetForm.tsx";
+import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
+import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAsset.tsx";
 
 class extend {}
 
@@ -21,6 +26,18 @@ export function DeleteModal<T extends BaseInput>(props: {
 		if (type == "budgetItem") {
 			return <BudgetItemForm budgetItem={item} submitForm={submitForm} deleteItem={deleteItem} />;
 		}
+		if (type == "capitalAsset")
+			return <CapitalAssetForm capAsset={item} submitForm={submitForm} deleteItem={deleteItem} />;
+		if (type == "dividend")
+			return <DividendForm dividend={item} submitForm={submitForm} deleteItem={deleteItem} />;
+		if (type == "financialAsset")
+			return <FinancialAssetForm finAsset={item} submitForm={submitForm} deleteItem={deleteItem} />;
+		if (type == "oneTimeIncome")
+			return (
+				<OneTimeIncomeForm oneTimeIncome={item} submitForm={submitForm} deleteItem={deleteItem} />
+			);
+		if (type == "rentalAsset")
+			return <RentalAssetForm rentalAsset={item} submitForm={submitForm} deleteItem={deleteItem} />;
 		return <></>;
 	};
 

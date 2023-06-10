@@ -11,23 +11,15 @@ import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
+import { RentalAsset } from "@/DoggrTypes.ts";
 
-export const RentalAssetForm = () => {
+export const RentalAssetForm = (props: {
+	submitForm: any;
+	rentalAsset?: RentalAsset;
+	deleteItem?: any;
+}) => {
 	const { userId } = useAuth();
-	function submitForm(event) {
-		const toSubmit = {
-			...event,
-			owner_id: userId,
-		};
-		PostInputService.send("/rentalAsset", toSubmit)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+	const { submitForm, rentalAsset, deleteItem } = props;
 
 	const rentalAssetSchema = yup.object().shape({
 		name: string().required(),
@@ -40,10 +32,11 @@ export const RentalAssetForm = () => {
 		state: string().default(""),
 		local: string().default(""),
 		fica: string().default(""),
-		capitalgains: string().default(""),
+		capitalGains: string().default(""),
 		owed: number().required().min(0),
 		maintenanceExpense: number().required().min(0),
 		grossIncome: number().min(0).required(),
+		owner_id: number().default(userId),
 	});
 
 	return (
@@ -51,17 +44,29 @@ export const RentalAssetForm = () => {
 			<Formik
 				validationSchema={rentalAssetSchema}
 				onSubmit={submitForm}
-				initialValues={{
-					name: "",
-					note: "",
-					growthRate: 1,
-					totalValue: 0,
-					costBasis: 0,
-					wPriority: 1,
-					owed: 0,
-					maintenanceExpense: 0,
-					grossIncome: 0,
-				}}>
+				initialValues={
+					rentalAsset != undefined
+						? {
+								...rentalAsset,
+						  }
+						: {
+								name: "",
+								note: "",
+								growthRate: 1,
+								totalValue: 0,
+								costBasis: 0,
+								wPriority: 1,
+								owed: 0,
+								maintenanceExpense: 0,
+								grossIncome: 0,
+								federal: "",
+								state: "",
+								local: "",
+								fica: "",
+								capitalGains: "",
+								owner_id: userId,
+						  }
+				}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
@@ -146,17 +151,22 @@ export const RentalAssetForm = () => {
 								values={values.fica}
 							/>
 							<TaxSelector
-								level={"capitalgains"}
+								level={"capitalGains"}
 								stateChanger={handleChange}
-								errors={errors.capitalgains}
-								touched={touched.capitalgains}
-								values={values.capitalgains}
+								errors={errors.capitalGains}
+								touched={touched.capitalGains}
+								values={values.capitalGains}
 							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={"Create Asset"} />
+							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 							</Col>
+							{deleteItem != undefined ? (
+								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+									<Button onClick={() => deleteItem(rentalAsset.id)}>Delete</Button>
+								</Col>
+							) : null}
 						</Row>
 					</Form>
 				)}

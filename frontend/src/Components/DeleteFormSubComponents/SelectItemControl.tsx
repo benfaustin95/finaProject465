@@ -16,6 +16,10 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 	const [item, setItem] = useState<T>(null);
 	const { type, entityName, keysToDisplay } = props;
 	const { userId } = useAuth();
+	const formatter = new Intl.NumberFormat("em-US", {
+		style: "currency",
+		currency: "USD",
+	});
 	useEffect(() => {
 		const loadSearchItem = () => {
 			SearchItemService.send(userId, type)
@@ -39,6 +43,22 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 		setModalShow(true);
 	}
 
+	function getValueToDisplay(item: T, name: string) {
+		switch (name) {
+			case "totalValue":
+			case "costBasis":
+			case "amount":
+			case "maintenanceExpense":
+			case "grossIncome":
+				return formatter.format(item[name]);
+			case "end":
+			case "start":
+			case "date":
+				return new Date(item[name]).toISOString().slice(0, 10);
+			default:
+				return item[name];
+		}
+	}
 	return (
 		<>
 			<div className={"overflow-auto current-group"}>
@@ -48,7 +68,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 							{entityArray.length > 0
 								? Object.getOwnPropertyNames(entityArray[0]).map((x) =>
 										keysToDisplay.includes(x) ? (
-											<th className={"current-th"} key={entityArray[0].id + x}>
+											<th className={"current-th sticky"} key={entityArray[0].id + x}>
 												{x.toUpperCase()}
 											</th>
 										) : null
@@ -66,9 +86,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 								}}>
 								{Object.getOwnPropertyNames(x).map((name) =>
 									keysToDisplay.includes(name) ? (
-										<td key={x[name] + name + "cell" + x.id}>
-											{name == "amount" ? "$ " + x[name] : x[name]}
-										</td>
+										<td key={x[name] + name + "cell" + x.id}>{getValueToDisplay(x, name)}</td>
 									) : null
 								)}
 							</tr>
