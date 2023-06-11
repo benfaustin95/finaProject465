@@ -19,15 +19,18 @@ export function CapitalAssetPage() {
 	return (
 		<div>
 			<div>
-				<CapitalAssetForm submitForm={submitForm} />
-			</div>
-			<div>
-				<Container className={"mx-auto my-4 p-4 bg-light rounded-5 w-75"}>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<h1 className={"text-center"}>Current Capital Assets</h1>
 					<CurrentItemListGroup<CapAsset>
 						type={"capitalAsset"}
 						entityName={"Capital Asset"}
 						keysToDisplay={["name", "note", "income", "recurrence"]}
 					/>
+				</Container>
+			</div>
+			<div>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<CapitalAssetForm submitForm={submitForm} />
 				</Container>
 			</div>
 		</div>

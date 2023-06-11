@@ -1,5 +1,4 @@
 import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
-import { DeleteItemForm } from "@/Components/DeleteFormSubComponents/DeleteItemForm.tsx";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { BudgetItem } from "@/DoggrTypes.ts";
 import { Container } from "react-bootstrap";
@@ -19,15 +18,18 @@ export function BudgetItemPage() {
 	return (
 		<div>
 			<div>
-				<BudgetItemForm submitForm={submitForm} />
-			</div>
-			<div>
-				<Container className={"mx-auto my-4 p-4 bg-light rounded-5 w-75"}>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<h1 className={"text-center"}>Current Expenses</h1>
 					<CurrentItemListGroup<BudgetItem>
 						type={"budgetItem"}
 						entityName={"Budget Item"}
 						keysToDisplay={["name", "amount", "recurrence", "start", "end"]}
 					/>
+				</Container>
+			</div>
+			<div>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<BudgetItemForm submitForm={submitForm} />
 				</Container>
 			</div>
 		</div>

@@ -2,10 +2,10 @@ import { FastifyInstance } from "fastify";
 import { User } from "../db/entities/User.js";
 import { sendMacroReport } from "../helperMethods/destructure.js";
 
-function validateTimePeriod(start: Date, end: Date) {
+function validateTimePeriod(start: Date, end: number) {
 	if (end == undefined)
 		return { valid: false, message: `the request is missing a terminating date` };
-	if (end < start)
+	if (end < start.getUTCFullYear())
 		return {
 			valid: false,
 			message: `the request period ending:${end} occurs before retirement start date`,
@@ -16,7 +16,7 @@ function validateTimePeriod(start: Date, end: Date) {
 async function macroReportRoutes(app: FastifyInstance, options = {}) {
 	if (!app) throw new Error("app error macro report routes");
 
-	app.search<{ Body: { id: number; end: Date } }>("/macroReport", async (req, reply) => {
+	app.search<{ Body: { id: number; end: number } }>("/macroReport", async (req, reply) => {
 		// eslint-disable-next-line
 		let { id, end } = req.body;
 		try {
@@ -30,8 +30,7 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 					"oneTimeIncomes",
 				],
 			});
-			if (end == undefined) return reply.status(500).send("abd date");
-			end = new Date(end);
+			if (end == undefined) return reply.status(500).send("add date");
 			const validDate = validateTimePeriod(user.start, end);
 
 			if (!validDate.valid) return reply.status(500).send(new Error(`Error: ${validDate.message}`));
@@ -53,7 +52,7 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 				oneTimeIncome,
 				rentalAssets,
 				user.start.getUTCFullYear(),
-				end.getUTCFullYear(),
+				end,
 				user.start.getMonth()
 			);
 			return reply.send(sendMacroReport(toSendBudget));

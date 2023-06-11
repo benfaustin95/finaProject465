@@ -50,6 +50,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 			case "amount":
 			case "maintenanceExpense":
 			case "grossIncome":
+			case "income":
 				return formatter.format(item[name]);
 			case "end":
 			case "start":

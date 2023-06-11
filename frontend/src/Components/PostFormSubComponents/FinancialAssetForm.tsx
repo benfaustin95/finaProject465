@@ -40,110 +40,108 @@ export const FinancialAssetForm = (props: {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
-			<Formik
-				validationSchema={financialAssetSchema}
-				onSubmit={submitForm}
-				initialValues={
-					finAsset != undefined
-						? {
-								...finAsset,
-						  }
-						: {
-								name: "",
-								note: "",
-								growthRate: 1,
-								totalValue: 0,
-								costBasis: 0,
-								wPriority: 1,
-								owner_id: userId,
-								federal: "",
-								state: "",
-								local: "",
-								capitalGains: "",
-								fica: "",
-						  }
-				}>
-				{({ handleSubmit, handleChange, values, touched, errors }) => (
-					<Form onSubmit={handleSubmit} className={"p-4"}>
-						<Row className={"m-4 justify-content-center"}>
-							<h1 className={"text-center"}>Create Financial Asset</h1>
-						</Row>
-						<Row>
-							<BaseInputForm
-								handleChange={handleChange}
-								valuesNote={values.note}
-								valuesName={values.name}
-								touchedNote={touched.note}
-								touchedName={touched.name}
-								errorsName={errors.name}
-								errorsNote={errors.note}
-								touchedGrowthRate={touched.growthRate}
-								valuesGrowthRate={values.growthRate}
-								errorsGrowth={errors.growthRate}
-								type={"financialAsset"}
-							/>
-							<RFBaseForm
-								handleChange={handleChange}
-								errorsTotalValue={errors.totalValue}
-								touchedTotalValue={touched.totalValue}
-								valuesTotalValue={values.totalValue}
-								errorsCostBasis={errors.costBasis}
-								touchedCostBasis={touched.costBasis}
-								valuesCostBasis={values.costBasis}
-								errorsWPriority={errors.wPriority}
-								valuesWPriority={values.wPriority}
-								touchedWPriority={touched.wPriority}
-							/>
-							<TaxSelector
-								level={"Federal"}
-								stateChanger={handleChange}
-								errors={errors.federal}
-								touched={touched.federal}
-								values={values.federal}
-							/>
-							<TaxSelector
-								level={"State"}
-								stateChanger={handleChange}
-								errors={errors.state}
-								touched={touched.state}
-								values={values.state}
-							/>
-							<TaxSelector
-								level={"Local"}
-								stateChanger={handleChange}
-								errors={errors.local}
-								touched={touched.local}
-								values={values.local}
-							/>
-							<TaxSelector
-								level={"FICA"}
-								stateChanger={handleChange}
-								errors={errors.fica}
-								touched={touched.fica}
-								values={values.fica}
-							/>
-							<TaxSelector
-								level={"capitalgains"}
-								stateChanger={handleChange}
-								errors={errors.capitalGains}
-								touched={touched.capitalGains}
-								values={values.capitalGains}
-							/>
-						</Row>{" "}
-						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
-							</Col>
+		<Formik
+			validationSchema={financialAssetSchema}
+			onSubmit={submitForm}
+			initialValues={
+				finAsset != undefined
+					? {
+							...finAsset,
+					  }
+					: {
+							name: "",
+							note: "",
+							growthRate: 1,
+							totalValue: 0,
+							costBasis: 0,
+							wPriority: 1,
+							owner_id: userId,
+							federal: "",
+							state: "",
+							local: "",
+							capitalGains: "",
+							fica: "",
+					  }
+			}>
+			{({ handleSubmit, handleChange, values, touched, errors }) => (
+				<Form onSubmit={handleSubmit} className={"p-4"}>
+					<Row className={"m-4 justify-content-center"}>
+						<h1 className={"text-center"}>Create Financial Asset</h1>
+					</Row>
+					<Row>
+						<BaseInputForm
+							handleChange={handleChange}
+							valuesNote={values.note}
+							valuesName={values.name}
+							touchedNote={touched.note}
+							touchedName={touched.name}
+							errorsName={errors.name}
+							errorsNote={errors.note}
+							touchedGrowthRate={touched.growthRate}
+							valuesGrowthRate={values.growthRate}
+							errorsGrowth={errors.growthRate}
+							type={"financialAsset"}
+						/>
+						<RFBaseForm
+							handleChange={handleChange}
+							errorsTotalValue={errors.totalValue}
+							touchedTotalValue={touched.totalValue}
+							valuesTotalValue={values.totalValue}
+							errorsCostBasis={errors.costBasis}
+							touchedCostBasis={touched.costBasis}
+							valuesCostBasis={values.costBasis}
+							errorsWPriority={errors.wPriority}
+							valuesWPriority={values.wPriority}
+							touchedWPriority={touched.wPriority}
+						/>
+						<TaxSelector
+							level={"Federal"}
+							stateChanger={handleChange}
+							errors={errors.federal}
+							touched={touched.federal}
+							values={values.federal}
+						/>
+						<TaxSelector
+							level={"State"}
+							stateChanger={handleChange}
+							errors={errors.state}
+							touched={touched.state}
+							values={values.state}
+						/>
+						<TaxSelector
+							level={"Local"}
+							stateChanger={handleChange}
+							errors={errors.local}
+							touched={touched.local}
+							values={values.local}
+						/>
+						<TaxSelector
+							level={"FICA"}
+							stateChanger={handleChange}
+							errors={errors.fica}
+							touched={touched.fica}
+							values={values.fica}
+						/>
+						<TaxSelector
+							level={"capitalgains"}
+							stateChanger={handleChange}
+							errors={errors.capitalGains}
+							touched={touched.capitalGains}
+							values={values.capitalGains}
+						/>
+					</Row>{" "}
+					<Row className={"mb-4 d-flex flex-row justify-content-center"}>
+						<Col className={"d-flex flex-row justify-content-center"}>
 							{deleteItem != undefined ? (
-								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
-									<Button onClick={() => deleteItem(finAsset.id)}>Delete</Button>
-								</Col>
+								<Button className={"btn-lg mr-2"} onClick={() => deleteItem(finAsset.id)}>
+									Delete
+								</Button>
 							) : null}
-						</Row>
-					</Form>
-				)}
-			</Formik>
-		</Container>
+							<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+						</Col>
+					</Row>
+				</Form>
+			)}
+		</Formik>
 	);
 };

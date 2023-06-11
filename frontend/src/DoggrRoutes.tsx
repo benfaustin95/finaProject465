@@ -1,6 +1,6 @@
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
-import { MacroReportSet } from "@/Components/GetReportSubComponenets/UsersList.tsx";
+import { MacroReportSet } from "@/Components/GetReportSubComponenets/MacroReportSet.tsx";
 import { MicroReportLoad } from "@/Components/GetReportSubComponenets/MicroReportLoad.tsx";
 import { MacroReportLoad } from "@/Components/GetReportSubComponenets/MacroReportLoad.tsx";
 import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
@@ -37,7 +37,7 @@ export function DoggrRouter() {
 						<Col xs={10} className={"d-flex flex-row justify-content-center"}>
 							{token != null ? (
 								<Nav>
-									<NavLink href={"/"}>Macro Report</NavLink>
+									<NavLink href={"/macroReport"}>Macro Report</NavLink>
 									<NavLink href={"/microReportLoaded"}>Micro Report</NavLink>
 									<NavDropdown title={"Financial Items"}>
 										<NavDropdown.Item href={"/budgetItem"}>Budget Item</NavDropdown.Item>
@@ -58,7 +58,7 @@ export function DoggrRouter() {
 			</Navbar>
 			<Container>
 				<Routes>
-					<Route path="/" element={<MacroReportSet />} />
+					<Route path="/macroReport" element={<MacroReportLoad />} />
 					<Route path="/macroReportLoaded" element={<MacroReportLoad />} />
 					<Route path="/microReportLoaded" element={<MicroReportLoad />} />
 					<Route path="/budgetItem" element={<BudgetItemPage />} />

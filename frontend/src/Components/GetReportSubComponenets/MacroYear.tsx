@@ -160,27 +160,22 @@ export function MacroYear(props: destructuredMacroYearReport) {
 	});
 
 	return (
-		<Container className={"bg-light rounded-4 m-5 p-5"}>
-			<Row className={"text-center pb-4"}>
-				<h1>Yearly Budget Estimate</h1>
-			</Row>
-			<Table className={"border-dark"} responsive striped bordered hover>
-				<thead className={"table-dark border-white"}>
-					<tr>
-						<th>Name</th>
-						<th>Note</th>
-						{expenses != undefined
-							? expenses.annualExpense.amounts.map(([year]) => <th key={year}>{year}</th>)
-							: null}
-					</tr>
-				</thead>
-				<tbody>
-					{expenses != undefined ? <BudgetItems {...expenses} /> : null}
-					{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
-					{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
-					{withdrawals != undefined ? <YearlyWithdrawals {...withdrawals} /> : null}
-				</tbody>
-			</Table>
-		</Container>
+		<Table className={"border-dark"} responsive striped bordered hover>
+			<thead className={"table-dark border-white"}>
+				<tr>
+					<th>Name</th>
+					<th>Note</th>
+					{expenses != undefined
+						? expenses.annualExpense.amounts.map(([year]) => <th key={year}>{year}</th>)
+						: null}
+				</tr>
+			</thead>
+			<tbody>
+				{expenses != undefined ? <BudgetItems {...expenses} /> : null}
+				{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
+				{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
+				{withdrawals != undefined ? <YearlyWithdrawals {...withdrawals} /> : null}
+			</tbody>
+		</Table>
 	);
 }

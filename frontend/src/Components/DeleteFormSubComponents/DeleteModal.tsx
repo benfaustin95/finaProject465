@@ -69,10 +69,10 @@ export function DeleteModal<T extends BaseInput>(props: {
 
 	return (
 		<Modal size="lg" show={show} onHide={onHide}>
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-vcenter">Modal heading</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>{getForm()}</Modal.Body>
+			<Modal.Header closeButton></Modal.Header>
+			<Modal.Body className={"bg-dark"}>
+				<div className={"bg-light p-3"}>{getForm()}</div>
+			</Modal.Body>
 		</Modal>
 	);
 }

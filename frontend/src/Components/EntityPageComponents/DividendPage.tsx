@@ -1,6 +1,4 @@
 import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
-import { DeleteItemForm } from "@/Components/DeleteFormSubComponents/DeleteItemForm.tsx";
-import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { BudgetItem, Dividend } from "@/DoggrTypes.ts";
@@ -20,15 +18,18 @@ export function DividendPage() {
 	return (
 		<div>
 			<div>
-				<DividendForm submitForm={submitForm} />
-			</div>
-			<div>
-				<Container className={"mx-auto my-4 p-4 bg-light rounded-5 w-75"}>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<h1 className={"text-center"}>Current Dividends</h1>
 					<CurrentItemListGroup<Dividend>
 						type={"dividend"}
 						entityName={"Dividend"}
 						keysToDisplay={["name", "rate", "asset"]}
 					/>
+				</Container>
+			</div>
+			<div>
+				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
+					<DividendForm submitForm={submitForm} />
 				</Container>
 			</div>
 		</div>

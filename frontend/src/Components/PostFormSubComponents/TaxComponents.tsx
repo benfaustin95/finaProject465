@@ -28,8 +28,9 @@ export const TaxSelector = (props: {
 					console.log(err);
 				});
 		};
+		console.log("this is why");
 		loadTax();
-	});
+	}, []);
 
 	return (
 		<>
