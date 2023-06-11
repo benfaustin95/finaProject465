@@ -1,21 +1,14 @@
 import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
-import { useState } from "react";
-import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
-import { CapAssetType, Recurrence, RFBase } from "@/DoggrTypes.ts";
+import { CapAssetType, getTax, Recurrence, RFBase, RouteTypes } from "@/DoggrTypes.ts";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import {
-	InputControl,
-	RecurrenceSelector,
-	SubmitButton,
-} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { CAssetBody, RFBaseBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const FinancialAssetForm = (props: {
 	submitForm: any;
@@ -46,7 +39,15 @@ export const FinancialAssetForm = (props: {
 			initialValues={
 				finAsset != undefined
 					? {
-							...finAsset,
+							name: finAsset.name,
+							note: finAsset.note,
+							growthRate: finAsset.growthRate,
+							totalValue: finAsset.totalValue,
+							costBasis: finAsset.costBasis,
+							wPriority: finAsset.wPriority,
+							owner_id: finAsset.owner_id,
+							id: finAsset.id,
+							...getTax(finAsset),
 					  }
 					: {
 							name: "",
@@ -63,7 +64,7 @@ export const FinancialAssetForm = (props: {
 							fica: "",
 					  }
 			}>
-			{({ handleSubmit, handleChange, values, touched, errors }) => (
+			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
 						<h1 className={"text-center"}>Create Financial Asset</h1>
@@ -80,7 +81,7 @@ export const FinancialAssetForm = (props: {
 							touchedGrowthRate={touched.growthRate}
 							valuesGrowthRate={values.growthRate}
 							errorsGrowth={errors.growthRate}
-							type={"financialAsset"}
+							type={RouteTypes.FINASSET}
 						/>
 						<RFBaseForm
 							handleChange={handleChange}
@@ -95,35 +96,35 @@ export const FinancialAssetForm = (props: {
 							touchedWPriority={touched.wPriority}
 						/>
 						<TaxSelector
-							level={"Federal"}
+							level={RouteTypes.FEDERAL}
 							stateChanger={handleChange}
 							errors={errors.federal}
 							touched={touched.federal}
 							values={values.federal}
 						/>
 						<TaxSelector
-							level={"State"}
+							level={RouteTypes.STATE}
 							stateChanger={handleChange}
 							errors={errors.state}
 							touched={touched.state}
 							values={values.state}
 						/>
 						<TaxSelector
-							level={"Local"}
+							level={RouteTypes.LOCAL}
 							stateChanger={handleChange}
 							errors={errors.local}
 							touched={touched.local}
 							values={values.local}
 						/>
 						<TaxSelector
-							level={"FICA"}
+							level={RouteTypes.FICA}
 							stateChanger={handleChange}
 							errors={errors.fica}
 							touched={touched.fica}
 							values={values.fica}
 						/>
 						<TaxSelector
-							level={"capitalgains"}
+							level={RouteTypes.CAPGAINS}
 							stateChanger={handleChange}
 							errors={errors.capitalGains}
 							touched={touched.capitalGains}
@@ -137,8 +138,13 @@ export const FinancialAssetForm = (props: {
 									Delete
 								</Button>
 							) : null}
-							<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+							<SubmitButton name={deleteItem != undefined ? "Edit Item" : "Create Item"} />
 						</Col>
+						{status != undefined ? (
+							<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+								{status.message}
+							</div>
+						) : null}
 					</Row>
 				</Form>
 			)}

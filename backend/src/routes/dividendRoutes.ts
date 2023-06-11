@@ -46,12 +46,16 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: Dividend } }>("/dividend", async (req, reply) => {
+	app.put<{ Body: { userid: number; toUpdate: DividendBody } }>("/dividend", async (req, reply) => {
 		const { userid, toUpdate } = req.body;
+		const toUpdateInit = {
+			id: toUpdate.id,
+			...(await validateDividendInputBody(toUpdate, app, req)),
+		};
 		try {
 			const item = await req.em.findOneOrFail(Dividend, { owner: userid, id: toUpdate.id });
-			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-				item[x] = toUpdate[x];
+			Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+				item[x] = toUpdateInit[x];
 			});
 			await req.em.flush();
 			return reply.send(`${item.name} successfully updated`);

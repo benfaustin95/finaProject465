@@ -50,17 +50,18 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: FinancialAsset } }>(
+	app.put<{ Body: { userid: number; toUpdate: RFBaseBody } }>(
 		"/financialAsset",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
+			const toUpdateInit = { id: toUpdate.id, ...(await validateRFBaseBody(toUpdate, app, req)) };
 			try {
 				const item = await req.em.findOneOrFail(FinancialAsset, { owner: userid, id: toUpdate.id });
-				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-					item[x] = toUpdate[x];
+				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+					item[x] = toUpdateInit[x];
 				});
 				await req.em.flush();
-				return reply.send(`${item.name} sucessfully updated`);
+				return reply.send(`${item.name} successfully updated`);
 			} catch (err) {
 				return reply.status(500).send(err);
 			}

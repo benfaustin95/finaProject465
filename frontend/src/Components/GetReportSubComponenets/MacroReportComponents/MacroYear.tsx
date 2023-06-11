@@ -1,7 +1,7 @@
 import {
 	TaxAccumulator,
 	MacroWithdrawal,
-} from "../../../../backend/src/db/backendTypes/ReportTypes.js";
+} from "../../../../../backend/src/db/backendTypes/ReportTypes.js";
 import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { Simulate } from "react-dom/test-utils";
@@ -14,7 +14,7 @@ import {
 	DestructuredMacroWithdrawal,
 	DestructuredTaxAccumulator,
 	DestructuredWithMacroOutputRow,
-} from "../../../../backend/src/db/backendTypes/destructureTypes.ts";
+} from "../../../../../backend/src/db/backendTypes/destructureTypes.ts";
 
 export type rowGroup = {
 	group: Array<[number, DestructuredMacroOutputRow]>;
@@ -141,7 +141,7 @@ function YearlyIncomes(props: DestructuredMacroIncome) {
 	);
 }
 
-function YearlyWithdrawals(props: DestructuredMacroWithdrawal) {
+function MacroWithdrawals(props: DestructuredMacroWithdrawal) {
 	const { outDividend, outputWithdrawal, remainder } = props;
 	return (
 		<>
@@ -176,7 +176,7 @@ export function MacroYear(props: DestructuredMacroReport) {
 				{expenses != undefined ? <BudgetItems {...expenses} /> : null}
 				{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
 				{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
-				{withdrawals != undefined ? <YearlyWithdrawals {...withdrawals} /> : null}
+				{withdrawals != undefined ? <MacroWithdrawals {...withdrawals} /> : null}
 			</tbody>
 		</Table>
 	);

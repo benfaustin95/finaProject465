@@ -8,7 +8,7 @@ import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetFor
 import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
 import { FinancialAssetForm } from "@/Components/PostFormSubComponents/FinancialAssetForm.tsx";
 import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
-import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAsset.tsx";
+import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAssetForm.tsx";
 
 export function DeleteModal<T extends BaseInput>(props: {
 	type: string;
@@ -37,15 +37,21 @@ export function DeleteModal<T extends BaseInput>(props: {
 		return <></>;
 	};
 
-	function submitForm(event) {
+	function submitForm(event, actions) {
+		console.log(event);
 		PutInputService.send(`/${type}`, userId, event)
 			.then((res) => {
+				actions.resetForm();
+				actions.setSubmitting(false);
+				actions.setStatus(undefined);
 				console.log(res);
 				onHide();
 				if (res.status != 200) console.log("bad");
 			})
 			.catch((err) => {
 				console.log(err);
+				actions.setStatus({ error: true, message: "Submit Failed Please Try Again" });
+				actions.setSubmitting(false);
 			});
 	}
 

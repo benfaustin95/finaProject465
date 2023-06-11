@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { httpClient } from "@/Services/HttpClient.tsx";
-import { MacroYear } from "@/Components/GetReportSubComponenets/MacroYear.tsx";
+import { MacroYear } from "@/Components/GetReportSubComponenets/MacroReportComponents/MacroYear.tsx";
 import { MacroReport } from "../../../../backend/src/db/backendTypes/ReportTypes.ts";
 import { MicroReportService } from "@/Services/MicroReportService.tsx";
 import { MicroYear } from "@/Components/GetReportSubComponenets/MicroYear.tsx";

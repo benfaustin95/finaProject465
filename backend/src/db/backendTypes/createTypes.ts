@@ -43,6 +43,7 @@ export interface BaseInputBody {
 	local: string;
 	fica: string;
 	capitalGains: string;
+	id: number;
 }
 
 export interface BaseInputBodyInit {

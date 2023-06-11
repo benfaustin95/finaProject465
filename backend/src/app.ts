@@ -17,6 +17,7 @@ import { FastifyMicroReportsPlugin } from "./plugins/microBudgetReport.js";
 import MicroReportRoute from "./routes/microReportRoute.js";
 import TaxRoutes from "./routes/taxRoutes.js";
 import { AuthPlugin } from "./plugins/auth.js";
+import GeneralRoutes from "./routes/generalRoutes.js";
 
 const envToLogger = {
 	development: {
@@ -57,18 +58,11 @@ await app.register(cors, {
 
 await app.register(FastifyMikroOrmPlugin, config);
 await app.register(FastifySearchHttpMethodPlugin, {});
-await app.register(UserRoutes, {});
 await app.register(FastifyMacroReportsPlugin, {});
-await app.register(MacroReportRoutes, {});
-await app.register(BudgetItemRoutes, {});
-await app.register(CapAssetRoutes, {});
 await app.register(FastifyTaxPlugin, {});
-await app.register(DividendRoutes, {});
-await app.register(FinancialAssetRoutes, {});
-await app.register(RentalAssetRoutes, {});
-await app.register(OneTimeIncomeRoutes, {});
 await app.register(FastifyMicroReportsPlugin, {});
 await app.register(MicroReportRoute, {});
-await app.register(TaxRoutes, {});
 await app.register(AuthPlugin, {});
+await app.register(GeneralRoutes, {});
+
 export default app;

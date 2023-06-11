@@ -35,7 +35,6 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 				});
 		};
 		loadSearchItem();
-		console.log(modalShow);
 	}, [modalShow]);
 
 	function handleClick(x: T) {

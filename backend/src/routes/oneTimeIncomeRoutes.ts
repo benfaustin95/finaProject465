@@ -51,14 +51,18 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: OneTimeIncome } }>(
+	app.put<{ Body: { userid: number; toUpdate: OneTimeIncomeBody } }>(
 		"/oneTimeIncome",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
+			const toUpdateInit = {
+				id: toUpdate.id,
+				...(await validateOneTimeIncomeBody(toUpdate, app, req)),
+			};
 			try {
 				const item = await req.em.findOneOrFail(OneTimeIncome, { owner: userid, id: toUpdate.id });
-				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-					item[x] = toUpdate[x];
+				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+					item[x] = toUpdateInit[x];
 				});
 				await req.em.flush();
 				return reply.send(`${item.name} successfully updated`);

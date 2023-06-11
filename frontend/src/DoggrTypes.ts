@@ -1,3 +1,5 @@
+import { PostInputService } from "@/Services/PostInputService.tsx";
+
 export enum CapAssetType {
 	HUMAN = "human capital",
 	NONTAXABLEANNUITY = "non-taxable annuity",
@@ -12,16 +14,35 @@ export enum Recurrence {
 	NON = "non-reoccurring",
 }
 
+export enum RouteTypes {
+	BUDGET = "budgetItem",
+	CAPASSET = "capitalAsset",
+	DIVIDEND = "dividend",
+	ONETIMEINCOME = "oneTimeIncome",
+	FINASSET = "financialAsset",
+	RENATLASSET = "rentalAsset",
+	CAPGAINS = "capitalGains",
+	FICA = "fica",
+	FEDERAL = "federal",
+	STATE = "state",
+	LOCAL = "local",
+}
+
+export type TaxObject = {
+	level: string;
+	location: string;
+	rate: number;
+};
 export interface BaseInput {
-	owner: number;
+	owner_id: number;
 	name: string;
 	note: string;
 	growthRate: number;
-	state: string;
-	federal: string;
-	local: string;
-	fica: string;
-	capitalGains: string;
+	state: TaxObject;
+	federal: TaxObject;
+	local: TaxObject;
+	fica: TaxObject;
+	capitalGains: TaxObject;
 	id: number;
 }
 export interface BudgetItem extends BaseInput {
@@ -62,6 +83,31 @@ export interface Dividend extends BaseInput {
 
 export type entityType = BudgetItem | CapAsset | OneTimeIncome | Dividend | RentalAsset | RFBase;
 
-export function isBudgetItem(item: entityType): item is BudgetItem {
-	return (item as BudgetItem).amount != undefined;
+export function getTax(item: BaseInput) {
+	return {
+		capitalGains: item.capitalGains != null ? item.capitalGains.location : "",
+		fica: item.fica != null ? item.fica.location : "",
+		federal: item.federal != null ? item.federal.location : "",
+		state: item.state != null ? item.state.location : "",
+		local: !item.local ? "" : item.local.location,
+	};
+}
+export function createSubmitNewItemForm(type: string) {
+	return (event, actions) => {
+		console.log(event);
+		actions.setStatus("Submitting...");
+		PostInputService.send(`/${type}`, event)
+			.then((res) => {
+				console.log(res);
+				if (res.status != 200) console.log("bad");
+				actions.resetForm();
+				actions.setSubmitting(false);
+				actions.setStatus(undefined);
+			})
+			.catch((err) => {
+				console.log(err);
+				actions.setStatus({ error: true, message: "Submit Failed Please Try Again" });
+				actions.setSubmitting(false);
+			});
+	};
 }

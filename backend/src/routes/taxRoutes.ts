@@ -45,6 +45,7 @@ async function taxRoutes(app: FastifyInstance, _options = {}) {
 
 	app.get("/taxRate/capitalGains", async (req, reply) => {
 		try {
+			console.log("req");
 			const taxRates = await req.em.find(TaxRate, { level: Level.CAPGAINS });
 			return reply.send(taxRates);
 		} catch (err) {

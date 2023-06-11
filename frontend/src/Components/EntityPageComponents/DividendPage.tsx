@@ -1,27 +1,18 @@
 import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { BudgetItem, Dividend } from "@/DoggrTypes.ts";
+import { BudgetItem, createSubmitNewItemForm, Dividend, RouteTypes } from "@/DoggrTypes.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 
 export function DividendPage() {
-	function submitForm(event) {
-		PostInputService.send("/dividend", event)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+	const submitForm = createSubmitNewItemForm(RouteTypes.DIVIDEND);
 	return (
 		<div>
 			<div>
 				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
 					<h1 className={"text-center"}>Current Dividends</h1>
 					<CurrentItemListGroup<Dividend>
-						type={"dividend"}
+						type={RouteTypes.DIVIDEND}
 						entityName={"Dividend"}
 						keysToDisplay={["name", "rate", "asset"]}
 					/>

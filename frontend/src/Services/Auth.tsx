@@ -25,7 +25,6 @@ const updateAxios = async (token: string) => {
 				Authorization: `Bearer ${token}`,
 				Accept: "application/json",
 			};
-			console.log("token inserted", token);
 			return config;
 		},
 		(error) => {

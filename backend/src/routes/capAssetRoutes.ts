@@ -53,19 +53,27 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: CapAsset } }>("/capitalAsset", async (req, reply) => {
-		const { userid, toUpdate } = req.body;
-		try {
-			const item = await req.em.findOneOrFail(CapAsset, { owner: userid, id: toUpdate.id });
-			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-				item[x] = toUpdate[x];
-			});
-			await req.em.flush();
-			return reply.send(`${item.name} successfully updated`);
-		} catch (err) {
-			return reply.status(404).send(err);
+	app.put<{ Body: { userid: number; toUpdate: CAssetBody } }>(
+		"/capitalAsset",
+		async (req, reply) => {
+			const { userid, toUpdate } = req.body;
+			const toUpdateInit = {
+				id: toUpdate.id,
+				...(await validateCapitalAssetInputBody(toUpdate, app, req)),
+			};
+			try {
+				const item = await req.em.findOneOrFail(CapAsset, { owner: userid, id: toUpdate.id });
+				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+					item[x] = toUpdateInit[x];
+				});
+				await req.em.flush();
+				return reply.send(`${item.name} successfully updated`);
+			} catch (err) {
+				console.log(err);
+				return reply.status(404).send(err);
+			}
 		}
-	});
+	);
 }
 
 export default capAssetRoutes;

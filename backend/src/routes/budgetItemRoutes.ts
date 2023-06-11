@@ -22,6 +22,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.flush();
 			return reply.send("Expense Successfully Created");
 		} catch (err) {
+			console.log(err);
 			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
 			return reply.status(500).send(err);
 		}

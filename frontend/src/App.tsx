@@ -1,5 +1,5 @@
-import { DoggrRouter } from "@/DoggrRoutes.tsx";
-import { Link, Route, Routes, Router, BrowserRouter } from "react-router-dom";
+import { RetireMaybeRouter } from "@/DoggrRoutes.tsx";
+import { BrowserRouter } from "react-router-dom";
 import "@css/DoggrStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "@/Services/Auth.tsx";
@@ -15,7 +15,7 @@ export function App() {
 		<BrowserRouter>
 			<AuthProvider>
 				<div className="App retMaybe">
-					<DoggrRouter />
+					<RetireMaybeRouter />
 				</div>
 			</AuthProvider>
 		</BrowserRouter>

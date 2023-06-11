@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
 import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
 import { Button, Col, Container, Row } from "react-bootstrap";
@@ -8,13 +6,10 @@ import { number, string } from "yup";
 import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { RentalAsset } from "@/DoggrTypes.ts";
-import {
-	RentalAssetBody,
-	RFBaseBody,
-} from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { getTax, RentalAsset, RouteTypes } from "@/DoggrTypes.ts";
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const RentalAssetForm = (props: {
 	submitForm: any;
@@ -50,7 +45,17 @@ export const RentalAssetForm = (props: {
 				initialValues={
 					rentalAsset != undefined
 						? {
-								...rentalAsset,
+								name: rentalAsset.name,
+								note: rentalAsset.note,
+								growthRate: rentalAsset.growthRate,
+								costBasis: rentalAsset.costBasis,
+								wPriority: rentalAsset.wPriority,
+								owed: rentalAsset.owed,
+								maintenanceExpense: rentalAsset.maintenanceExpense,
+								grossIncome: rentalAsset.grossIncome,
+								owner_id: userId,
+								id: rentalAsset.id,
+								...getTax(rentalAsset),
 						  }
 						: {
 								name: "",
@@ -70,7 +75,7 @@ export const RentalAssetForm = (props: {
 								owner_id: userId,
 						  }
 				}>
-				{({ handleSubmit, handleChange, values, touched, errors }) => (
+				{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
 						<Row className={"m-4 justify-content-center"}>
 							<h1 className={"text-center"}>Create Rental Asset</h1>
@@ -126,35 +131,35 @@ export const RentalAssetForm = (props: {
 								errors={errors.grossIncome}
 							/>
 							<TaxSelector
-								level={"Federal"}
+								level={RouteTypes.FEDERAL}
 								stateChanger={handleChange}
 								errors={errors.federal}
 								touched={touched.federal}
 								values={values.federal}
 							/>
 							<TaxSelector
-								level={"State"}
+								level={RouteTypes.STATE}
 								stateChanger={handleChange}
 								errors={errors.state}
 								touched={touched.state}
 								values={values.state}
 							/>
 							<TaxSelector
-								level={"Local"}
+								level={RouteTypes.LOCAL}
 								stateChanger={handleChange}
 								errors={errors.local}
 								touched={touched.local}
 								values={values.local}
 							/>
 							<TaxSelector
-								level={"FICA"}
+								level={RouteTypes.FICA}
 								stateChanger={handleChange}
 								errors={errors.fica}
 								touched={touched.fica}
 								values={values.fica}
 							/>
 							<TaxSelector
-								level={"capitalGains"}
+								level={RouteTypes.CAPGAINS}
 								stateChanger={handleChange}
 								errors={errors.capitalGains}
 								touched={touched.capitalGains}
@@ -162,13 +167,18 @@ export const RentalAssetForm = (props: {
 							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
-							</Col>
 							{deleteItem != undefined ? (
 								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
 									<Button onClick={() => deleteItem(rentalAsset.id)}>Delete</Button>
 								</Col>
+							) : null}
+							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
+								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+							</Col>
+							{status != undefined ? (
+								<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+									{status.message}
+								</div>
 							) : null}
 						</Row>
 					</Form>

@@ -1,115 +1,15 @@
 import Form from "react-bootstrap/Form";
-import { Button, Col, Container, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { Formik, useFormikContext } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { CapAsset, CapAssetType, Recurrence } from "../../DoggrTypes.ts";
-import { useState } from "react";
+import { CapAsset, CapAssetType, getTax, Recurrence, RouteTypes } from "../../DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
-
-export function SubmitButton(props: { name: string }) {
-	const { dirty, isValid } = useFormikContext();
-	const { name } = props;
-	return (
-		<Button
-			as="input"
-			className={"btn-lg"}
-			type="submit"
-			value={name}
-			disabled={!isValid || !dirty}
-		/>
-	);
-}
-
-export function EditButton(props: { name: string; onClickHandle: any }) {
-	const { dirty, isValid } = useFormikContext();
-	const { name, onClickHandle } = props;
-	return (
-		<Button
-			as="input"
-			className={"btn-lg"}
-			type="submit"
-			onClick={() => onClickHandle(true)}
-			value={name}
-			disabled={!isValid || !dirty}
-		/>
-	);
-}
-export function RecurrenceSelector(props: { handleChange; values; errors; touched }) {
-	const { handleChange, values, errors, touched } = props;
-	return (
-		<>
-			<Col xs={12} md={4} lg={2} className={"mb-4"}>
-				<Form.Label htmlFor="recurrence">Recurrence</Form.Label>
-			</Col>
-			<Col xs={12} md={8} lg={4} className={"mb-4"}>
-				<Form.Select
-					id="recurrence"
-					onChange={handleChange}
-					name={"recurrence"}
-					value={values}
-					isInvalid={!!errors}
-					isValid={touched && !errors}>
-					<option value={Recurrence.MONTHLY}>Monthly</option>
-					<option value={Recurrence.NON}>Non-Reoccurring</option>
-					<option value={Recurrence.ANNUALLY}>Annually</option>
-					<option value={Recurrence.WEEKLY}>Weekly</option>
-					<option value={Recurrence.DAILY}>Daily</option>
-				</Form.Select>
-			</Col>
-		</>
-	);
-}
-
-export function InputControl(props: {
-	handleChange;
-	type: string;
-	name: string;
-	values;
-	touched;
-	errors;
-}) {
-	const { handleChange, type, name, values, touched, errors } = props;
-	const [dollarInputs, setDollarInputs] = useState([
-		"income",
-		"expense",
-		"totalValue",
-		"costBasis",
-		"cashBasis",
-		"owed",
-		"grossIncome",
-		"amount",
-	]);
-	return (
-		<>
-			<Col xs={12} md={4} lg={2} className={"mb-4"}>
-				<Form.Label htmlFor={name}>{name}: </Form.Label>
-			</Col>
-			<Col xs={12} md={8} lg={4} className={"mb-4"}>
-				<InputGroup hasValidation>
-					{dollarInputs.includes(name) ? (
-						<InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
-					) : null}
-					<Form.Control
-						id={name}
-						type={type}
-						name={name}
-						value={values}
-						isValid={touched && !errors}
-						isInvalid={!!errors}
-						onChange={handleChange}
-					/>
-					{name.toLowerCase().includes("rate") ? (
-						<InputGroup.Text id="inputGroupPrepend">%</InputGroup.Text>
-					) : null}
-					<Form.Control.Feedback type={"invalid"}>{errors}</Form.Control.Feedback>
-				</InputGroup>
-			</Col>
-		</>
-	);
-}
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { RecurrenceSelector } from "@/Components/PostFormSubComponents/FormSubComponents/RecurrenceSelector.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const CapitalAssetForm = (props: {
 	submitForm: any;
@@ -150,9 +50,17 @@ export const CapitalAssetForm = (props: {
 			initialValues={
 				capAsset != undefined
 					? {
-							...capAsset,
+							name: capAsset.name,
+							note: capAsset.note,
 							start: new Date(capAsset.start).toISOString().slice(0, 10),
 							end: new Date(capAsset.end).toISOString().slice(0, 10),
+							income: capAsset.income,
+							growthRate: 1,
+							recurrence: capAsset.recurrence,
+							type: capAsset.type,
+							owner_id: userId,
+							id: capAsset.id,
+							...getTax(capAsset),
 					  }
 					: {
 							name: "",
@@ -170,7 +78,7 @@ export const CapitalAssetForm = (props: {
 							fica: "",
 					  }
 			}>
-			{({ handleSubmit, handleChange, values, touched, errors }) => (
+			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
 						<h1 className={"text-center"}>Create Capital Income</h1>
@@ -236,28 +144,28 @@ export const CapitalAssetForm = (props: {
 							errors={errors.end}
 						/>
 						<TaxSelector
-							level={"Federal"}
+							level={RouteTypes.FEDERAL}
 							stateChanger={handleChange}
 							errors={errors.federal}
 							touched={touched.federal}
 							values={values.federal}
 						/>
 						<TaxSelector
-							level={"State"}
+							level={RouteTypes.STATE}
 							stateChanger={handleChange}
 							errors={errors.state}
 							touched={touched.state}
 							values={values.state}
 						/>
 						<TaxSelector
-							level={"Local"}
+							level={RouteTypes.LOCAL}
 							stateChanger={handleChange}
 							errors={errors.local}
 							touched={touched.local}
 							values={values.local}
 						/>
 						<TaxSelector
-							level={"FICA"}
+							level={RouteTypes.FICA}
 							stateChanger={handleChange}
 							errors={errors.fica}
 							touched={touched.fica}
@@ -271,8 +179,13 @@ export const CapitalAssetForm = (props: {
 									Delete
 								</Button>
 							) : null}
-							<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+							<SubmitButton name={deleteItem != undefined ? "Edit Item" : "Create Item"} />
 						</Col>
+						{status != undefined ? (
+							<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+								{status.message}
+							</div>
+						) : null}
 					</Row>
 				</Form>
 			)}

@@ -2,13 +2,14 @@ import Form from "react-bootstrap/Form";
 import { Col, Container, Row } from "react-bootstrap";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { Formik } from "formik";
-import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { date, string } from "yup";
 import { getUserItemFromToken, useAuth } from "@/Services/Auth.tsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UsersBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const UserForm = () => {
 	const searchParams = new URLSearchParams(document.location.search);

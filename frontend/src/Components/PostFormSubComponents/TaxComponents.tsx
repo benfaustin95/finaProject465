@@ -16,7 +16,7 @@ export const TaxSelector = (props: {
 
 	useEffect(() => {
 		const loadTax = () => {
-			TaxService.send(level == "capitalgains" ? "capitalGains" : level.toLowerCase())
+			TaxService.send(level)
 				.then((res) => {
 					if (res.status != 200) throw Error();
 					return res.data;
@@ -28,7 +28,6 @@ export const TaxSelector = (props: {
 					console.log(err);
 				});
 		};
-		console.log("this is why");
 		loadTax();
 	}, []);
 
@@ -40,7 +39,7 @@ export const TaxSelector = (props: {
 			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<Form.Select
 					id={level}
-					name={level.toLowerCase()}
+					name={level}
 					value={values}
 					onChange={stateChanger}
 					isInvalid={!!errors}
@@ -48,7 +47,7 @@ export const TaxSelector = (props: {
 					{tax.length != 0
 						? tax.map((x) => (
 								<option key={x.level + x.location} value={x.location}>
-									{x.level + " - " + x.location + "-" + x.rate}
+									{x.level + " - " + x.location + " - " + Math.round(x.rate * 100) + "%"}
 								</option>
 						  ))
 						: null}

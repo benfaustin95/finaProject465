@@ -4,13 +4,12 @@ import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import {
-	InputControl,
-	RecurrenceSelector,
-	SubmitButton,
-} from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 import { BudgetItem } from "@/DoggrTypes.ts";
+import { useState } from "react";
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { RecurrenceSelector } from "@/Components/PostFormSubComponents/FormSubComponents/RecurrenceSelector.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 export const BudgetItemForm = (props: {
 	submitForm: any;
 	budgetItem?: BudgetItem;
@@ -42,6 +41,8 @@ export const BudgetItemForm = (props: {
 		<Formik
 			validationSchema={budgetItemSchema}
 			onSubmit={submitForm}
+			validateOnChange={false}
+			validateOnBlur={false}
 			initialValues={
 				budgetItem != undefined
 					? {
@@ -60,7 +61,7 @@ export const BudgetItemForm = (props: {
 							owner_id: userId,
 					  }
 			}>
-			{({ handleSubmit, handleChange, values, touched, errors }) => (
+			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit}>
 					<Row className={"m-4 justify-content-center"}>
 						<h1 className={"text-center"}>
@@ -117,6 +118,11 @@ export const BudgetItemForm = (props: {
 								) : null}
 								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 							</Col>
+							{status != undefined ? (
+								<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+									{status.message}
+								</div>
+							) : null}
 						</Row>
 					</Row>
 				</Form>

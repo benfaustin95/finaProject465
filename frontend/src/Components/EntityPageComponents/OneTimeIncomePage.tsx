@@ -1,21 +1,10 @@
 import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { BudgetItem, OneTimeIncome, RFBase } from "@/DoggrTypes.ts";
-import { PostInputService } from "@/Services/PostInputService.tsx";
-import { OneTimeIncomeBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { createSubmitNewItemForm, OneTimeIncome, RouteTypes } from "@/DoggrTypes.ts";
 
 export function OneTimeIncomePage() {
-	function submitForm(event) {
-		PostInputService.send("/oneTimeIncome", event)
-			.then((res) => {
-				console.log(res);
-				if (res.status != 200) console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+	const submitForm = createSubmitNewItemForm(RouteTypes.ONETIMEINCOME);
 	return (
 		<div>
 			<div>
@@ -23,7 +12,7 @@ export function OneTimeIncomePage() {
 					<h1 className={"text-center"}>Current One Time Incomes</h1>
 					<CurrentItemListGroup<OneTimeIncome>
 						type={"oneTimeIncome"}
-						entityName={"One Time Income"}
+						entityName={RouteTypes.ONETIMEINCOME}
 						keysToDisplay={["name", "cashBasis", "date"]}
 					/>
 				</Container>

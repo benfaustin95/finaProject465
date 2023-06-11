@@ -45,14 +45,18 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 			return reply.status(500).send(err);
 		}
 	});
-	app.put<{ Body: { userid: number; toUpdate: RentalAsset } }>(
+	app.put<{ Body: { userid: number; toUpdate: RentalAssetBody } }>(
 		"/rentalAsset",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
+			const toUpdateInit = {
+				id: toUpdate.id,
+				...(await validateRentalAsset(toUpdate, app, req)),
+			};
 			try {
 				const item = await req.em.findOneOrFail(RentalAsset, { owner: userid, id: toUpdate.id });
-				Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-					item[x] = toUpdate[x];
+				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+					item[x] = toUpdateInit[x];
 				});
 				await req.em.flush();
 				return reply.send(`${item.name} successfully updated`);

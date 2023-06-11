@@ -2,17 +2,16 @@ import Form from "react-bootstrap/Form";
 import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { PostInputService } from "@/Services/PostInputService.tsx";
 import { FinancialAsset } from "../../../../backend/src/db/entities/financialasset.ts";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { Formik } from "formik";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { Dividend } from "@/DoggrTypes.ts";
-import { DividendBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { Dividend, getTax, RouteTypes } from "@/DoggrTypes.ts";
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const DividendForm = (props: { submitForm: any; dividend?: Dividend; deleteItem?: any }) => {
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
@@ -20,7 +19,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 	const { submitForm, dividend, deleteItem } = props;
 	useEffect(() => {
 		const loadSearchItem = () => {
-			SearchItemService.send(userId, "dividend")
+			SearchItemService.send(userId, RouteTypes.FINASSET)
 				.then((res) => {
 					if (res.status != 200) throw Error();
 					return res.data;
@@ -52,11 +51,14 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 			initialValues={
 				dividend != undefined
 					? {
-							...dividend,
-							asset:
-								finAssets != undefined && finAssets.find((x) => x.id == dividend.asset)
-									? finAssets.find((x) => x.id == dividend.asset).id
-									: 0,
+							name: dividend.name,
+							note: dividend.note,
+							rate: dividend.rate,
+							asset: dividend.asset,
+							growthRate: 1,
+							owner_id: userId,
+							id: dividend.id,
+							...getTax(dividend),
 					  }
 					: {
 							name: "",
@@ -70,7 +72,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 							local: "",
 					  }
 			}>
-			{({ handleSubmit, handleChange, values, touched, errors }) => (
+			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
 						<h1 className={"text-center"}>Create Dividend</h1>
@@ -84,7 +86,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 							touchedName={touched.name}
 							errorsName={errors.name}
 							errorsNote={errors.note}
-							type={"dividend"}
+							type={RouteTypes.DIVIDEND}
 						/>
 						<InputControl
 							handleChange={handleChange}
@@ -113,21 +115,21 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 							</Form.Select>
 						</Col>
 						<TaxSelector
-							level={"Federal"}
+							level={RouteTypes.FEDERAL}
 							stateChanger={handleChange}
 							errors={errors.federal}
 							touched={touched.federal}
 							values={values.federal}
 						/>
 						<TaxSelector
-							level={"State"}
+							level={RouteTypes.STATE}
 							stateChanger={handleChange}
 							errors={errors.state}
 							touched={touched.state}
 							values={values.state}
 						/>
 						<TaxSelector
-							level={"Local"}
+							level={RouteTypes.LOCAL}
 							stateChanger={handleChange}
 							errors={errors.local}
 							touched={touched.local}
@@ -141,8 +143,13 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 									Delete
 								</Button>
 							) : null}
-							<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+							<SubmitButton name={deleteItem != undefined ? "Edit Item" : "Create Item"} />
 						</Col>
+						{status != undefined ? (
+							<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+								{status.message}
+							</div>
+						) : null}
 					</Row>
 				</Form>
 			)}

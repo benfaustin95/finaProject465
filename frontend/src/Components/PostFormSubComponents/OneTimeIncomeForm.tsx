@@ -3,11 +3,12 @@ import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { Formik } from "formik";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { OneTimeIncome } from "@/DoggrTypes.ts";
+import { getTax, OneTimeIncome, RouteTypes } from "@/DoggrTypes.ts";
+import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
+import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const OneTimeIncomeForm = (props: {
 	submitForm: any;
@@ -36,8 +37,14 @@ export const OneTimeIncomeForm = (props: {
 			initialValues={
 				oneTimeIncome != undefined
 					? {
-							...oneTimeIncome,
+							name: oneTimeIncome.name,
+							note: oneTimeIncome.note,
 							date: new Date(oneTimeIncome.date).toISOString().slice(0, 10),
+							cashBasis: oneTimeIncome.cashBasis,
+							growthRate: oneTimeIncome.growthRate,
+							owner_id: userId,
+							id: oneTimeIncome.id,
+							...getTax(oneTimeIncome),
 					  }
 					: {
 							name: "",
@@ -52,7 +59,7 @@ export const OneTimeIncomeForm = (props: {
 							owner_id: userId,
 					  }
 			}>
-			{({ handleSubmit, handleChange, values, touched, errors }) => (
+			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
 						<h1 className={"text-center"}>Create One Time Income</h1>
@@ -69,7 +76,7 @@ export const OneTimeIncomeForm = (props: {
 							touchedGrowthRate={touched.growthRate}
 							valuesGrowthRate={values.growthRate}
 							errorsGrowth={errors.growthRate}
-							type={"oneTimeIncome"}
+							type={RouteTypes.ONETIMEINCOME}
 						/>
 						<InputControl
 							handleChange={handleChange}
@@ -88,28 +95,28 @@ export const OneTimeIncomeForm = (props: {
 							errors={errors.date}
 						/>
 						<TaxSelector
-							level={"Federal"}
+							level={RouteTypes.FEDERAL}
 							stateChanger={handleChange}
 							errors={errors.federal}
 							touched={touched.federal}
 							values={values.federal}
 						/>
 						<TaxSelector
-							level={"State"}
+							level={RouteTypes.STATE}
 							stateChanger={handleChange}
 							errors={errors.state}
 							touched={touched.state}
 							values={values.state}
 						/>
 						<TaxSelector
-							level={"Local"}
+							level={RouteTypes.LOCAL}
 							stateChanger={handleChange}
 							errors={errors.local}
 							touched={touched.local}
 							values={values.local}
 						/>
 						<TaxSelector
-							level={"FICA"}
+							level={RouteTypes.FICA}
 							stateChanger={handleChange}
 							errors={errors.fica}
 							touched={touched.fica}
@@ -125,6 +132,11 @@ export const OneTimeIncomeForm = (props: {
 							) : null}
 							<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
 						</Col>
+						{status != undefined ? (
+							<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
+								{status.message}
+							</div>
+						) : null}
 					</Row>
 				</Form>
 			)}
