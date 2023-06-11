@@ -147,7 +147,7 @@ function MacroWithdrawals(props: DestructuredMacroWithdrawal) {
 		<>
 			<RowGroup group={outDividend} />
 			<WithdrawalRowGroup group={outputWithdrawal} />
-			{remainder != undefined && remainder.amounts.filter((x) => x[1] != 0).length > 0 ? (
+			{remainder != undefined && remainder.note != "" ? (
 				<OutputRow key={"remainder"} {...remainder} />
 			) : null}
 		</>

@@ -23,7 +23,7 @@ export const withdrawalMicroOutput = (
 		number,
 		MicroWithdrawalOutputRow
 	>();
-	const remainder: MicroOutputRow = mkMonthOutputRow("remainder", "if < 0 retirment failed");
+	const remainder: MicroOutputRow = mkMonthOutputRow("remainder", "");
 
 	for (let year = start.getUTCFullYear(); year <= end.getUTCFullYear(); ++year) {
 		for (let month = year == start.getUTCFullYear() ? start.getMonth() : 0; month < 12; ++month) {
@@ -91,6 +91,8 @@ export const withdrawalMicroOutput = (
 					currentOutputWithdrawal.updatedValue.set(key, toAdd.totalValue);
 				});
 
+			if (currentDeficit != 0 && remainder.note == "" && year - start.getUTCFullYear() <= 50)
+				remainder.note = JSON.stringify(month + "/" + year);
 			remainder.amounts.set(key, currentDeficit);
 		}
 	}

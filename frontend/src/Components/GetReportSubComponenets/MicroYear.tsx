@@ -254,9 +254,7 @@ function MicroWithdrawals(props: DestructuredMicroWithdrawal) {
 		<>
 			<MicroRowGroup group={outDividend} />
 			<MicroWithdrawalRowGroup group={outputWithdrawal} />
-			{remainder != undefined && remainder.amounts.filter((x) => x[1] != 0).length > 0 ? (
-				<MicroRow {...remainder} id={1} />
-			) : null}
+			{remainder != undefined && remainder.note != "" ? <MicroRow {...remainder} id={1} /> : null}
 		</>
 	);
 }
@@ -272,6 +270,11 @@ export function MicroYear(props: DestructuredMicroReport) {
 		<Container className={"bg-light rounded-4 m-5 p-5"}>
 			<Row className={"text-center pb-4"}>
 				<h1>Monthly CashFlow Estimate</h1>
+				{withdrawal != undefined && withdrawal.remainder.note != "" ? (
+					<div className={"text-danger"}>
+						{"WIll RUN OUT OF MONEY ON" + JSON.parse(withdrawal.remainder.note)}
+					</div>
+				) : null}
 			</Row>
 			<Table className={"border-dark"} responsive striped bordered hover>
 				<thead className={"table-dark border-white"}>

@@ -36,6 +36,11 @@ export const MacroReportLoad = () => {
 			<Row className={"text-center pb-4"}>
 				<Col xs={8}>
 					<h1>Yearly Budget Estimate</h1>
+					{macroReport != undefined && macroReport.withdrawals.remainder.note != "" ? (
+						<div className={"text-danger"}>
+							{"WIll RUN OUT OF MONEY ON" + JSON.parse(macroReport.withdrawals.remainder.note)}
+						</div>
+					) : null}
 				</Col>
 				<Col xs={4}>
 					<ReportYearForm handleSubmit={loadReport} status={submitFailed} />
