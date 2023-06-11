@@ -6,9 +6,9 @@ import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/C
 import * as yup from "yup";
 import { date, string } from "yup";
 import { getUserItemFromToken, useAuth } from "@/Services/Auth.tsx";
-import { ICreateUsersBody } from "../../../../backend/src/db/types.ts";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UsersBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
 
 export const UserForm = () => {
 	const searchParams = new URLSearchParams(document.location.search);
@@ -27,7 +27,7 @@ export const UserForm = () => {
 		birthday: date().required().max(new Date(), "birthday must be before today"),
 	});
 	function submitForm(event) {
-		const toSubmit: ICreateUsersBody = {
+		const toSubmit: UsersBody = {
 			...event,
 			email,
 		};

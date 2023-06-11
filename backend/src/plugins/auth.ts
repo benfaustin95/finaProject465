@@ -22,7 +22,6 @@ export const AuthPlugin = fp(async function (app: FastifyInstance, opts: Fastify
 
 	app.addHook("onRequest", async function (request: FastifyRequest, reply: FastifyReply) {
 		try {
-			console.log(request.headers);
 			if (request.url == "/user" && request.method == "POST") return;
 			await request.jwtVerify();
 		} catch (err) {

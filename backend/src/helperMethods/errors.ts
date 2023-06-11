@@ -1,3 +1,4 @@
+//error tpe used in validating input before database entry
 export class InvalidDataError extends Error {
 	status: number;
 	message: string;

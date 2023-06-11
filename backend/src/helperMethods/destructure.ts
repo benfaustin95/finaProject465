@@ -1,36 +1,39 @@
 import {
-	dateKey,
-	destructuredExpenseMonth,
-	destructuredExpenseYear,
-	destructuredIncomeMonth,
-	destructuredIncomeYear,
-	destructuredMacroYearReport,
-	destructuredMicroReport,
-	destructuredMicroWithdrawal,
-	destructuredMonthlyTaxAccumulator,
-	destructuredMonthOutputRow,
-	destructuredOutputRow,
-	destructuredTaxAccumulator,
-	destructuredWithdrawal,
-	destructuredWithdrawalMonthOutputRow,
-	destructuredWithOutputRow,
-	expenseMonth,
-	expenseYear,
-	incomeMonth,
-	incomeYear,
-	macroYearReport,
-	microMonthReport,
-	monthOutputRow,
-	outputRow,
-	taxAccumulator,
-	withdrawal,
-	withdrawalMonth,
-	withdrawalMonthOutputRow,
-	withdrawalOutputRow,
-} from "../db/types.js";
-import exp from "constants";
+	DateKey,
+	MicroExpense,
+	MacroExpense,
+	MicroIncome,
+	MacroIncome,
+	MacroReport,
+	MicroReport,
+	MicroOutputRow,
+	MacroOutputRow,
+	TaxAccumulator,
+	MacroWithdrawal,
+	MicroWithdrawal,
+	MicroWithdrawalOutputRow,
+	MacroWithdrawalOutputRow,
+} from "../db/backendTypes/ReportTypes.js";
+import {
+	DestructuredMacroExpense,
+	DestructuredMacroIncome,
+	DestructuredMacroOutputRow,
+	DestructuredMacroReport,
+	DestructuredMacroWithdrawal,
+	DestructuredMicroExpense,
+	DestructuredMicroIncome,
+	DestructuredMicroOutputRow,
+	DestructuredMicroReport,
+	DestructuredMicroTaxAccumulator,
+	DestructuredMicroWithdrawal,
+	DestructuredMicroWithdrawalOutputRow,
+	DestructuredTaxAccumulator,
+	DestructuredWithMacroOutputRow,
+} from "../db/backendTypes/destructureTypes.js";
 
-function sendRow(outputRow: outputRow): destructuredOutputRow {
+//Destructures maps that need to be sent via HTTP because I am an idiot and didn't
+// think about the fact that a MAP can not be sent.
+function sendMacroOutputRow(outputRow: MacroOutputRow): DestructuredMacroOutputRow {
 	return {
 		name: outputRow.name,
 		note: outputRow.note,
@@ -40,23 +43,30 @@ function sendRow(outputRow: outputRow): destructuredOutputRow {
 	};
 }
 
-function sendRowGroup(outputRecurring: Map<number, outputRow>): [number, destructuredOutputRow][] {
-	const toReturn: Map<number, destructuredOutputRow> = new Map<number, destructuredOutputRow>();
-	[...outputRecurring.keys()].forEach((x) => toReturn.set(x, sendRow(outputRecurring.get(x))));
+function sendMacroRowGroup(
+	outputRecurring: Map<number, MacroOutputRow>
+): [number, DestructuredMacroOutputRow][] {
+	const toReturn: Map<number, DestructuredMacroOutputRow> = new Map<
+		number,
+		DestructuredMacroOutputRow
+	>();
+	[...outputRecurring.keys()].forEach((x) =>
+		toReturn.set(x, sendMacroOutputRow(outputRecurring.get(x)))
+	);
 	return Array.from(toReturn.entries());
 }
 
-function sendExpenses(expenses: expenseYear): destructuredExpenseYear {
+function sendMacroExpense(expenses: MacroExpense): DestructuredMacroExpense {
 	return {
-		outputRecurring: sendRowGroup(expenses.outputRecurring),
-		outputNonRecurring: sendRowGroup(expenses.outputNonRecurring),
-		monthlyExpense: sendRow(expenses.monthlyExpense),
-		annualExpense: sendRow(expenses.annualExpense),
+		outputRecurring: sendMacroRowGroup(expenses.outputRecurring),
+		outputNonRecurring: sendMacroRowGroup(expenses.outputNonRecurring),
+		monthlyExpense: sendMacroOutputRow(expenses.monthlyExpense),
+		annualExpense: sendMacroOutputRow(expenses.annualExpense),
 	};
 }
 
-function sendTaxes(taxes: Map<number, taxAccumulator>) {
-	const toReturn: destructuredTaxAccumulator = {
+function sendMacroTaxes(taxes: Map<number, TaxAccumulator>) {
+	const toReturn: DestructuredTaxAccumulator = {
 		capitalGains: [],
 		fica: [],
 		federal: [],
@@ -89,64 +99,62 @@ function sendTaxes(taxes: Map<number, taxAccumulator>) {
 	return toReturn;
 }
 
-function sendIncomes(incomes: incomeYear): destructuredIncomeYear {
+function sendMacroIncome(incomes: MacroIncome): DestructuredMacroIncome {
 	return {
-		outHuman: sendRow(incomes.outHuman),
-		outSocial: sendRow(incomes.outSocial),
-		outNonTaxable: sendRow(incomes.outNonTaxable),
-		outRental: sendRow(incomes.outRental),
-		outOneTime: sendRow(incomes.outOneTime),
-		taxes: sendTaxes(incomes.taxes),
+		outHuman: sendMacroOutputRow(incomes.outHuman),
+		outSocial: sendMacroOutputRow(incomes.outSocial),
+		outNonTaxable: sendMacroOutputRow(incomes.outNonTaxable),
+		outRental: sendMacroOutputRow(incomes.outRental),
+		outOneTime: sendMacroOutputRow(incomes.outOneTime),
+		taxes: sendMacroTaxes(incomes.taxes),
 	};
 }
 
-function sendWithRow(withdrawalOutputRow: withdrawalOutputRow): destructuredWithOutputRow {
+function sendWithMacroOutputRow(
+	withdrawalOutputRow: MacroWithdrawalOutputRow
+): DestructuredWithMacroOutputRow {
 	return {
-		...sendRow(withdrawalOutputRow),
+		...sendMacroOutputRow(withdrawalOutputRow),
 		updatedValue: Array.from(withdrawalOutputRow.updatedValue.entries()).sort(
 			(x, y) => x[0] - y[0]
 		),
 	};
 }
 
-function sendWithdrawalRows(
-	outputWithdrawal: Map<number, withdrawalOutputRow>
-): [number, destructuredWithOutputRow][] {
-	const toReturn: Map<number, destructuredWithOutputRow> = new Map<
-		number,
-		destructuredWithOutputRow
-	>();
-	[...outputWithdrawal.keys()].forEach((x) =>
-		toReturn.set(x, sendWithRow(outputWithdrawal.get(x)))
-	);
-	return Array.from(toReturn.entries());
+function sendMacroWithdrawalRowGroup(
+	outputWithdrawal: Map<number, MacroWithdrawalOutputRow>
+): [number, DestructuredWithMacroOutputRow][] {
+	return [...outputWithdrawal.entries()].map(([key, value]) => [
+		key,
+		sendWithMacroOutputRow(value),
+	]);
 }
 
-function sendWithdrawals(withdrawals: withdrawal): destructuredWithdrawal {
+function sendMacroWithdrawal(withdrawals: MacroWithdrawal): DestructuredMacroWithdrawal {
 	return {
-		outputWithdrawal: sendWithdrawalRows(withdrawals.outputWithdrawal),
-		outDividend: sendRowGroup(withdrawals.outDividend),
-		remainder: sendRow(withdrawals.remainder),
+		outputWithdrawal: sendMacroWithdrawalRowGroup(withdrawals.outputWithdrawal),
+		outDividend: sendMacroRowGroup(withdrawals.outDividend),
+		remainder: sendMacroOutputRow(withdrawals.remainder),
 	};
 }
 
-export function sendMacroReport(toSendBudget: macroYearReport): destructuredMacroYearReport {
+export function sendMacroReport(toSendBudget: MacroReport): DestructuredMacroReport {
 	return {
-		expenses: sendExpenses(toSendBudget.expenses),
-		incomes: sendIncomes(toSendBudget.incomes),
-		withdrawals: sendWithdrawals(toSendBudget.withdrawals),
-		deficit: sendRow(toSendBudget.deficit),
+		expenses: sendMacroExpense(toSendBudget.expenses),
+		incomes: sendMacroIncome(toSendBudget.incomes),
+		withdrawals: sendMacroWithdrawal(toSendBudget.withdrawals),
+		deficit: sendMacroOutputRow(toSendBudget.deficit),
 	};
 }
 
-function sendMonthOutputRow(outNonReccuring: monthOutputRow): destructuredMonthOutputRow {
+function sendMicroOutputRow(outNonReccuring: MicroOutputRow): DestructuredMicroOutputRow {
 	return {
 		name: outNonReccuring.name,
 		note: outNonReccuring.note,
 		//@ts-ignore
 		amounts: Array.from(outNonReccuring.amounts.entries())
 			.map(([key, value]) => {
-				const parsedKey: dateKey = JSON.parse(key);
+				const parsedKey: DateKey = JSON.parse(key);
 				return [[parsedKey.month, parsedKey.year], value];
 			})
 			.sort((a, b) => {
@@ -156,27 +164,22 @@ function sendMonthOutputRow(outNonReccuring: monthOutputRow): destructuredMonthO
 	};
 }
 
-function sendMonthRowGroup(
-	outputRecurring: Map<number, monthOutputRow>
-): [number, destructuredMonthOutputRow][] {
-	const toReturn: Map<number, destructuredMonthOutputRow> = new Map<
-		number,
-		destructuredMonthOutputRow
-	>();
-	[...outputRecurring.keys()].forEach((x) =>
-		toReturn.set(x, sendMonthOutputRow(outputRecurring.get(x)))
-	);
-	return Array.from(toReturn.entries());
+function sendMicroRowGroup(
+	outputRecurring: Map<number, MicroOutputRow>
+): [number, DestructuredMicroOutputRow][] {
+	return [...outputRecurring.entries()].map(([key, value]) => {
+		return [key, sendMicroOutputRow(value)];
+	});
 }
-export function sendMonthlyExpenses(expenses: expenseMonth): destructuredExpenseMonth {
+export function sendMonthlyExpenses(expenses: MicroExpense): DestructuredMicroExpense {
 	return {
-		outNonRecurring: sendMonthOutputRow(expenses.outNonReccuring),
-		outRecurring: sendMonthOutputRow(expenses.outReccuring),
+		outNonRecurring: sendMicroOutputRow(expenses.outNonReoccurring),
+		outRecurring: sendMicroOutputRow(expenses.outReoccurring),
 	};
 }
 
-function sendMonthTaxes(taxes: Map<string, taxAccumulator>) {
-	const toReturn: destructuredMonthlyTaxAccumulator = {
+function sendMicroTaxes(taxes: Map<string, TaxAccumulator>) {
+	const toReturn: DestructuredMicroTaxAccumulator = {
 		capitalGains: [],
 		fica: [],
 		federal: [],
@@ -191,8 +194,8 @@ function sendMonthTaxes(taxes: Map<string, taxAccumulator>) {
 
 	Array.from(taxes.entries())
 		.sort((a, b) => {
-			const parsedKeyA: dateKey = JSON.parse(a[0]);
-			const parsedKeyB: dateKey = JSON.parse(b[0]);
+			const parsedKeyA: DateKey = JSON.parse(a[0]);
+			const parsedKeyB: DateKey = JSON.parse(b[0]);
 
 			if (parsedKeyA.year == parsedKeyB.year) return parsedKeyA.month - parsedKeyB.month;
 			return parsedKeyA.year - parsedKeyB.year;
@@ -232,53 +235,53 @@ function sendMonthTaxes(taxes: Map<string, taxAccumulator>) {
 	return toReturn;
 }
 
-export function sendIncomeMonth(income: incomeMonth): destructuredIncomeMonth {
+export function sendMicroIncome(income: MicroIncome): DestructuredMicroIncome {
 	return {
-		salary: sendMonthRowGroup(income.salary),
-		investments: sendMonthRowGroup(income.investments),
-		retirementIncome: sendMonthRowGroup(income.retirementIncome),
-		nonTaxable: sendMonthRowGroup(income.nonTaxable),
-		oneTimeIncome: sendMonthRowGroup(income.oneTimeIncome),
-		taxes: sendMonthTaxes(income.taxes),
-		monthlyIncome: sendMonthOutputRow(income.monthlyIncome),
+		salary: sendMicroRowGroup(income.salary),
+		investments: sendMicroRowGroup(income.investments),
+		retirementIncome: sendMicroRowGroup(income.retirementIncome),
+		nonTaxable: sendMicroRowGroup(income.nonTaxable),
+		oneTimeIncome: sendMicroRowGroup(income.oneTimeIncome),
+		taxes: sendMicroTaxes(income.taxes),
+		monthlyIncome: sendMicroOutputRow(income.monthlyIncome),
 	};
 }
 
-function sendWithMonthOutputRow(
-	withdrawalMonthOutputRow: withdrawalMonthOutputRow
-): destructuredWithdrawalMonthOutputRow {
+function sendMicroWithOutputRow(
+	withdrawalMonthOutputRow: MicroWithdrawalOutputRow
+): DestructuredMicroWithdrawalOutputRow {
 	return {
-		...sendMonthOutputRow(withdrawalMonthOutputRow),
+		...sendMicroOutputRow(withdrawalMonthOutputRow),
 		updatedValue: Array.from(withdrawalMonthOutputRow.updatedValue.entries()).map(
 			([key, value]) => {
-				const parsedKey: dateKey = JSON.parse(key);
+				const parsedKey: DateKey = JSON.parse(key);
 				return [[parsedKey.month, parsedKey.year], value];
 			}
 		),
 	};
 }
 
-function sendWithMonthRows(
-	outputWithdrawal: Map<number, withdrawalMonthOutputRow>
-): [number, destructuredWithdrawalMonthOutputRow][] {
+function sendMicroWithRowGroup(
+	outputWithdrawal: Map<number, MicroWithdrawalOutputRow>
+): [number, DestructuredMicroWithdrawalOutputRow][] {
 	return Array.from(outputWithdrawal.entries()).map(([key, value]) => {
-		return [key, sendWithMonthOutputRow(value)];
+		return [key, sendMicroWithOutputRow(value)];
 	});
 }
 
-function sendWithdrawalMonth(withdrawal: withdrawalMonth): destructuredMicroWithdrawal {
+function sendMicroWithdrawal(withdrawal: MicroWithdrawal): DestructuredMicroWithdrawal {
 	return {
-		outputWithdrawal: sendWithMonthRows(withdrawal.outputWithdrawal),
-		outDividend: sendMonthRowGroup(withdrawal.outDividend),
-		remainder: sendMonthOutputRow(withdrawal.remainder),
+		outputWithdrawal: sendMicroWithRowGroup(withdrawal.outputWithdrawal),
+		outDividend: sendMicroRowGroup(withdrawal.outDividend),
+		remainder: sendMicroOutputRow(withdrawal.remainder),
 	};
 }
 
-export function sendMicroReport(report: microMonthReport): destructuredMicroReport {
+export function sendMicroReport(report: MicroReport): DestructuredMicroReport {
 	return {
 		expense: sendMonthlyExpenses(report.expense),
-		income: sendIncomeMonth(report.income),
-		deficit: sendMonthOutputRow(report.deficit),
-		withdrawal: sendWithdrawalMonth(report.withdrawal),
+		income: sendMicroIncome(report.income),
+		deficit: sendMicroOutputRow(report.deficit),
+		withdrawal: sendMicroWithdrawal(report.withdrawal),
 	};
 }

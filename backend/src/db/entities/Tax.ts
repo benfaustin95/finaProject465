@@ -18,6 +18,6 @@ export enum Level {
 	STATE = "state",
 	LOCAL = "local",
 	FEDERAL = "federal",
-	CAPGAINS = "capgains",
+	CAPGAINS = "capGains",
 	FICA = "FICA",
 }

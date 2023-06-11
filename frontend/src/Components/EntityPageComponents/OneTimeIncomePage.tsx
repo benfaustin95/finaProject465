@@ -2,8 +2,8 @@ import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeInc
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { BudgetItem, OneTimeIncome, RFBase } from "@/DoggrTypes.ts";
-import { OneTimeIncomeBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
+import { OneTimeIncomeBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
 
 export function OneTimeIncomePage() {
 	function submitForm(event) {

@@ -1,5 +1,5 @@
-import { ManyToOne, PrimaryKey, Property, Unique } from "@mikro-orm/core";
-import type { Ref, Rel } from "@mikro-orm/core";
+import { ManyToOne, Property } from "@mikro-orm/core";
+import type { Rel } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity.js";
 import { User } from "./User.js";
 import { TaxRate } from "./Tax.js";

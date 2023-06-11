@@ -1,6 +1,5 @@
 import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
 import { useState } from "react";
-import { CAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
 import { Button, Col, Container, Row } from "react-bootstrap";
@@ -16,6 +15,7 @@ import {
 	SubmitButton,
 } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
+import { CAssetBody, RFBaseBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
 
 export const FinancialAssetForm = (props: {
 	submitForm: any;

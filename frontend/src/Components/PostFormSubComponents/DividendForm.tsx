@@ -10,9 +10,9 @@ import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.ts
 import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
 import { number, string } from "yup";
-import { DividendBody } from "../../../../backend/src/db/types.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { Dividend } from "@/DoggrTypes.ts";
+import { DividendBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
 
 export const DividendForm = (props: { submitForm: any; dividend?: Dividend; deleteItem?: any }) => {
 	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);

@@ -1,60 +1,54 @@
-import { CapAsset, CapAssetType } from "../../db/entities/capasset.js";
-import { RentalAsset } from "../../db/entities/rentalasset.js";
-import { Dividend } from "../../db/entities/Dividend.js";
-import { FinancialAsset } from "../../db/entities/financialasset.js";
-import { OneTimeIncome } from "../../db/entities/OneTimeIncome.js";
-import { Recurrence } from "../../db/entities/budgetItem.js";
-import { compoundGrowthRateIncome, currentYear } from "./expenseYearOutput.js";
+import { CapAsset, CapAssetType } from "../db/entities/capasset.js";
+import { RentalAsset } from "../db/entities/rentalasset.js";
+import { Dividend } from "../db/entities/Dividend.js";
+import { FinancialAsset } from "../db/entities/financialasset.js";
+import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
+import { Recurrence } from "../db/entities/budgetItem.js";
+import { annualExpenseCalculation, currentYear } from "./expenseMacroOutput.js";
 import {
-	incomeCalculation,
-	incomeYear,
-	outputRow,
-	taxAccumulator,
-	taxOutput,
-} from "../../db/types.js";
-import { taxAccumulate } from "./incomeMonthOutput.js";
-
-export function mkOutputRow(name: string, note: string = ""): outputRow {
-	return {
-		name: name,
-		note: note,
-		amounts: new Map<number, number>(),
-	};
-}
+	IncomeCalculation,
+	MacroIncome,
+	MacroOutputRow,
+	TaxAccumulator,
+	TaxOutput,
+} from "../db/backendTypes/ReportTypes.js";
+import { compoundGrowthRateIncome, taxAccumulate } from "./incomeMicroOutput.js";
 
 // needs to also return the amount paid in taxes for each income stream
-export const incomeYearOutput = (
+export const incomeMacroOutput = (
 	capitalIncomes: Array<CapAsset>,
 	rentalIncome: Array<RentalAsset>,
 	dividends: Array<Dividend>,
 	finAssets: Array<FinancialAsset>,
 	oneTime: Array<OneTimeIncome>,
 	start: number,
-	end: number
-): incomeYear => {
-	const outHuman: outputRow = mkOutputRow("Salaries");
-	const outSocial: outputRow = mkOutputRow("Social Income");
-	const outNonTaxable: outputRow = mkOutputRow("Non Taxable");
-	const outRental: outputRow = mkOutputRow("Rental Income");
-	const outOneTime: outputRow = mkOutputRow("One Time Incomes");
-	const taxes: Map<number, taxAccumulator> = new Map<number, taxAccumulator>();
+	end: number,
+	retirementStartMonth: number
+): MacroIncome => {
+	const outHuman: MacroOutputRow = mkOutputRow("Salaries");
+	const outSocial: MacroOutputRow = mkOutputRow("Social Income");
+	const outNonTaxable: MacroOutputRow = mkOutputRow("Non Taxable");
+	const outRental: MacroOutputRow = mkOutputRow("Rental Income");
+	const outOneTime: MacroOutputRow = mkOutputRow("One Time Incomes");
+	const taxes: Map<number, TaxAccumulator> = new Map<number, TaxAccumulator>();
 
 	for (let i = start; i <= end; ++i) {
 		let currentHuman = 0;
-		let currentSocical = 0;
+		let currentSocial = 0;
 		let currentNonTax = 0;
 		let currentRental = 0;
 		let currentOneTime = 0;
-		let currentTax = new taxAccumulator();
+		let currentTax = new TaxAccumulator();
 
 		capitalIncomes.forEach((x) => {
 			if (!currentYear(x.start.getUTCFullYear(), x.end.getUTCFullYear(), i)) return;
 
-			const toAdd = incomeCalculation(x, i);
+			const toAdd = incomeCalculation(x, i, 1, retirementStartMonth, start);
+			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 
 			switch (x.type) {
 				case CapAssetType.SOCIAL:
-					currentSocical += toAdd.income;
+					currentSocial += toAdd.income;
 					break;
 				case CapAssetType.NONTAXABLEANNUITY:
 					currentNonTax += toAdd.income;
@@ -63,7 +57,6 @@ export const incomeYearOutput = (
 					currentHuman += toAdd.income;
 					break;
 			}
-			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 		});
 
 		rentalIncome.forEach((x) => {
@@ -73,13 +66,15 @@ export const incomeYearOutput = (
 		});
 
 		oneTime.forEach((x) => {
+			if (x.date.getUTCFullYear() != i) return;
+
 			const toAdd = oneTimeCalculation(x, i);
 			currentOneTime += toAdd.income;
 			currentTax = taxAccumulate(toAdd.tax, currentTax, toAdd.income);
 		});
 
 		outHuman.amounts.set(i, currentHuman);
-		outSocial.amounts.set(i, currentSocical);
+		outSocial.amounts.set(i, currentSocial);
 		outNonTaxable.amounts.set(i, currentNonTax);
 		outRental.amounts.set(i, currentRental);
 		outOneTime.amounts.set(i, currentOneTime);
@@ -94,7 +89,7 @@ export function calculateTax(
 	local: number,
 	capitalGains: number,
 	fica: number
-): taxOutput {
+): TaxOutput {
 	return {
 		federal: Math.ceil(income * federal),
 		state: Math.ceil(income * state),
@@ -105,11 +100,12 @@ export function calculateTax(
 }
 //assume rental income is update for withdrawals from previous years in array of assets passed in/
 // assumption remains the same for fin assets used to calculate dividends
-export function oneTimeCalculation(x: OneTimeIncome, year: number): incomeCalculation {
-	const income =
-		x.date.getUTCFullYear() == year
-			? compoundGrowthRateIncome(x.cashBasis, x.growthRate, year - x.created_at.getUTCFullYear())
-			: 0;
+export function oneTimeCalculation(x: OneTimeIncome, year: number): IncomeCalculation {
+	const income = compoundGrowthRateIncome(
+		x.cashBasis,
+		x.growthRate,
+		year - x.created_at.getUTCFullYear()
+	);
 	const tax = calculateTax(
 		income,
 		x.federal == null ? 0 : x.federal.rate,
@@ -121,24 +117,13 @@ export function oneTimeCalculation(x: OneTimeIncome, year: number): incomeCalcul
 	return { income, tax };
 }
 
-export function dividendCalculation(
-	finAssets: Array<FinancialAsset>,
-	x: Dividend,
-	period = 1
-): number {
-	const value = finAssets.find((y) => y.id == x.asset.id);
-	const income = (x.rate * value.totalValue) / period;
-	const tax = calculateTax(
-		income,
-		x.federal == null ? 0 : x.federal.rate,
-		x.state == null ? 0 : x.state.rate,
-		x.local == null ? 0 : x.local.rate,
-		x.capitalGains == null ? 0 : x.capitalGains.rate,
-		x.fica == null ? 0 : x.fica.rate
-	);
-	return income - (tax.fica + tax.capitalGains + tax.federal + tax.state + tax.local);
-}
-export function incomeCalculation(item: CapAsset, year: number, period = 1): incomeCalculation {
+export function incomeCalculation(
+	item: CapAsset,
+	year: number,
+	period = 1,
+	rmonth = 0,
+	startYear = 0
+): IncomeCalculation {
 	let income: number;
 	switch (item.recurrence) {
 		case Recurrence.DAILY:
@@ -159,7 +144,7 @@ export function incomeCalculation(item: CapAsset, year: number, period = 1): inc
 	}
 	income = compoundGrowthRateIncome(income, item.growthRate, year - item.start.getUTCFullYear());
 	//need to get inflation amount from api and add to growth rate
-	if (period == 1) income = annualIncomeCalculation(item, year, income);
+	if (period == 1) income = annualExpenseCalculation(item, year, income, rmonth, startYear);
 
 	const tax = calculateTax(
 		income,
@@ -173,7 +158,7 @@ export function incomeCalculation(item: CapAsset, year: number, period = 1): inc
 	return { income, tax };
 }
 
-export function rentalCalculation(item: RentalAsset, year: number, period = 12): incomeCalculation {
+export function rentalCalculation(item: RentalAsset, year: number, period = 12): IncomeCalculation {
 	const income =
 		compoundGrowthRateIncome(
 			item.grossIncome - item.maintenanceExpense,
@@ -190,12 +175,10 @@ export function rentalCalculation(item: RentalAsset, year: number, period = 12):
 	);
 	return { income, tax };
 }
-function annualIncomeCalculation(item: CapAsset, year: number, income: number) {
-	let monthsActive = 12;
-	if (item.start.getUTCFullYear() < year && item.end.getUTCFullYear() > year)
-		return monthsActive * income;
-	if (item.start.getUTCFullYear() == year) monthsActive -= item.start.getMonth();
-	if (item.end.getUTCFullYear() == year) monthsActive -= 11 - item.end.getMonth();
-
-	return monthsActive * income;
+export function mkOutputRow(name: string, note: string = ""): MacroOutputRow {
+	return {
+		name: name,
+		note: note,
+		amounts: new Map<number, number>(),
+	};
 }

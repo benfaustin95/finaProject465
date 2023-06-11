@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { taxAccumulator, TaxBody } from "../db/types.js";
+import { TaxAccumulator } from "../db/backendTypes/ReportTypes.js";
 import { Level, TaxRate } from "../db/entities/Tax.js";
+import { TaxBody } from "../db/backendTypes/createTypes.js";
 
 async function taxRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {

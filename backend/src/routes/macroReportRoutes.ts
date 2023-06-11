@@ -55,10 +55,10 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 				end,
 				user.start.getMonth()
 			);
-			return reply.send(sendMacroReport(toSendBudget));
+			return reply.send(toSendBudget);
 		} catch (err) {
 			console.log(err);
-			return reply.status(500).send(err);
+			return reply.status(404).send(err);
 		}
 	});
 }

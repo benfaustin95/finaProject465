@@ -6,16 +6,18 @@ import { RentalAsset } from "../db/entities/rentalasset.js";
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
-import { expenseYearOutput } from "./helperFunctions/expenseYearOutput.js";
-import { withdrawalYearOutput } from "./helperFunctions/withdrawalYearOutput.js";
-import { incomeYearOutput } from "./helperFunctions/incomeYearOutput.js";
+import { expenseMacroOutput } from "../helperMethods/expenseMacroOutput.js";
+import { withdrawalMacroOutput } from "../helperMethods/withdrawalMacroOutput.js";
+import { incomeMacroOutput } from "../helperMethods/incomeMacroOutput.js";
 import {
-	expenseYear,
-	incomeYear,
-	macroYearReport,
-	outputRow,
-	taxAccumulator,
-} from "../db/types.js";
+	MacroExpense,
+	MacroIncome,
+	MacroReport,
+	MacroOutputRow,
+	TaxAccumulator,
+} from "../db/backendTypes/ReportTypes.js";
+import { sendMacroReport } from "../helperMethods/destructure.js";
+import { DestructuredMacroReport } from "../db/backendTypes/destructureTypes.js";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -29,16 +31,54 @@ declare module "fastify" {
 			start: number,
 			end: number,
 			rStartMonth: number
-		) => macroYearReport;
+		) => DestructuredMacroReport;
 	}
 }
 
+const macroBudgetReport = async (app: FastifyInstance, _options = {}) => {
+	const macroYearOutput = (
+		expenses: Array<BudgetItem>,
+		capitalAssets: Array<CapAsset>,
+		dividends: Array<Dividend>,
+		finAssets: Array<FinancialAsset>,
+		oneTimeIncomes: Array<OneTimeIncome>,
+		rentals: Array<RentalAsset>,
+		start: number,
+		end: number,
+		rStartMonth: number
+	): DestructuredMacroReport => {
+		const expense = expenseMacroOutput(expenses, start, end, rStartMonth);
+		const income = incomeMacroOutput(
+			capitalAssets,
+			rentals,
+			dividends,
+			finAssets,
+			oneTimeIncomes,
+			start,
+			end,
+			rStartMonth
+		);
+		const deficit = accumulateDeficit(expense, income, start, end);
+		const withdrawal = withdrawalMacroOutput(finAssets, dividends, deficit, start, end);
+		return sendMacroReport({
+			expenses: expense,
+			incomes: income,
+			deficit,
+			withdrawals: withdrawal,
+		});
+	};
+	app.decorate("macroYearOutput", macroYearOutput);
+};
+
+export const FastifyMacroReportsPlugin = fp(macroBudgetReport, {
+	name: "macroBudgetReport",
+});
 function accumulateDeficit(
-	expense: expenseYear,
-	income: incomeYear,
+	expense: MacroExpense,
+	income: MacroIncome,
 	start: number,
 	end: number
-): outputRow {
+): MacroOutputRow {
 	const yearlyExpense = expense.annualExpense;
 	const yearlyHuman = income.outHuman;
 	const yearlySocial = income.outSocial;
@@ -47,7 +87,7 @@ function accumulateDeficit(
 	const yearlyOneTime = income.outOneTime;
 	const yearlyTaxes = income.taxes;
 
-	const deficit: outputRow = {
+	const deficit: MacroOutputRow = {
 		name: "deficit",
 		note: "",
 		amounts: new Map<number, number>(),
@@ -74,42 +114,8 @@ function yearSummation(
 	income3: number,
 	income4: number,
 	income5: number,
-	taxes: taxAccumulator
+	taxes: TaxAccumulator
 ) {
 	const toReturn = income1 + income2 + income3 + income4 + income5;
 	return toReturn - (taxes.capitalGains + taxes.federal + taxes.state + taxes.local + taxes.fica);
 }
-const macroBudgetReport = async (app: FastifyInstance, _options = {}) => {
-	const macroYearOutput = (
-		expenses: Array<BudgetItem>,
-		capitalAssets: Array<CapAsset>,
-		dividends: Array<Dividend>,
-		finAssets: Array<FinancialAsset>,
-		oneTimeIncomes: Array<OneTimeIncome>,
-		rentals: Array<RentalAsset>,
-		start: number,
-		end: number,
-		rStartMonth: number
-	): macroYearReport => {
-		const expense = expenseYearOutput(expenses, start, end, rStartMonth);
-		const income = incomeYearOutput(
-			capitalAssets,
-			rentals,
-			dividends,
-			finAssets,
-			oneTimeIncomes,
-			start,
-			end
-		);
-
-		const deficit = accumulateDeficit(expense, income, start, end);
-		const withdrawal = withdrawalYearOutput(finAssets, dividends, deficit, start, end, 1);
-		return { expenses: expense, incomes: income, deficit, withdrawals: withdrawal };
-		// incomes: income, withdrawals: withdrawal, deficit };
-	};
-	app.decorate("macroYearOutput", macroYearOutput);
-};
-
-export const FastifyMacroReportsPlugin = fp(macroBudgetReport, {
-	name: "macroBudgetReport",
-});

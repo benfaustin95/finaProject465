@@ -1,18 +1,14 @@
 import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
-import { PostInputService } from "@/Services/PostInputService.tsx";
 import { DeleteItemsService } from "@/Services/DeleteItemsService.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { BaseInput, BudgetItem, isBudgetItem } from "@/DoggrTypes.ts";
+import { BaseInput } from "@/DoggrTypes.ts";
 import { Modal } from "react-bootstrap";
-import { entityType } from "../../../../backend/src/db/types.ts";
 import { PutInputService } from "@/Services/PutInputService.tsx";
 import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
 import { FinancialAssetForm } from "@/Components/PostFormSubComponents/FinancialAssetForm.tsx";
 import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
 import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAsset.tsx";
-
-class extend {}
 
 export function DeleteModal<T extends BaseInput>(props: {
 	type: string;

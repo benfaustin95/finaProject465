@@ -1,24 +1,26 @@
 import {
-	destructuredExpenseYear,
-	destructuredIncomeYear,
-	destructuredMacroYearReport,
-	destructuredOutputRow,
-	destructuredTaxAccumulator,
-	destructuredWithdrawal,
-	destructuredWithOutputRow,
-	taxAccumulator,
-	withdrawal,
-} from "../../../../backend/src/db/types.js";
+	TaxAccumulator,
+	MacroWithdrawal,
+} from "../../../../backend/src/db/backendTypes/ReportTypes.js";
 import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { Simulate } from "react-dom/test-utils";
 import waiting = Simulate.waiting;
+import {
+	DestructuredMacroExpense,
+	DestructuredMacroIncome,
+	DestructuredMacroOutputRow,
+	DestructuredMacroReport,
+	DestructuredMacroWithdrawal,
+	DestructuredTaxAccumulator,
+	DestructuredWithMacroOutputRow,
+} from "../../../../backend/src/db/backendTypes/destructureTypes.ts";
 
 export type rowGroup = {
-	group: Array<[number, destructuredOutputRow]>;
+	group: Array<[number, DestructuredMacroOutputRow]>;
 };
 
-function OutputRow(props: destructuredOutputRow) {
+function OutputRow(props: DestructuredMacroOutputRow) {
 	const { name, note, amounts } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
@@ -46,7 +48,7 @@ function RowGroup(props: rowGroup) {
 	);
 }
 
-function WithdrawalRow(props: destructuredWithOutputRow) {
+function WithdrawalRow(props: DestructuredWithMacroOutputRow) {
 	const { name, note, amounts, updatedValue } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
@@ -63,7 +65,7 @@ function WithdrawalRow(props: destructuredWithOutputRow) {
 	);
 }
 
-function WithdrawalRowGroup(props: { group: [number, destructuredWithOutputRow][] }) {
+function WithdrawalRowGroup(props: { group: [number, DestructuredWithMacroOutputRow][] }) {
 	const { group } = props;
 	return (
 		<>
@@ -78,7 +80,7 @@ function WithdrawalRowGroup(props: { group: [number, destructuredWithOutputRow][
 		</>
 	);
 }
-function BudgetItems(props: destructuredExpenseYear) {
+function BudgetItems(props: DestructuredMacroExpense) {
 	const { outputRecurring, outputNonRecurring, annualExpense, monthlyExpense } = props;
 	return (
 		<>
@@ -90,7 +92,7 @@ function BudgetItems(props: destructuredExpenseYear) {
 	);
 }
 
-function Taxes(props: destructuredTaxAccumulator) {
+function Taxes(props: DestructuredTaxAccumulator) {
 	const {
 		federal,
 		federalIncome,
@@ -125,7 +127,7 @@ function Taxes(props: destructuredTaxAccumulator) {
 	);
 	return taxOutput;
 }
-function YearlyIncomes(props: destructuredIncomeYear) {
+function YearlyIncomes(props: DestructuredMacroIncome) {
 	const { outRental, outOneTime, outHuman, outSocial, outNonTaxable, taxes } = props;
 	return (
 		<>
@@ -139,7 +141,7 @@ function YearlyIncomes(props: destructuredIncomeYear) {
 	);
 }
 
-function YearlyWithdrawals(props: destructuredWithdrawal) {
+function YearlyWithdrawals(props: DestructuredMacroWithdrawal) {
 	const { outDividend, outputWithdrawal, remainder } = props;
 	return (
 		<>
@@ -152,7 +154,7 @@ function YearlyWithdrawals(props: destructuredWithdrawal) {
 	);
 }
 
-export function MacroYear(props: destructuredMacroYearReport) {
+export function MacroYear(props: DestructuredMacroReport) {
 	const { expenses, incomes, withdrawals, deficit } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",

@@ -6,17 +6,19 @@ import { RentalAsset } from "../db/entities/rentalasset.js";
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
 import fp from "fastify-plugin";
-import { expenseMonthOutput } from "./helperFunctions/expenseMonthOutput.js";
-import { incomeMonthOutput, mkMonthOutputRow } from "./helperFunctions/incomeMonthOutput.js";
+import { expenseMicroOutput } from "../helperMethods/expenseMicroOutput.js";
+import { incomeMicroOutput, mkMonthOutputRow } from "../helperMethods/incomeMicroOutput.js";
 import {
-	expenseMonth,
-	incomeMonth,
-	microYearReport,
-	monthOutputRow,
-	taxAccumulator,
-} from "../db/types.js";
+	MicroExpense,
+	MicroIncome,
+	MicroOutputRow,
+	TaxAccumulator,
+} from "../db/backendTypes/ReportTypes.js";
 import { sendMicroReport } from "../helperMethods/destructure.js";
-import { withdrawalMonthOutput } from "./helperFunctions/withdrawalMonthOutput.js";
+import { withdrawalMicroOutput } from "../helperMethods/withdrawalMicroOutput.js";
+import { start } from "repl";
+import { end } from "tap";
+import { DestructuredMicroReport } from "../db/backendTypes/destructureTypes.js";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -29,41 +31,8 @@ declare module "fastify" {
 			rentals: Array<RentalAsset>,
 			start: Date,
 			end: Date
-		) => microYearReport;
+		) => DestructuredMicroReport;
 	}
-}
-
-function sumTaxes(taxAccumulator: taxAccumulator) {
-	if (taxAccumulator == undefined) return 0;
-	return (
-		taxAccumulator.capitalGains +
-		taxAccumulator.fica +
-		taxAccumulator.federal +
-		taxAccumulator.state +
-		taxAccumulator.local
-	);
-}
-
-function accumulateDeficit(
-	expense: expenseMonth,
-	income: incomeMonth,
-	start: Date,
-	end: Date
-): monthOutputRow {
-	const defecit: monthOutputRow = mkMonthOutputRow("defecit");
-
-	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
-		for (let month = start.getFullYear() == year ? start.getMonth() : 0; month < 12; ++month) {
-			const key = JSON.stringify({ month, year });
-			const currentIncome = income.monthlyIncome.amounts.get(key);
-			const currentExpense =
-				(expense.outReccuring.amounts.get(key) ?? 0) +
-				(expense.outNonReccuring.amounts.get(key) ?? 0);
-			const currentTax = sumTaxes(income.taxes.get(key));
-			defecit.amounts.set(key, currentIncome - (currentTax + currentExpense));
-		}
-	}
-	return defecit;
 }
 
 const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
@@ -76,11 +45,11 @@ const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 		rentals: Array<RentalAsset>,
 		start: Date,
 		end: Date
-	) => {
-		const expense = expenseMonthOutput(expenses, start, end);
-		const income = incomeMonthOutput(capitalAssets, rentals, oneTimeIncomes, start, end);
+	): DestructuredMicroReport => {
+		const expense = expenseMicroOutput(expenses, start, end);
+		const income = incomeMicroOutput(capitalAssets, rentals, oneTimeIncomes, start, end);
 		const deficit = accumulateDeficit(expense, income, start, end);
-		const withdrawal = withdrawalMonthOutput(finAssets, dividends, deficit, start, end);
+		const withdrawal = withdrawalMicroOutput(finAssets, dividends, deficit, start, end);
 		return sendMicroReport({ expense, income, deficit, withdrawal });
 	};
 
@@ -90,3 +59,36 @@ const microBudgetReport = async (app: FastifyInstance, _options = {}) => {
 export const FastifyMicroReportsPlugin = fp(microBudgetReport, {
 	name: "microBudgetReport",
 });
+
+function sumTaxes(taxAccumulator: TaxAccumulator) {
+	if (taxAccumulator == undefined) return 0;
+	return (
+		taxAccumulator.capitalGains +
+		taxAccumulator.fica +
+		taxAccumulator.federal +
+		taxAccumulator.state +
+		taxAccumulator.local
+	);
+}
+
+function accumulateDeficit(
+	expense: MicroExpense,
+	income: MicroIncome,
+	start: Date,
+	end: Date
+): MicroOutputRow {
+	const deficit: MicroOutputRow = mkMonthOutputRow("deficit");
+
+	for (let year = start.getFullYear(); year <= end.getFullYear(); ++year) {
+		for (let month = start.getFullYear() == year ? start.getMonth() : 0; month < 12; ++month) {
+			const key = JSON.stringify({ month, year });
+			const currentIncome = income.monthlyIncome.amounts.get(key);
+			const currentExpense =
+				(expense.outReoccurring.amounts.get(key) ?? 0) +
+				(expense.outNonReoccurring.amounts.get(key) ?? 0);
+			const currentTax = sumTaxes(income.taxes.get(key));
+			deficit.amounts.set(key, currentIncome - (currentTax + currentExpense));
+		}
+	}
+	return deficit;
+}

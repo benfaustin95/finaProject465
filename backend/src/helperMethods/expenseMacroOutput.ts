@@ -1,30 +1,21 @@
 //Provided with collection of budget items for given year provided
-import { BudgetItem, Recurrence } from "../../db/entities/budgetItem.js";
-import { amount, expenseYear, outputRow } from "../../db/types.js";
-import { mkOutputRow } from "./incomeYearOutput.js";
+import { BudgetItem, Recurrence } from "../db/entities/budgetItem.js";
+import { MacroExpense, MacroOutputRow } from "../db/backendTypes/ReportTypes.js";
+import { mkOutputRow } from "./incomeMacroOutput.js";
+import { CapAsset } from "../db/entities/capasset.js";
 
 export const inflation: number = 1.025;
-export function compoundGrowthRateIncome(value: number, rate: number, difference: number) {
-	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate, difference));
-}
 
-export function compoundGrowthRateExpense(value: number, rate: number, difference: number) {
-	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate * inflation, difference));
-}
-export function currentYear(fullYear: number, fullYear2: number, i: number) {
-	return fullYear <= i && fullYear2 >= i;
-}
-
-export const expenseYearOutput = (
+export const expenseMacroOutput = (
 	expenses: Array<BudgetItem>,
 	start: number,
 	end: number,
-	rStartMonth: number
-): expenseYear => {
-	const outputRecurring: Map<number, outputRow> = new Map<number, outputRow>();
-	const outputNonRecurring: Map<number, outputRow> = new Map<number, outputRow>();
-	const monthlyExpense: outputRow = mkOutputRow("Monthly Expense");
-	const annualExpense: outputRow = mkOutputRow("Annual Expense");
+	retirementStartMonth: number
+): MacroExpense => {
+	const outputRecurring: Map<number, MacroOutputRow> = new Map<number, MacroOutputRow>();
+	const outputNonRecurring: Map<number, MacroOutputRow> = new Map<number, MacroOutputRow>();
+	const monthlyExpense: MacroOutputRow = mkOutputRow("Monthly Expense");
+	const annualExpense: MacroOutputRow = mkOutputRow("Annual Expense");
 	expenses = expenses.filter(
 		(x) => x.start.getUTCFullYear() <= end && x.end.getUTCFullYear() >= start
 	);
@@ -50,7 +41,7 @@ export const expenseYearOutput = (
 
 			if (recurrence) {
 				currentMonthly += toAdd;
-				currentYearly += annualExpenseCalculation(x, i, toAdd, rStartMonth, start);
+				currentYearly += annualExpenseCalculation(x, i, toAdd, retirementStartMonth, start);
 			} else currentYearly += toAdd;
 
 			row.amounts.set(i, toAdd);
@@ -87,8 +78,8 @@ export const expenseCalculation = (item: BudgetItem, year: number): number => {
 		year - item.created_at.getUTCFullYear()
 	);
 };
-function annualExpenseCalculation(
-	item: BudgetItem,
+export function annualExpenseCalculation(
+	item: BudgetItem | CapAsset,
 	year: number,
 	expense: number,
 	month: number,
@@ -97,8 +88,8 @@ function annualExpenseCalculation(
 	let monthsActive = 12;
 	const itemStartYear = item.start.getUTCFullYear() == year;
 	const itemEndYear = item.end.getUTCFullYear() == year;
-	if (year != startYear && !itemStartYear && itemEndYear) return monthsActive * expense;
-	if (itemEndYear && item.end.getMonth() < month) return 0;
+	if (year != startYear && !itemStartYear && !itemEndYear) return monthsActive * expense;
+	if (itemEndYear && year == startYear && item.end.getMonth() < month) return 0;
 	if (year != startYear)
 		monthsActive -=
 			(itemStartYear ? item.start.getMonth() : 0) + (itemEndYear ? 11 - item.end.getMonth() : 0);
@@ -107,4 +98,11 @@ function annualExpenseCalculation(
 			(itemStartYear ? (item.start.getMonth() > month ? item.start.getMonth() : month) : 0) +
 			(itemEndYear ? 11 - item.end.getMonth() : 0);
 	return monthsActive * expense;
+}
+
+export function compoundGrowthRateExpense(value: number, rate: number, difference: number) {
+	return Math.ceil(value * Math.pow(rate == 0 ? 1 : rate * inflation, difference));
+}
+export function currentYear(fullYear: number, fullYear2: number, i: number) {
+	return fullYear <= i && fullYear2 >= i;
 }

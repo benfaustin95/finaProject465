@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { RentalAssetBody, RFBaseBody } from "../../../../backend/src/db/types.ts";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import Form from "react-bootstrap/Form";
 import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
@@ -12,6 +11,10 @@ import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.ts
 import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 import { RentalAsset } from "@/DoggrTypes.ts";
+import {
+	RentalAssetBody,
+	RFBaseBody,
+} from "../../../../backend/src/db/backendTypes/createTypes.ts";
 
 export const RentalAssetForm = (props: {
 	submitForm: any;

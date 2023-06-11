@@ -1,3 +1,9 @@
+import { InvalidDataError } from "./errors.js";
+import { User } from "../db/entities/User.js";
+import { Recurrence } from "../db/entities/budgetItem.js";
+import { FastifyInstance, FastifyRequest } from "fastify";
+import { CapAssetType } from "../db/entities/capasset.js";
+import { FinancialAsset } from "../db/entities/financialasset.js";
 import {
 	BaseInputBody,
 	BaseInputBodyInit,
@@ -13,13 +19,7 @@ import {
 	RentalAssetBodyInit,
 	RFBaseBody,
 	RFBaseBodyInit,
-} from "../db/types.js";
-import { InvalidDataError } from "./errors.js";
-import { User } from "../db/entities/User.js";
-import { Recurrence } from "../db/entities/budgetItem.js";
-import { FastifyInstance, FastifyRequest } from "fastify";
-import { CapAssetType } from "../db/entities/capasset.js";
-import { FinancialAsset } from "../db/entities/financialasset.js";
+} from "../db/backendTypes/createTypes.js";
 
 function validateName(name: string, type: string) {
 	if (name == undefined || name == "")
@@ -31,7 +31,7 @@ function validateName(name: string, type: string) {
 	return name;
 }
 
-function validateExpense(amount: number, type: string) {
+function validateDollarAmount(amount: number, type: string) {
 	if (amount == undefined || isNaN(amount) || amount <= 0)
 		throw new InvalidDataError({
 			status: 422,
@@ -48,7 +48,7 @@ function validateGrowthRate(growthRate: number, type: string) {
 			message: `invalid ${type} growth rate ${growthRate}`,
 			cause: "growthRate",
 		});
-	return growthRate;
+	return 1 + growthRate / 100;
 }
 
 function validateDate(start: string | Date, type: string | Date) {
@@ -64,7 +64,7 @@ function validateDate(start: string | Date, type: string | Date) {
 
 function validateBoundedDate(start: string, end: string, user) {
 	const validStart = start == undefined ? user.start : start;
-	const validEnd = end == undefined ? new Date("1/1/3000") : end;
+	const validEnd = end == undefined ? new Date("1/2/3000") : end;
 
 	return { start: validateDate(validStart, "start"), end: validateDate(validEnd, "end") };
 }
@@ -92,7 +92,7 @@ export function validateBudgetBody(item: BudgetBody, user: User): BudgetBodyInit
 	const toReturn: BudgetBodyInit = {
 		name: validateName(item.name, "budget"),
 		note: item.note != undefined ? item.note : "",
-		amount: validateExpense(item.amount, "expense"),
+		amount: validateDollarAmount(item.amount, "expense"),
 		growthRate: 1,
 		recurrence: getRecurrence(item.recurrence),
 		owner_id: item.owner_id,
@@ -159,9 +159,8 @@ export async function validateCapitalAssetInputBody(
 	const toReturn = await validateBaseInputBody(item, req, app);
 	return {
 		...toReturn,
-		start: validateDate(item.start, "start"),
-		end: validateDate(item.end, "end"),
-		income: validateExpense(item.income, "income"),
+		...validateBoundedDate(item.start, item.end, toReturn.owner),
+		income: validateDollarAmount(item.income, "income"),
 		recurrence: getRecurrence(item.recurrence),
 		type: getType(item.type),
 	};
@@ -174,7 +173,7 @@ function validateRate(rate: number) {
 			message: `invalid dividend rate ${rate}`,
 			cause: "rate",
 		});
-	return rate;
+	return rate / 100;
 }
 
 export async function validateDividendInputBody(
@@ -201,12 +200,11 @@ export async function validateOneTimeIncomeBody(
 	app: FastifyInstance,
 	req: FastifyRequest
 ): Promise<OneTimeIncomeBodyInit> {
-	const toReturn = {
+	return {
 		...(await validateBaseInputBody(item, req, app)),
 		date: validateDate(item.date, "Date of one time income"),
-		cashBasis: validateExpense(item.cashBasis, "one time income cash basis"),
+		cashBasis: validateDollarAmount(item.cashBasis, "one time income cash basis"),
 	};
-	return toReturn;
 }
 
 function validateWithdrawalPriority(wPriority: number) {
@@ -226,8 +224,8 @@ export async function validateRFBaseBody(
 ): Promise<RFBaseBodyInit> {
 	return {
 		...(await validateBaseInputBody(item, req, app)),
-		totalValue: validateExpense(item.totalValue, "Asset Total Value"),
-		costBasis: validateExpense(item.costBasis, "Asset Cost Basis"),
+		totalValue: validateDollarAmount(item.totalValue, "Asset Total Value"),
+		costBasis: validateDollarAmount(item.costBasis, "Asset Cost Basis"),
 		wPriority: validateWithdrawalPriority(item.wPriority),
 	};
 }
@@ -239,11 +237,11 @@ export async function validateRentalAsset(
 ): Promise<RentalAssetBodyInit> {
 	return {
 		...(await validateRFBaseBody(item, app, req)),
-		owed: validateExpense(item.owed, `amount owed on ${item.name}`),
-		maintenanceExpense: validateExpense(
+		owed: validateDollarAmount(item.owed, `amount owed on ${item.name}`),
+		maintenanceExpense: validateDollarAmount(
 			item.maintenanceExpense,
 			`monthly expense for ${item.name}`
 		),
-		grossIncome: validateExpense(item.grossIncome, `monthly gross income ${item.name}`),
+		grossIncome: validateDollarAmount(item.grossIncome, `monthly gross income ${item.name}`),
 	};
 }

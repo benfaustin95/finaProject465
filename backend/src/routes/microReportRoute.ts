@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import { User } from "../db/entities/User.js";
-import { microYearReport } from "../db/types.js";
 
 async function microReportRoutes(app: FastifyInstance, options = {}) {
 	if (!app) throw new Error("microreport bad");
@@ -18,7 +17,6 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 					"oneTimeIncomes",
 				],
 			});
-
 			const rentalAssets = user.rentalAssets.getItems();
 			const finAssets = user.financialAssets.getItems();
 			const dividends = user.dividends.getItems();
@@ -39,7 +37,7 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 			reply.send(toSend);
 		} catch (err) {
 			console.log(err);
-			reply.status(500).send(err);
+			reply.status(404).send(err);
 		}
 	});
 }

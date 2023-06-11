@@ -1,35 +1,37 @@
 import {
-	destructuredExpenseMonth,
-	destructuredExpenseYear,
-	destructuredIncomeMonth,
-	destructuredIncomeYear,
-	destructuredMacroYearReport,
-	destructuredMicroReport,
-	destructuredMicroWithdrawal,
-	destructuredMonthlyTaxAccumulator,
-	destructuredMonthOutputRow,
-	destructuredOutputRow,
-	destructuredTaxAccumulator,
-	destructuredWithdrawal,
-	destructuredWithdrawalMonthOutputRow,
-	destructuredWithOutputRow,
-	taxAccumulator,
-	withdrawal,
-} from "../../../../backend/src/db/types.js";
+	TaxAccumulator,
+	MacroWithdrawal,
+} from "../../../../backend/src/db/backendTypes/ReportTypes.js";
 import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { Simulate } from "react-dom/test-utils";
 import waiting = Simulate.waiting;
+import {
+	DestructuredMacroExpense,
+	DestructuredMacroIncome,
+	DestructuredMacroOutputRow,
+	DestructuredMacroReport,
+	DestructuredMacroWithdrawal,
+	DestructuredMicroExpense,
+	DestructuredMicroIncome,
+	DestructuredMicroOutputRow,
+	DestructuredMicroReport,
+	DestructuredMicroTaxAccumulator,
+	DestructuredMicroWithdrawal,
+	DestructuredMicroWithdrawalOutputRow,
+	DestructuredTaxAccumulator,
+	DestructuredWithMacroOutputRow,
+} from "../../../../backend/src/db/backendTypes/destructureTypes.ts";
 
 export type microRowGroup = {
-	group: Array<[number, destructuredMonthOutputRow]>;
+	group: Array<[number, DestructuredMicroOutputRow]>;
 };
 
-export type microRow = destructuredMonthOutputRow & {
+export type microRow = DestructuredMicroOutputRow & {
 	id: number;
 };
 
-export type microWithRow = destructuredWithdrawalMonthOutputRow & {
+export type microWithRow = DestructuredMicroWithdrawalOutputRow & {
 	id: number;
 };
 function MicroRow(props: microRow) {
@@ -51,7 +53,7 @@ function MicroRow(props: microRow) {
 	);
 }
 
-function Remainder(props: destructuredMonthOutputRow) {
+function Remainder(props: DestructuredMicroOutputRow) {
 	const { name, note, amounts } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
@@ -104,7 +106,7 @@ function MicroWithdrawalRow(props: microWithRow) {
 }
 
 function MicroWithdrawalRowGroup(props: {
-	group: [number, destructuredWithdrawalMonthOutputRow][];
+	group: [number, DestructuredMicroWithdrawalOutputRow][];
 }) {
 	const { group } = props;
 	return (
@@ -120,7 +122,7 @@ function MicroWithdrawalRowGroup(props: {
 		</>
 	);
 }
-function BudgetItems(props: destructuredExpenseMonth) {
+function BudgetItems(props: DestructuredMicroExpense) {
 	const { outRecurring, outNonRecurring } = props;
 	return (
 		<>
@@ -130,7 +132,7 @@ function BudgetItems(props: destructuredExpenseMonth) {
 	);
 }
 
-function Taxes(props: destructuredMonthlyTaxAccumulator) {
+function Taxes(props: DestructuredMicroTaxAccumulator) {
 	const {
 		federal,
 		federalIncome,
@@ -224,7 +226,7 @@ function FillerRow(props: { name: string }) {
 	);
 }
 
-function MicroIncomes(props: destructuredIncomeMonth) {
+function MicroIncomes(props: DestructuredMicroIncome) {
 	const { salary, investments, retirementIncome, nonTaxable, oneTimeIncome, taxes, monthlyIncome } =
 		props;
 	return (
@@ -246,7 +248,7 @@ function MicroIncomes(props: destructuredIncomeMonth) {
 	);
 }
 
-function MicroWithdrawals(props: destructuredMicroWithdrawal) {
+function MicroWithdrawals(props: DestructuredMicroWithdrawal) {
 	const { outDividend, outputWithdrawal, remainder } = props;
 	return (
 		<>
@@ -259,7 +261,7 @@ function MicroWithdrawals(props: destructuredMicroWithdrawal) {
 	);
 }
 
-export function MicroYear(props: destructuredMicroReport) {
+export function MicroYear(props: DestructuredMicroReport) {
 	const { expense, income, withdrawal, deficit } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",

@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { httpClient } from "@/Services/HttpClient.tsx";
 import { MacroYear } from "@/Components/GetReportSubComponenets/MacroYear.tsx";
-import { destructuredMacroYearReport, macroYearReport } from "../../../../backend/src/db/types.ts";
+import { MacroReport } from "../../../../backend/src/db/backendTypes/ReportTypes.ts";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useAuth } from "@/Services/Auth.tsx";
 import { Formik } from "formik";
 import Form from "react-bootstrap/Form";
 import { InputControl, SubmitButton } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import * as yup from "yup";
+import { DestructuredMacroReport } from "../../../../backend/src/db/backendTypes/destructureTypes.ts";
 
 export function ReportYearForm(props: { handleSubmit: any }) {
 	const { handleSubmit } = props;
@@ -47,7 +48,7 @@ export const MacroReportLoad = () => {
 
 	const navigate = useNavigate();
 	const { userId } = useAuth();
-	const [macroReport, setMacroReport] = useState<destructuredMacroYearReport>();
+	const [macroReport, setMacroReport] = useState<DestructuredMacroReport>();
 	const loadReport = (event) => {
 		MacroReportService.send(userId, event.end)
 			.then((res) => {
