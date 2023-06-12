@@ -19,6 +19,7 @@ services:
       retries: 5
 
   backend:
+    hostname: backend
     container_name: backend
     build: ./backend/
     restart: always
@@ -32,8 +33,29 @@ services:
       - DB_PASS=retMaybe
       - PORT=8080
       - HOST=0.0.0.0
-      - PASSWORD=password
       - NODE_ENV=development
+      - AUTH_SECRET=supersecret219340818092358
+      - AUTH_DOMAIN=dev-2dtmb35dmkdjhb8l.us.auth0.com
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    hostname: frontend
+    container_name: frontend
+    build: ./frontend/
+    restart: always
+    ports:
+      - "5173:80"
+    environment:
+      - API_HOST=localhost
+      - PORT=8080
+      - AUTH_DOMAIN="dev-2dtmb35dmkdjhb8l.us.auth0.com"
+      - AUTH_CLIENT="WTp4p0IS7rLzxWnDrIE9HJVEpsXwU3Uh"
+      - AUTH_AUD="https://dev-2dtmb35dmkdjhb8l.us.auth0.com/api/v2/"
+      - AUTH_SCOPE="openid profile email"
+      - AUTH_REDIRECT="http://localhost:89/"
+      - AUTH_EMAIL_KEY="http://localhost:5173/email"
     depends_on:
       postgres:
         condition: service_healthy

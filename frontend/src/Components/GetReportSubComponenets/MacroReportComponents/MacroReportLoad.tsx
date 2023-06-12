@@ -4,7 +4,7 @@ import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { MacroYear } from "@/Components/GetReportSubComponenets/MacroReportComponents/MacroYear.tsx";
 import { Col, Container, Row } from "react-bootstrap";
 import { useAuth } from "@/Services/Auth.tsx";
-import { DestructuredMacroReport } from "../../../../../backend/src/db/backendTypes/destructureTypes.ts";
+import { DestructuredMacroReport } from "destructureTypes.ts";
 import { ReportYearForm } from "@/Components/GetReportSubComponenets/MacroReportComponents/ReportYearForm.tsx";
 
 export const MacroReportLoad = () => {

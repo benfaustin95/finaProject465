@@ -1,5 +1,10 @@
 import { PostInputService } from "@/Services/PostInputService.tsx";
-
+export type UsersBody = {
+	name: string;
+	email: string;
+	age: number;
+	birthday: Date;
+};
 export enum CapAssetType {
 	HUMAN = "human capital",
 	NONTAXABLEANNUITY = "non-taxable annuity",

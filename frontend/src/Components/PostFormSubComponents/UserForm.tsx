@@ -5,18 +5,16 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { date, string } from "yup";
 import { getUserItemFromToken, useAuth } from "@/Services/Auth.tsx";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { UsersBody } from "../../../../backend/src/db/backendTypes/createTypes.ts";
+import { useState } from "react";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
+import { UsersBody } from "@/DoggrTypes.ts";
 
 export const UserForm = () => {
 	const searchParams = new URLSearchParams(document.location.search);
 	const state = searchParams.get("state");
 	const token = searchParams.get("session_token");
 	const email = getUserItemFromToken(token, "email");
-	const navigate = useNavigate();
 	const [continueAddress, setContinueAddress] = useState(
 		`https://dev-2dtmb35dmkdjhb8l.us.auth0.com/continue?state=${state}`
 	);

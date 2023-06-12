@@ -1,8 +1,8 @@
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import { TaxService } from "@/Services/TaxService.tsx";
-import { TaxRate } from "../../../../backend/src/db/entities/Tax.ts";
 import { Col, Row } from "react-bootstrap";
+import { TaxObject } from "@/DoggrTypes.ts";
 
 export const TaxSelector = (props: {
 	level: string;
@@ -12,7 +12,7 @@ export const TaxSelector = (props: {
 	values: any;
 }) => {
 	const { level, stateChanger, errors, touched, values } = props;
-	const [tax, setTax] = useState<Array<TaxRate>>([]);
+	const [tax, setTax] = useState<Array<TaxObject>>([]);
 
 	useEffect(() => {
 		const loadTax = () => {

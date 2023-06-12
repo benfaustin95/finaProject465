@@ -2,19 +2,18 @@ import Form from "react-bootstrap/Form";
 import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-import { FinancialAsset } from "../../../../backend/src/db/entities/financialasset.ts";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { Formik } from "formik";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import * as yup from "yup";
 import { number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { Dividend, getTax, RouteTypes } from "@/DoggrTypes.ts";
+import { Dividend, getTax, RFBase, RouteTypes } from "@/DoggrTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
 export const DividendForm = (props: { submitForm: any; dividend?: Dividend; deleteItem?: any }) => {
-	const [finAssets, setFinAssets] = useState<Array<FinancialAsset>>([]);
+	const [finAssets, setFinAssets] = useState<Array<RFBase>>([]);
 	const { userId } = useAuth();
 	const { submitForm, dividend, deleteItem } = props;
 	useEffect(() => {

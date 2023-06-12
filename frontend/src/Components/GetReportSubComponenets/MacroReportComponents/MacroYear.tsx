@@ -1,11 +1,5 @@
-import {
-	TaxAccumulator,
-	MacroWithdrawal,
-} from "../../../../../backend/src/db/backendTypes/ReportTypes.js";
 import { Container, Row, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
-import { Simulate } from "react-dom/test-utils";
-import waiting = Simulate.waiting;
 import {
 	DestructuredMacroExpense,
 	DestructuredMacroIncome,
@@ -14,7 +8,7 @@ import {
 	DestructuredMacroWithdrawal,
 	DestructuredTaxAccumulator,
 	DestructuredWithMacroOutputRow,
-} from "../../../../../backend/src/db/backendTypes/destructureTypes.ts";
+} from "destructureTypes.ts";
 
 export type rowGroup = {
 	group: Array<[number, DestructuredMacroOutputRow]>;

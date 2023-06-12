@@ -39,18 +39,23 @@ let initialEmail;
 let initialUserID;
 if (!(initialToken == null)) {
 	try {
+		console.log(import.meta.env.REACT_APP_AUTH_DOMAIN);
 		await updateAxios(initialToken);
-		initialEmail = getUserItemFromToken(initialToken, "http://localhost:5173/email");
-		GetUserProfileService.send(initialEmail)
+		initialEmail = getUserItemFromToken(initialToken, import.meta.env.AUTH_EMAIL_KEY);
+		await GetUserProfileService.send(initialEmail)
 			.then((res) => {
 				if (res.status != 200) throw new Error("error here initial token");
 				return res.data;
 			})
 			.then((res) => {
 				initialUserID = res;
+			})
+			.catch((err) => {
+				initialEmail = null;
+				initialToken = null;
 			});
 	} catch (err) {
-		initialEmail = undefined;
+		initialEmail = null;
 		initialToken = null;
 	}
 }
@@ -61,7 +66,7 @@ export const AuthProvider = ({ children }: any) => {
 	const [token, setToken] = useState(initialToken);
 	const [email, setEmail] = useState(initialEmail);
 	const [userId, setUserId] = useState(initialUserID);
-	const { loginWithPopup, getAccessTokenSilently, isAuthenticated, user, logout } = useAuth0();
+	const { getAccessTokenSilently, isAuthenticated, logout } = useAuth0();
 
 	const handleToken = async () => {
 		let token;
@@ -70,16 +75,19 @@ export const AuthProvider = ({ children }: any) => {
 			if (isAuthenticated) {
 				token = await getAccessTokenSilently();
 				await updateAxios(token);
-				email = getUserItemFromToken(token, "http://localhost:5173/email");
+				email = getUserItemFromToken(token, import.meta.env.AUTH_EMAIL_KEY);
 				setEmail(email);
 				saveToken(token);
-				GetUserProfileService.send(email)
+				await GetUserProfileService.send(email)
 					.then((res) => {
 						if (res.status != 200) throw new Error("bad login no profile");
 						return res.data;
 					})
 					.then((res) => {
 						setUserId(res);
+					})
+					.catch((err) => {
+						throw new Error(err);
 					});
 				navigate("/");
 			} else {

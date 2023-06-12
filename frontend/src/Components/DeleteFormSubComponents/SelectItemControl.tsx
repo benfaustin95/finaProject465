@@ -3,7 +3,7 @@ import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 import { DeleteModal } from "@/Components/DeleteFormSubComponents/DeleteModal.tsx";
-import { BaseInput, entityType, isBudgetItem } from "@/DoggrTypes.ts";
+import { BaseInput } from "@/DoggrTypes.ts";
 
 export function CurrentItemListGroup<T extends BaseInput>(props: {
 	type: string;
@@ -55,6 +55,11 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 			case "start":
 			case "date":
 				return new Date(item[name]).toISOString().slice(0, 10);
+			case "rate":
+				return Math.round(item[name] * 100);
+			case "growthRate":
+				return Math.round((item[name] - 1) * 100);
+			// case "asset": return item[asset].
 			default:
 				return item[name];
 		}

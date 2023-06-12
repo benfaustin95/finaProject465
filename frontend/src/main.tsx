@@ -6,14 +6,14 @@ const rootContainer: HTMLElement = document.getElementById("root") as HTMLElemen
 
 ReactDOM.createRoot(rootContainer).render(
 	<Auth0Provider
-		domain={"dev-2dtmb35dmkdjhb8l.us.auth0.com"}
-		clientId={"WTp4p0IS7rLzxWnDrIE9HJVEpsXwU3Uh"}
+		domain={import.meta.env.AUTH_DOMAIN}
+		clientId={import.meta.env.AUTH_CLIENT}
 		useRefreshTokens={true}
 		useRefreshTokensFallback={false}
 		authorizationParams={{
-			redirect_uri: "http://localhost:5173",
-			audience: `https://dev-2dtmb35dmkdjhb8l.us.auth0.com/api/v2/`,
-			scope: "openid profile email",
+			redirect_uri: import.meta.env.AUTH_REDIRECT,
+			audience: import.meta.env.AUTH_AUD,
+			scope: import.meta.env.AUTH_SCOPE,
 		}}>
 		<React.StrictMode>
 			<App />

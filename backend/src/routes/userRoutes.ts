@@ -39,6 +39,7 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 
 	app.search<{ Body: { email: string } }>("/user", async (req, reply) => {
 		const { email } = req.body;
+		console.log(email);
 		try {
 			const existing = await req.em.findOneOrFail(User, { email });
 			return reply.send(existing.id);

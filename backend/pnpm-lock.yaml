@@ -40,6 +40,9 @@ dependencies:
   fastify:
     specifier: ^4.15.0
     version: 4.17.0
+  fastify-auth0-verify:
+    specifier: ^1.2.0
+    version: 1.2.0
   fastify-plugin:
     specifier: ^4.5.0
     version: 4.5.0
@@ -465,6 +468,16 @@ packages:
       fast-uri: 2.2.0
     dev: false
 
+  /@fastify/cookie@8.3.0:
+    resolution:
+      {
+        integrity: sha512-P9hY9GO11L20TnZ33XN3i0bt+3x0zaT7S0ohAzWO950E9PB2xnNhLYzPFJIGFi5AVN0yr5+/iZhWxeYvR6KCzg==,
+      }
+    dependencies:
+      cookie: 0.5.0
+      fastify-plugin: 4.5.0
+    dev: false
+
   /@fastify/cors@8.2.1:
     resolution:
       {
@@ -507,6 +520,19 @@ packages:
       "@fastify/error": 3.2.0
       "@lukeed/ms": 2.0.1
       fast-jwt: 2.2.3
+      fastify-plugin: 4.5.0
+      steed: 1.1.3
+    dev: false
+
+  /@fastify/jwt@7.0.0:
+    resolution:
+      {
+        integrity: sha512-y8n7qhBb/U+qWRUJzjZ+SJckv9wmOrA1eC/lM34SnOopt7VlK3hdfox7T3iuurAWVb8HjS9GxmZx+zFZO+Vb5A==,
+      }
+    dependencies:
+      "@fastify/error": 3.2.0
+      "@lukeed/ms": 2.0.1
+      fast-jwt: 3.1.1
       fastify-plugin: 4.5.0
       steed: 1.1.3
     dev: false
@@ -1977,6 +2003,14 @@ packages:
       wrap-ansi: 7.0.0
     dev: false
 
+  /clone@2.1.2:
+    resolution:
+      {
+        integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==,
+      }
+    engines: { node: ">=0.8" }
+    dev: false
+
   /code-block-writer@11.0.3:
     resolution:
       {
@@ -2217,6 +2251,14 @@ packages:
       {
         integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==,
       }
+    dev: false
+
+  /depd@2.0.0:
+    resolution:
+      {
+        integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==,
+      }
+    engines: { node: ">= 0.8" }
     dev: false
 
   /detect-libc@2.0.1:
@@ -2614,6 +2656,18 @@ packages:
       mnemonist: 0.39.5
     dev: false
 
+  /fast-jwt@3.1.1:
+    resolution:
+      {
+        integrity: sha512-c6gqmiMU9kUIMs0XcsnnpBMA4A+zi/XULA47r6hYoLR7s1teJ+LwviwZdttCeTZ+F5ZuHlRigNe98C4qN6h4pw==,
+      }
+    engines: { node: ">=14 <22" }
+    dependencies:
+      asn1.js: 5.4.1
+      ecdsa-sig-formatter: 1.0.11
+      mnemonist: 0.39.5
+    dev: false
+
   /fast-levenshtein@2.0.6:
     resolution:
       {
@@ -2660,6 +2714,38 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       reusify: 1.0.4
+    dev: false
+
+  /fastify-auth0-verify@1.2.0:
+    resolution:
+      {
+        integrity: sha512-Xlc0hnaY9129zaP2bqTozRKVr//6YtHoqcfssXmT0IHxz5GdnCrt7cBak+WJrrBO2H9Rutbdz/q4mW6MbM7lKg==,
+      }
+    engines: { node: ">= 14.0.0" }
+    dependencies:
+      "@fastify/cookie": 8.3.0
+      "@fastify/jwt": 7.0.0
+      fastify-jwt-jwks: 1.1.3
+      fastify-plugin: 4.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /fastify-jwt-jwks@1.1.3:
+    resolution:
+      {
+        integrity: sha512-0aHfOAhWS1wD754HKb3y7WUfE5TJgDaXzqqAwBRSFsSxYJ5EaAfrsUhDjQOGj6nSYFSRSdCAaZZLeePSiCfR+w==,
+      }
+    engines: { node: ">= 14.0.0" }
+    dependencies:
+      "@fastify/cookie": 8.3.0
+      "@fastify/jwt": 6.7.1
+      fastify-plugin: 4.5.0
+      http-errors: 2.0.0
+      node-cache: 5.1.2
+      node-fetch: 2.6.11
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /fastify-plugin@4.5.0:
@@ -3172,6 +3258,20 @@ packages:
         integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==,
       }
     dev: true
+
+  /http-errors@2.0.0:
+    resolution:
+      {
+        integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==,
+      }
+    engines: { node: ">= 0.8" }
+    dependencies:
+      depd: 2.0.0
+      inherits: 2.0.4
+      setprototypeof: 1.2.0
+      statuses: 2.0.1
+      toidentifier: 1.0.1
+    dev: false
 
   /https-proxy-agent@5.0.1:
     resolution:
@@ -3978,6 +4078,16 @@ packages:
       {
         integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==,
       }
+    dev: false
+
+  /node-cache@5.1.2:
+    resolution:
+      {
+        integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==,
+      }
+    engines: { node: ">= 8.0.0" }
+    dependencies:
+      clone: 2.1.2
     dev: false
 
   /node-fetch@2.6.11:
@@ -4893,6 +5003,13 @@ packages:
       }
     dev: false
 
+  /setprototypeof@1.2.0:
+    resolution:
+      {
+        integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==,
+      }
+    dev: false
+
   /shebang-command@2.0.0:
     resolution:
       {
@@ -5023,6 +5140,14 @@ packages:
     dependencies:
       escape-string-regexp: 2.0.0
     dev: true
+
+  /statuses@2.0.1:
+    resolution:
+      {
+        integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==,
+      }
+    engines: { node: ">= 0.8" }
+    dev: false
 
   /steed@1.1.3:
     resolution:
@@ -5336,6 +5461,14 @@ packages:
     engines: { node: ">=8.0" }
     dependencies:
       is-number: 7.0.0
+
+  /toidentifier@1.0.1:
+    resolution:
+      {
+        integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==,
+      }
+    engines: { node: ">=0.6" }
+    dev: false
 
   /touch@3.1.0:
     resolution:
