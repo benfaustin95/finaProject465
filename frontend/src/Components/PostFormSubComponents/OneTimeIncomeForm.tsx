@@ -41,7 +41,7 @@ export const OneTimeIncomeForm = (props: {
 							note: oneTimeIncome.note,
 							date: new Date(oneTimeIncome.date).toISOString().slice(0, 10),
 							cashBasis: oneTimeIncome.cashBasis,
-							growthRate: oneTimeIncome.growthRate,
+							growthRate: Math.round((oneTimeIncome.growthRate - 1) * 100),
 							owner_id: userId,
 							id: oneTimeIncome.id,
 							...getTax(oneTimeIncome),

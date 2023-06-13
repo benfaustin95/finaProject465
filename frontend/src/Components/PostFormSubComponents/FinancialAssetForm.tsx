@@ -41,7 +41,7 @@ export const FinancialAssetForm = (props: {
 					? {
 							name: finAsset.name,
 							note: finAsset.note,
-							growthRate: finAsset.growthRate,
+							growthRate: Math.round((finAsset.growthRate - 1) * 100),
 							totalValue: finAsset.totalValue,
 							costBasis: finAsset.costBasis,
 							wPriority: finAsset.wPriority,

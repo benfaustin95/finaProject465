@@ -55,7 +55,7 @@ export const CapitalAssetForm = (props: {
 							start: new Date(capAsset.start).toISOString().slice(0, 10),
 							end: new Date(capAsset.end).toISOString().slice(0, 10),
 							income: capAsset.income,
-							growthRate: 1,
+							growthRate: Math.round((capAsset.growthRate - 1) * 100),
 							recurrence: capAsset.recurrence,
 							type: capAsset.type,
 							owner_id: userId,

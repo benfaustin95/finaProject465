@@ -47,7 +47,7 @@ export const RentalAssetForm = (props: {
 						? {
 								name: rentalAsset.name,
 								note: rentalAsset.note,
-								growthRate: rentalAsset.growthRate,
+								growthRate: Math.round((rentalAsset.growthRate - 1) * 100),
 								costBasis: rentalAsset.costBasis,
 								wPriority: rentalAsset.wPriority,
 								owed: rentalAsset.owed,
