@@ -1,12 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { User } from "../db/entities/User.js";
 import { CapAsset } from "../db/entities/capasset.js";
-import { BudgetItem, Recurrence } from "../db/entities/budgetItem.js";
-import { validateCapitalAssetInputBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
-import { toolbar } from "typedoc/dist/lib/output/themes/default/partials/toolbar.js";
-import { RentalAsset } from "../db/entities/rentalasset.js";
-import { CAssetBody, CAssetBodyInit } from "../db/backendTypes/createTypes.js";
+import { CAssetBody } from "../db/backendTypes/createTypes.js";
 
 async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -16,7 +11,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: CAssetBody }>("/capitalAsset", async (req, reply) => {
 		const toAdd: CAssetBody = req.body;
 		try {
-			const toAddInit = await validateCapitalAssetInputBody(toAdd, app, req);
+			const toAddInit = await app.validateCapitalAssetInputBody(toAdd, app, req);
 			const asset = req.em.create(CapAsset, {
 				...toAddInit,
 			});
@@ -57,11 +52,11 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 		"/capitalAsset",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
-			const toUpdateInit = {
-				id: toUpdate.id,
-				...(await validateCapitalAssetInputBody(toUpdate, app, req)),
-			};
 			try {
+				const toUpdateInit = {
+					id: toUpdate.id,
+					...(await app.validateCapitalAssetInputBody(toUpdate, app, req)),
+				};
 				const item = await req.em.findOneOrFail(CapAsset, { owner: userid, id: toUpdate.id });
 				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
 					item[x] = toUpdateInit[x];

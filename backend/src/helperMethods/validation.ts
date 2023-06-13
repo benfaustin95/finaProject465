@@ -21,7 +21,7 @@ import {
 	RFBaseBodyInit,
 } from "../db/backendTypes/createTypes.js";
 
-function validateName(name: string, type: string) {
+export function validateName(name: string, type: string) {
 	if (name == undefined || name == "")
 		throw new InvalidDataError({
 			status: 422,
@@ -31,7 +31,7 @@ function validateName(name: string, type: string) {
 	return name;
 }
 
-function validateDollarAmount(amount: number, type: string) {
+export function validateDollarAmount(amount: number, type: string) {
 	if (amount == undefined || isNaN(amount) || amount <= 0)
 		throw new InvalidDataError({
 			status: 422,
@@ -41,7 +41,7 @@ function validateDollarAmount(amount: number, type: string) {
 	return amount;
 }
 
-function validateGrowthRate(growthRate: number, type: string) {
+export function validateGrowthRate(growthRate: number, type: string) {
 	if (growthRate == undefined || isNaN(growthRate) || growthRate < 0)
 		throw new InvalidDataError({
 			status: 422,
@@ -51,7 +51,7 @@ function validateGrowthRate(growthRate: number, type: string) {
 	return 1 + growthRate / 100;
 }
 
-function validateDate(start: string | Date, type: string | Date) {
+export function validateDate(start: string | Date, type: string | Date) {
 	const toReturn = new Date(start);
 	if (isNaN(toReturn.getTime()))
 		throw new InvalidDataError({
@@ -62,7 +62,7 @@ function validateDate(start: string | Date, type: string | Date) {
 	return toReturn;
 }
 
-function validateBoundedDate(start: string, end: string, user) {
+export function validateBoundedDate(start: string, end: string, user) {
 	const validStart = start == undefined ? user.start : start;
 	const validEnd = end == undefined ? new Date("1/2/3000") : end;
 
@@ -86,22 +86,6 @@ export function getRecurrence(recurrence: string) {
 				cause: "recurrence",
 			});
 	}
-}
-
-export function validateBudgetBody(item: BudgetBody, user: User): BudgetBodyInit {
-	const toReturn: BudgetBodyInit = {
-		name: validateName(item.name, "budget"),
-		note: item.note != undefined ? item.note : "",
-		amount: validateDollarAmount(item.amount, "expense"),
-		growthRate: 1,
-		recurrence: getRecurrence(item.recurrence),
-		owner_id: item.owner_id,
-		...validateBoundedDate(item.start, item.end, user),
-	};
-
-	if (toReturn.recurrence == Recurrence.NON) toReturn.end = new Date(toReturn.start);
-
-	return toReturn;
 }
 
 export async function validateBaseInputBody(
@@ -151,22 +135,7 @@ export function getType(type: string) {
 	}
 }
 
-export async function validateCapitalAssetInputBody(
-	item: CAssetBody,
-	app: FastifyInstance,
-	req: FastifyRequest
-): Promise<CAssetBodyInit> {
-	const toReturn = await validateBaseInputBody(item, req, app);
-	return {
-		...toReturn,
-		...validateBoundedDate(item.start, item.end, toReturn.owner),
-		income: validateDollarAmount(item.income, "income"),
-		recurrence: getRecurrence(item.recurrence),
-		type: getType(item.type),
-	};
-}
-
-function validateRate(rate: number) {
+export function validateRate(rate: number) {
 	if (rate == undefined || isNaN(rate) || rate <= 0)
 		throw new InvalidDataError({
 			status: 422,
@@ -176,38 +145,7 @@ function validateRate(rate: number) {
 	return rate / 100;
 }
 
-export async function validateDividendInputBody(
-	item: DividendBody,
-	app: FastifyInstance,
-	req: FastifyRequest
-): Promise<DividendBodyInit> {
-	try {
-		const base = await validateBaseInputBody(item, req, app);
-		return {
-			...base,
-			rate: validateRate(item.rate),
-			asset: await req.em.getReference(FinancialAsset, item.asset),
-		};
-	} catch (err) {
-		if (!(err instanceof InvalidDataError))
-			throw new InvalidDataError({ status: 422, message: err.message, cause: err });
-		throw err;
-	}
-}
-
-export async function validateOneTimeIncomeBody(
-	item: OneTimeIncomeBody,
-	app: FastifyInstance,
-	req: FastifyRequest
-): Promise<OneTimeIncomeBodyInit> {
-	return {
-		...(await validateBaseInputBody(item, req, app)),
-		date: validateDate(item.date, "Date of one time income"),
-		cashBasis: validateDollarAmount(item.cashBasis, "one time income cash basis"),
-	};
-}
-
-function validateWithdrawalPriority(wPriority: number) {
+export function validateWithdrawalPriority(wPriority: number) {
 	if (wPriority == undefined || !Number.isInteger(wPriority))
 		throw new InvalidDataError({
 			status: 422,
@@ -215,33 +153,4 @@ function validateWithdrawalPriority(wPriority: number) {
 			cause: `withdrawalPriority`,
 		});
 	return wPriority;
-}
-
-export async function validateRFBaseBody(
-	item: RFBaseBody,
-	app: FastifyInstance,
-	req: FastifyRequest
-): Promise<RFBaseBodyInit> {
-	return {
-		...(await validateBaseInputBody(item, req, app)),
-		totalValue: validateDollarAmount(item.totalValue, "Asset Total Value"),
-		costBasis: validateDollarAmount(item.costBasis, "Asset Cost Basis"),
-		wPriority: validateWithdrawalPriority(item.wPriority),
-	};
-}
-
-export async function validateRentalAsset(
-	item: RentalAssetBody,
-	app: FastifyInstance,
-	req: FastifyRequest
-): Promise<RentalAssetBodyInit> {
-	return {
-		...(await validateRFBaseBody(item, app, req)),
-		owed: validateDollarAmount(item.owed, `amount owed on ${item.name}`),
-		maintenanceExpense: validateDollarAmount(
-			item.maintenanceExpense,
-			`monthly expense for ${item.name}`
-		),
-		grossIncome: validateDollarAmount(item.grossIncome, `monthly gross income ${item.name}`),
-	};
 }

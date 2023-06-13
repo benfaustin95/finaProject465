@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import { RentalAsset } from "../db/entities/rentalasset.js";
-import { validateRentalAsset } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
 import { RentalAssetBody, RFBaseBody } from "../db/backendTypes/createTypes.js";
 
@@ -11,7 +10,7 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 		try {
 			const rentalAsset = await req.em.create(RentalAsset, {
-				...(await validateRentalAsset(toBeAdded, app, req)),
+				...(await app.validateRentalAsset(toBeAdded, app, req)),
 			});
 			await req.em.flush();
 			return reply.send(`${rentalAsset.name} successfully created`);
@@ -49,11 +48,11 @@ async function RentalAssetRoutes(app: FastifyInstance, _options = {}) {
 		"/rentalAsset",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
-			const toUpdateInit = {
-				id: toUpdate.id,
-				...(await validateRentalAsset(toUpdate, app, req)),
-			};
 			try {
+				const toUpdateInit = {
+					id: toUpdate.id,
+					...(await app.validateRentalAsset(toUpdate, app, req)),
+				};
 				const item = await req.em.findOneOrFail(RentalAsset, { owner: userid, id: toUpdate.id });
 				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
 					item[x] = toUpdateInit[x];

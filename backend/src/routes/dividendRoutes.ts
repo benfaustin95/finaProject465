@@ -1,9 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { User } from "../db/entities/User.js";
 import { Dividend } from "../db/entities/Dividend.js";
-import * as repl from "repl";
-import { FinancialAsset } from "../db/entities/financialasset.js";
-import { validateDividendInputBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
 import { DividendBody } from "../db/backendTypes/createTypes.js";
 
@@ -13,7 +9,7 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: DividendBody }>("/dividend", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const toAddInit = await validateDividendInputBody(toBeAdded, app, req);
+			const toAddInit = await app.validateDividendInputBody(toBeAdded, app, req);
 			const dividend = await req.em.create(Dividend, {
 				...toAddInit,
 			});
@@ -48,11 +44,11 @@ async function dividendRoutes(app: FastifyInstance, _options = {}) {
 
 	app.put<{ Body: { userid: number; toUpdate: DividendBody } }>("/dividend", async (req, reply) => {
 		const { userid, toUpdate } = req.body;
-		const toUpdateInit = {
-			id: toUpdate.id,
-			...(await validateDividendInputBody(toUpdate, app, req)),
-		};
 		try {
+			const toUpdateInit = {
+				id: toUpdate.id,
+				...(await app.validateDividendInputBody(toUpdate, app, req)),
+			};
 			const item = await req.em.findOneOrFail(Dividend, { owner: userid, id: toUpdate.id });
 			Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
 				item[x] = toUpdateInit[x];

@@ -21,6 +21,7 @@ export type BudgetBody = {
 	start: string;
 	end: string;
 	owner_id: number;
+	id: number;
 };
 export type BudgetBodyInit = {
 	note: string;

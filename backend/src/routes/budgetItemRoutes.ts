@@ -2,9 +2,8 @@ import { FastifyInstance } from "fastify";
 import { BudgetItem } from "../db/entities/budgetItem.js";
 import { User } from "../db/entities/User.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
-import { validateBudgetBody } from "../helperMethods/validation.js";
 import { RentalAsset } from "../db/entities/rentalasset.js";
-import { BudgetBody } from "../db/backendTypes/createTypes.js";
+import { BudgetBody, BudgetBodyInit } from "../db/backendTypes/createTypes.js";
 
 async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -16,7 +15,7 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		try {
 			const user = await req.em.getReference(User, toAdd.owner_id);
 			const item = await req.em.create(BudgetItem, {
-				...validateBudgetBody(toAdd, user),
+				...(await app.validateBudgetBody(toAdd, user)),
 				owner: user,
 			});
 			await req.em.flush();
@@ -53,12 +52,17 @@ async function budgetItemRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.put<{ Body: { userid: number; toUpdate: BudgetItem } }>("/budgetItem", async (req, reply) => {
+	app.put<{ Body: { userid: number; toUpdate: BudgetBody } }>("/budgetItem", async (req, reply) => {
 		const { userid, toUpdate } = req.body;
 		try {
+			const user = await req.em.getReference(User, userid);
+			const toUpdateInit = {
+				id: toUpdate.id,
+				...(await app.validateBudgetBody(toUpdate, user)),
+			};
 			const item = await req.em.findOneOrFail(BudgetItem, { owner: userid, id: toUpdate.id });
-			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
-				item[x] = toUpdate[x];
+			Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
+				item[x] = toUpdateInit[x];
 			});
 			await req.em.flush();
 			return reply.send(`${item.name} successfully updated`);

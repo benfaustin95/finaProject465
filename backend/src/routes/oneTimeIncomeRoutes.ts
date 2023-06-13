@@ -1,11 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { User } from "../db/entities/User.js";
 import { OneTimeIncome } from "../db/entities/OneTimeIncome.js";
-import { FinancialAsset } from "../db/entities/financialasset.js";
-import { BudgetItem } from "../db/entities/budgetItem.js";
-import { validateOneTimeIncomeBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
-import { RentalAsset } from "../db/entities/rentalasset.js";
 import { OneTimeIncomeBody } from "../db/backendTypes/createTypes.js";
 
 async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
@@ -14,7 +9,7 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: OneTimeIncomeBody }>("/oneTimeIncome", async (req, reply) => {
 		const toBeAdded = req.body;
 		try {
-			const toBeAddedInit = await validateOneTimeIncomeBody(toBeAdded, app, req);
+			const toBeAddedInit = await app.validateOneTimeIncomeBody(toBeAdded, app, req);
 			const oti = await req.em.create(OneTimeIncome, {
 				...toBeAddedInit,
 			});
@@ -55,11 +50,11 @@ async function OneTimeIncomeRoutes(app: FastifyInstance, _options = {}) {
 		"/oneTimeIncome",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
-			const toUpdateInit = {
-				id: toUpdate.id,
-				...(await validateOneTimeIncomeBody(toUpdate, app, req)),
-			};
 			try {
+				const toUpdateInit = {
+					id: toUpdate.id,
+					...(await app.validateOneTimeIncomeBody(toUpdate, app, req)),
+				};
 				const item = await req.em.findOneOrFail(OneTimeIncome, { owner: userid, id: toUpdate.id });
 				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
 					item[x] = toUpdateInit[x];

@@ -1,11 +1,6 @@
 import { FinancialAsset } from "../db/entities/financialasset.js";
 import { FastifyInstance } from "fastify";
-import { User } from "../db/entities/User.js";
-import { CapAsset } from "../db/entities/capasset.js";
-import { validateRFBaseBody } from "../helperMethods/validation.js";
 import { InvalidDataError } from "../helperMethods/errors.js";
-import { RentalAsset } from "../db/entities/rentalasset.js";
-import { BudgetItem } from "../db/entities/budgetItem.js";
 import { RFBaseBody } from "../db/backendTypes/createTypes.js";
 
 async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
@@ -15,7 +10,7 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		const toBeAdded = req.body;
 		try {
 			const finAsset = await req.em.create(FinancialAsset, {
-				...(await validateRFBaseBody(toBeAdded, app, req)),
+				...(await app.validateRFBaseBody(toBeAdded, app, req)),
 			});
 			await req.em.flush();
 			return reply.send(`${finAsset.name} successfully created`);
@@ -54,8 +49,11 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		"/financialAsset",
 		async (req, reply) => {
 			const { userid, toUpdate } = req.body;
-			const toUpdateInit = { id: toUpdate.id, ...(await validateRFBaseBody(toUpdate, app, req)) };
 			try {
+				const toUpdateInit = {
+					id: toUpdate.id,
+					...(await app.validateRFBaseBody(toUpdate, app, req)),
+				};
 				const item = await req.em.findOneOrFail(FinancialAsset, { owner: userid, id: toUpdate.id });
 				Object.getOwnPropertyNames(toUpdateInit).forEach((x) => {
 					item[x] = toUpdateInit[x];
