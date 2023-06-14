@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { MicroReportService } from "@/Services/MicroReportService.tsx";
-import { MicroYear } from "@/Components/GetReportSubComponenets/MicroYear.tsx";
+import { MicroYear } from "@/Components/GetReportSubComponenets/MicroReportComponents/MicroYear.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { DestructuredMicroReport } from "destructureTypes.ts";
+import { DestructuredMicroReport } from "../../../../destructureTypes.ts";
 
 export const MicroReportLoad = () => {
 	const location = useLocation();

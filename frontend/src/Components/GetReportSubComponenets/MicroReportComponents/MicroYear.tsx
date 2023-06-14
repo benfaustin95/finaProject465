@@ -8,7 +8,7 @@ import {
 	DestructuredMicroTaxAccumulator,
 	DestructuredMicroWithdrawal,
 	DestructuredMicroWithdrawalOutputRow,
-} from "destructureTypes.ts";
+} from "../../../../destructureTypes.ts";
 
 export type microRowGroup = {
 	group: Array<[number, DestructuredMicroOutputRow]>;
@@ -16,23 +16,41 @@ export type microRowGroup = {
 
 export type microRow = DestructuredMicroOutputRow & {
 	id: number;
+	type?: string;
 };
 
 export type microWithRow = DestructuredMicroWithdrawalOutputRow & {
 	id: number;
 };
+
 function MicroRow(props: microRow) {
-	const { name, note, amounts, id } = props;
+	const { name, note, amounts, id, type } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
 		currency: "USD",
 	});
+	function getClass(item: string): string {
+		switch (item) {
+			case "sum":
+				return "table-sheet heading sum";
+			case "heading":
+				return "table-sheet heading";
+			case "bad":
+				return "table-sheet heading sum bad";
+			default:
+				return "table-sheet";
+		}
+	}
 	return (
 		<tr>
-			<td key={name + "cell"}>{name}</td>
+			<th scope={"row"} className={getClass(type)} key={name + "cell"}>
+				{name}
+			</th>
 			<td key={note + "cell"}>{name == "remainder" ? "" : note}</td>
 			{amounts.map(([[month, year], x]) => (
-				<td key={id.toString() + year.toString() + month.toString() + name + note + "cell"}>
+				<td
+					className={`${type == "sum" ? "sum" : ""} ${type == "bad" ? "sum bad" : ""}`}
+					key={id.toString() + year.toString() + month.toString() + name + note + "cell"}>
 					{formater.format(x)}
 				</td>
 			))}
@@ -113,8 +131,8 @@ function BudgetItems(props: DestructuredMicroExpense) {
 	const { outRecurring, outNonRecurring } = props;
 	return (
 		<>
-			<MicroRow {...outRecurring} id={1} />
-			<MicroRow {...outNonRecurring} id={2} />
+			<MicroRow type={"heading"} {...outRecurring} id={1} />
+			<MicroRow type={"heading"} {...outNonRecurring} id={2} />
 		</>
 	);
 }
@@ -204,11 +222,11 @@ function Taxes(props: DestructuredMicroTaxAccumulator) {
 	return taxOutput;
 }
 
-function FillerRow(props: { name: string }) {
-	const { name } = props;
+function FillerRow(props: { name: string; type?: string; length: number }) {
+	const { name, type } = props;
 	return (
 		<tr>
-			<td>{name}</td>
+			<td className={`table-sheet ${type != undefined ? "sub-heading" : "heading"}`}>{name}</td>
 		</tr>
 	);
 }
@@ -218,18 +236,12 @@ function MicroIncomes(props: DestructuredMicroIncome) {
 		props;
 	return (
 		<>
-			{/*<FillerRow name={"Income/Disbursements - by source"} />*/}
-			{/*<FillerRow name={"Salary"} />*/}
 			<MicroRowGroup key={"salary"} group={salary} />
-			{/*<FillerRow name={"Investments"} />*/}
 			<MicroRowGroup key={"investments"} group={investments} />
-			{/*<FillerRow name={"Retirement Income"} />*/}
 			<MicroRowGroup key={"retirementIncome"} group={retirementIncome} />
-			{/*<FillerRow name={"Non-Tax Assets"} />*/}
 			<MicroRowGroup key={"nonTaxable"} group={nonTaxable} />
-			{/*<FillerRow name={"One Time Incomes"} />*/}
 			<MicroRowGroup key={"outOneTime"} group={oneTimeIncome} />
-			<MicroRow key={"Monthly Sum"} {...monthlyIncome} id={1} />
+			<MicroRow type={"sum"} key={"Monthly Sum"} {...monthlyIncome} id={1} />
 			{taxes != undefined ? <Taxes {...taxes} /> : null}
 		</>
 	);
@@ -241,7 +253,9 @@ function MicroWithdrawals(props: DestructuredMicroWithdrawal) {
 		<>
 			<MicroRowGroup group={outDividend} />
 			<MicroWithdrawalRowGroup group={outputWithdrawal} />
-			{remainder != undefined && remainder.note != "" ? <MicroRow {...remainder} id={1} /> : null}
+			{remainder != undefined && remainder.note != "" ? (
+				<MicroRow type={"sum bad"} {...remainder} id={1} />
+			) : null}
 		</>
 	);
 }
@@ -263,25 +277,36 @@ export function MicroYear(props: DestructuredMicroReport) {
 					</div>
 				) : null}
 			</Row>
-			<Table className={"border-dark"} responsive striped bordered hover>
-				<thead className={"table-dark border-white"}>
-					<tr>
-						<th>Name</th>
-						<th>Note</th>
-						{expense != undefined
-							? expense.outNonRecurring.amounts.map(([[month, year]]) => (
-									<th key={"header-name-note" + month + year + "cell"}>{`${month + 1}/${year}`}</th>
-							  ))
-							: null}
-					</tr>
-				</thead>
-				<tbody>
-					{expense != undefined ? <BudgetItems {...expense} /> : null}
-					{income != undefined ? <MicroIncomes {...income} /> : null}
-					{deficit != undefined ? <MicroRow key={"deficit row"} {...deficit} id={1} /> : null}
-					{withdrawal != undefined ? <MicroWithdrawals {...withdrawal} /> : null}
-				</tbody>
-			</Table>
+			<div className={"overflow-auto report"}>
+				<Table className={"border-dark table-sheet"} striped bordered hover>
+					<thead className={"table-dark border-white"}>
+						<tr>
+							<th scope={"col"} className={"table-sheet sticky"}>
+								Name
+							</th>
+							<th scope={"col"} className={"table-sheet sticky"}>
+								Note
+							</th>
+							{expense != undefined
+								? expense.outNonRecurring.amounts.map(([[month, year]]) => (
+										<th
+											scope={"col"}
+											className={"table-sheet sticky"}
+											key={"header-name-note" + month + year + "cell"}>{`${month + 1}/${year}`}</th>
+								  ))
+								: null}
+						</tr>
+					</thead>
+					<tbody>
+						{expense != undefined ? <BudgetItems {...expense} /> : null}
+						{income != undefined ? <MicroIncomes {...income} /> : null}
+						{deficit != undefined ? (
+							<MicroRow type={"sum"} key={"deficit row"} {...deficit} id={1} />
+						) : null}
+						{withdrawal != undefined ? <MicroWithdrawals {...withdrawal} /> : null}
+					</tbody>
+				</Table>
+			</div>
 		</Container>
 	);
 }

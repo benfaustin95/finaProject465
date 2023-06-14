@@ -4,7 +4,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { number, string } from "yup";
 import { Formik } from "formik";
-import { getTax, RFBase, RouteTypes } from "@/FrontendTypes.ts";
+import { getGrowthRatePercent, getTax, RFBase, RouteTypes } from "@/FrontendTypes.ts";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
@@ -41,7 +41,7 @@ export const FinancialAssetForm = (props: {
 					? {
 							name: finAsset.name,
 							note: finAsset.note,
-							growthRate: Math.round((finAsset.growthRate - 1) * 100),
+							growthRate: getGrowthRatePercent(finAsset.growthRate),
 							totalValue: finAsset.totalValue,
 							costBasis: finAsset.costBasis,
 							wPriority: finAsset.wPriority,

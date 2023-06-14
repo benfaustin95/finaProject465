@@ -6,7 +6,7 @@ import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.ts
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { getTax, OneTimeIncome, RouteTypes } from "@/FrontendTypes.ts";
+import { getGrowthRatePercent, getTax, OneTimeIncome, RouteTypes } from "@/FrontendTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
@@ -41,7 +41,7 @@ export const OneTimeIncomeForm = (props: {
 							note: oneTimeIncome.note,
 							date: new Date(oneTimeIncome.date).toISOString().slice(0, 10),
 							cashBasis: oneTimeIncome.cashBasis,
-							growthRate: Math.round((oneTimeIncome.growthRate - 1) * 100),
+							growthRate: getGrowthRatePercent(oneTimeIncome.growthRate),
 							owner_id: userId,
 							id: oneTimeIncome.id,
 							...getTax(oneTimeIncome),

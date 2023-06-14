@@ -14,17 +14,39 @@ export type rowGroup = {
 	group: Array<[number, DestructuredMacroOutputRow]>;
 };
 
-function OutputRow(props: DestructuredMacroOutputRow) {
-	const { name, note, amounts } = props;
+export type row = DestructuredMacroOutputRow & {
+	type?: string;
+};
+function OutputRow(props: row) {
+	const { name, note, amounts, type } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
 		currency: "USD",
 	});
 
+	function getClass(item: string): string {
+		switch (item) {
+			case "sum":
+				return "table-sheet heading sum";
+			case "heading":
+				return "table-sheet heading";
+			case "bad":
+				return "table-sheet heading sum bad";
+			default:
+				return "table-sheet";
+		}
+	}
+
 	return (
 		<tr>
-			<td key={name + "cell"}>{name}</td>
-			<td key={note + "cell"}>{name == "remainder" ? "" : note}</td>
+			<td className={getClass(type)} key={name + "cell"}>
+				{name}
+			</td>
+			<td
+				className={`${type == "sum" ? "sum" : ""} ${type == "bad" ? "sum bad" : ""}`}
+				key={note + "cell"}>
+				{name == "remainder" ? "" : note}
+			</td>
 			{amounts.map(([year, x]) => (
 				<td key={year + name + note + "cell"}>{formater.format(x)}</td>
 			))}
@@ -51,7 +73,9 @@ function WithdrawalRow(props: DestructuredWithMacroOutputRow) {
 	return (
 		<tr>
 			<td key={name + "withdrawal"}>{name}</td>
-			<td key={note + "withdrawal"}>{note}</td>
+			<td className={"table-sheet"} key={note + "withdrawal"}>
+				{note}
+			</td>
 			{updatedValue.map(([year, x]) => (
 				<td key={year + name + note + "withdrawal"}>{formater.format(x)}</td>
 			))}
@@ -80,8 +104,8 @@ function BudgetItems(props: DestructuredMacroExpense) {
 		<>
 			<RowGroup group={outputRecurring} />
 			<RowGroup group={outputNonRecurring} />
-			<OutputRow key={"monthly expense row"} {...monthlyExpense} />
-			<OutputRow key={"annual expense row"} {...annualExpense} />
+			<OutputRow type={"sum"} key={"monthly expense row"} {...monthlyExpense} />
+			<OutputRow type={"sum"} key={"annual expense row"} {...annualExpense} />
 		</>
 	);
 }
@@ -124,11 +148,11 @@ function YearlyIncomes(props: DestructuredMacroIncome) {
 	const { outRental, outOneTime, outHuman, outSocial, outNonTaxable, taxes } = props;
 	return (
 		<>
-			<OutputRow key={"outSocial"} {...outSocial} />
-			<OutputRow key={"outHuman"} {...outHuman} />
-			<OutputRow key={"outNonTaxable"} {...outNonTaxable} />
-			<OutputRow key={"outRental"} {...outRental} />
-			<OutputRow key={"outOneTime"} {...outOneTime} />
+			<OutputRow type={"heading"} key={"outSocial"} {...outSocial} />
+			<OutputRow type={"heading"} key={"outHuman"} {...outHuman} />
+			<OutputRow type={"heading"} key={"outNonTaxable"} {...outNonTaxable} />
+			<OutputRow type={"heading"} key={"outRental"} {...outRental} />
+			<OutputRow type={"heading"} key={"outOneTime"} {...outOneTime} />
 			{taxes != undefined ? <Taxes {...taxes} /> : null}
 		</>
 	);
@@ -141,7 +165,7 @@ function MacroWithdrawals(props: DestructuredMacroWithdrawal) {
 			<RowGroup group={outDividend} />
 			<WithdrawalRowGroup group={outputWithdrawal} />
 			{remainder != undefined && remainder.note != "" ? (
-				<OutputRow key={"remainder"} {...remainder} />
+				<OutputRow type={"bad"} key={"remainder"} {...remainder} />
 			) : null}
 		</>
 	);
@@ -151,22 +175,28 @@ export function MacroYear(props: DestructuredMacroReport) {
 	const { expenses, incomes, withdrawals, deficit } = props;
 
 	return (
-		<Table className={"border-dark"} responsive striped bordered hover>
-			<thead className={"table-dark border-white"}>
-				<tr>
-					<th>Name</th>
-					<th>Note</th>
-					{expenses != undefined
-						? expenses.annualExpense.amounts.map(([year]) => <th key={year}>{year}</th>)
-						: null}
-				</tr>
-			</thead>
-			<tbody>
-				{expenses != undefined ? <BudgetItems {...expenses} /> : null}
-				{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
-				{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
-				{withdrawals != undefined ? <MacroWithdrawals {...withdrawals} /> : null}
-			</tbody>
-		</Table>
+		<div className={"overflow-auto report"}>
+			<Table className={"table-sheet border-dark"} striped bordered hover>
+				<thead className={"table-dark border-white"}>
+					<tr>
+						<th className={"table-sheet sticky"}>Name</th>
+						<th className={"table-sheet sticky"}>Note</th>
+						{expenses != undefined
+							? expenses.annualExpense.amounts.map(([year]) => (
+									<th className={"sticky table-sheet heading"} key={year}>
+										{year}
+									</th>
+							  ))
+							: null}
+					</tr>
+				</thead>
+				<tbody>
+					{expenses != undefined ? <BudgetItems {...expenses} /> : null}
+					{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
+					{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
+					{withdrawals != undefined ? <MacroWithdrawals {...withdrawals} /> : null}
+				</tbody>
+			</Table>
+		</div>
 	);
 }

@@ -116,3 +116,8 @@ export function createSubmitNewItemForm(type: string) {
 			});
 	};
 }
+
+export function getGrowthRatePercent(rate: number) {
+	if (rate == 0) return rate;
+	return Math.round((rate - 1) * 100);
+}

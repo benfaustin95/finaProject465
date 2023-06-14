@@ -14,6 +14,8 @@ export function ReportYearForm(props: { handleSubmit: any; status: boolean }) {
 	return (
 		<Formik
 			validationSchema={yearSchema}
+			validateOnChange={false}
+			validateOnBlur={false}
 			onSubmit={handleSubmit}
 			initialValues={{ end: new Date().getFullYear() }}>
 			{({ handleSubmit, handleChange, values, touched, errors }) => (
