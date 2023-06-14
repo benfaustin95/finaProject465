@@ -38,15 +38,13 @@ export function DeleteModal<T extends BaseInput>(props: {
 	};
 
 	function submitForm(event, actions) {
-		console.log(event);
 		PutInputService.send(`/${type}`, userId, event)
 			.then((res) => {
 				actions.resetForm();
 				actions.setSubmitting(false);
 				actions.setStatus(undefined);
-				console.log(res);
 				onHide();
-				if (res.status != 200) console.log("bad");
+				if (res.status != 200) console.log("bad submit");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -57,10 +55,9 @@ export function DeleteModal<T extends BaseInput>(props: {
 
 	function deleteItem(event) {
 		const idsToDelete = event;
-		console.log(event);
 		DeleteItemsService.send(idsToDelete, userId, props.type)
 			.then((res) => {
-				if (res.status != 200) console.log(res);
+				if (res.status != 200) throw res;
 				onHide();
 			})
 			.catch((err) => {
@@ -72,7 +69,7 @@ export function DeleteModal<T extends BaseInput>(props: {
 	return (
 		<Modal size="lg" show={show} onHide={onHide}>
 			<Modal.Header closeButton></Modal.Header>
-			<Modal.Body className={"bg-dark"}>
+			<Modal.Body className={"bg-sky-950"}>
 				<div className={"bg-light p-3"}>{getForm()}</div>
 			</Modal.Body>
 		</Modal>

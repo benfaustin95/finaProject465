@@ -64,7 +64,7 @@ async function capAssetRoutes(app: FastifyInstance, _options = {}) {
 				await req.em.flush();
 				return reply.send(`${item.name} successfully updated`);
 			} catch (err) {
-				console.log(err);
+				app.log.error(err);
 				return reply.status(404).send(err);
 			}
 		}

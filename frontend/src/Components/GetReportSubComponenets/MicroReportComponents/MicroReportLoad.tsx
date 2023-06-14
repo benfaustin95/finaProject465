@@ -15,11 +15,9 @@ export const MicroReportLoad = () => {
 		MicroReportService.send(userId)
 			.then((res) => {
 				if (res.status != 200) navigate("/");
-				console.log(res);
 				return res.data;
 			})
 			.then((res) => {
-				console.log(res);
 				setMicroReport(res);
 			})
 			.catch((err) => {

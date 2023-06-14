@@ -2,9 +2,11 @@ import { RentalAssetForm } from "@/Components/PostFormSubComponents/RentalAssetF
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { createSubmitNewItemForm, RentalAsset, RouteTypes } from "@/FrontendTypes.ts";
+import { useState } from "react";
 
 export function RentalAssetPage() {
-	const submitForm = createSubmitNewItemForm(RouteTypes.RENATLASSET);
+	const [submit, setSubmit] = useState(0);
+	const submitForm = createSubmitNewItemForm(RouteTypes.RENATLASSET, setSubmit, submit);
 	return (
 		<div>
 			<div>
@@ -14,6 +16,7 @@ export function RentalAssetPage() {
 						type={RouteTypes.RENATLASSET}
 						entityName={"Rental Asset"}
 						keysToDisplay={["name", "maintenanceExpense", "grossIncome", "growthRate"]}
+						condition={submit}
 					/>
 				</Container>
 			</div>

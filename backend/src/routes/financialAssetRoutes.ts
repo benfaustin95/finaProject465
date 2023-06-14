@@ -15,7 +15,7 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.flush();
 			return reply.send(`${finAsset.name} successfully created`);
 		} catch (err) {
-			console.log(err);
+			app.log.error(err);
 			if (err instanceof InvalidDataError) return reply.status(err.status).send(err);
 			return reply.status(500).send(err);
 		}

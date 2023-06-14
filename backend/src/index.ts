@@ -4,8 +4,8 @@ dotenv.config();
 
 app.listen({ port: Number(process.env.PORT), host: process.env.HOST }, (err, address) => {
 	if (err) {
-		console.error(err);
+		app.log.error(err);
 		process.exit(1);
 	}
-	console.log(`"started server ${address}`);
+	app.log.info(`"started server ${address}`);
 });

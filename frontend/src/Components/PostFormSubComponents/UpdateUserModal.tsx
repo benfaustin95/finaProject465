@@ -32,7 +32,6 @@ export function UpdateUserModal(props: { show: boolean; onHide: any }) {
 
 	function deleteItem(event) {
 		const idsToDelete = event;
-		console.log(event);
 		DeleteItemsService.send(idsToDelete, userId, "user")
 			.then((res) => {
 				if (res.status != 200) console.log(res);
@@ -48,7 +47,7 @@ export function UpdateUserModal(props: { show: boolean; onHide: any }) {
 	return (
 		<Modal size="lg" show={show} onHide={onHide}>
 			<Modal.Header closeButton></Modal.Header>
-			<Modal.Body className={"bg-dark"}>
+			<Modal.Body className={"bg-sky-950"}>
 				<div className={"bg-light p-3"}>
 					<UpdateUserForm submitForm={submitForm} deleteItem={deleteItem} />
 				</div>

@@ -197,7 +197,9 @@ export function MacroYear(props: DestructuredMacroReport) {
 				<tbody>
 					{expenses != undefined ? <BudgetItems {...expenses} /> : null}
 					{incomes != undefined ? <YearlyIncomes {...incomes} /> : null}
-					{deficit != undefined ? <OutputRow key={"deficit row"} {...deficit} /> : null}
+					{deficit != undefined ? (
+						<OutputRow type={"sum"} key={"deficit row"} {...deficit} />
+					) : null}
 					{withdrawals != undefined ? <MacroWithdrawals {...withdrawals} /> : null}
 				</tbody>
 			</Table>

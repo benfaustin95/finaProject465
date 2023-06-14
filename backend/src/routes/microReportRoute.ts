@@ -36,7 +36,7 @@ async function microReportRoutes(app: FastifyInstance, options = {}) {
 			);
 			reply.send(toSend);
 		} catch (err) {
-			console.log(err);
+			app.log.error(err);
 			reply.status(404).send(err);
 		}
 	});

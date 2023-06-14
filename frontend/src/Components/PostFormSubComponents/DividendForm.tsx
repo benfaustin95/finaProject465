@@ -53,7 +53,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 					? {
 							name: dividend.name,
 							note: dividend.note,
-							rate: dividend.rate,
+							rate: Math.round(dividend.rate * 100),
 							asset: dividend.asset,
 							growthRate: 1,
 							owner_id: userId,

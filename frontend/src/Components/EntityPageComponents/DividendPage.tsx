@@ -2,9 +2,11 @@ import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.ts
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { createSubmitNewItemForm, Dividend, RouteTypes } from "@/FrontendTypes.ts";
+import { useState } from "react";
 
 export function DividendPage() {
-	const submitForm = createSubmitNewItemForm(RouteTypes.DIVIDEND);
+	const [submit, setSubmit] = useState(0);
+	const submitForm = createSubmitNewItemForm(RouteTypes.DIVIDEND, setSubmit, submit);
 	return (
 		<div>
 			<div>
@@ -14,6 +16,7 @@ export function DividendPage() {
 						type={RouteTypes.DIVIDEND}
 						entityName={"Dividend"}
 						keysToDisplay={["name", "rate", "asset"]}
+						condition={submit}
 					/>
 				</Container>
 			</div>

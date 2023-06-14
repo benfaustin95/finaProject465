@@ -97,7 +97,7 @@ export function getTax(item: BaseInput) {
 		local: !item.local ? "" : item.local.location,
 	};
 }
-export function createSubmitNewItemForm(type: string) {
+export function createSubmitNewItemForm(type: string, update: any, toUpdate: number) {
 	return (event, actions) => {
 		console.log(event);
 		actions.setStatus("Submitting...");
@@ -108,6 +108,7 @@ export function createSubmitNewItemForm(type: string) {
 				actions.resetForm();
 				actions.setSubmitting(false);
 				actions.setStatus(undefined);
+				update(toUpdate + 1);
 			})
 			.catch((err) => {
 				console.log(err);

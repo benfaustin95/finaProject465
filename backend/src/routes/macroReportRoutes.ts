@@ -57,7 +57,7 @@ async function macroReportRoutes(app: FastifyInstance, options = {}) {
 			);
 			return reply.send(toSendBudget);
 		} catch (err) {
-			console.log(err);
+			app.log.error(err);
 			return reply.status(404).send(err);
 		}
 	});

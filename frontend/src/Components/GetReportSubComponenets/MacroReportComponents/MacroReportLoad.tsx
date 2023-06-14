@@ -16,11 +16,9 @@ export const MacroReportLoad = () => {
 		MacroReportService.send(userId, event.end)
 			.then((res) => {
 				if (res.status != 200) navigate("/");
-				console.log(res);
 				return res.data;
 			})
 			.then((res) => {
-				console.log(res);
 				setMacroReport(res);
 				setSubmitFailed(false);
 			})

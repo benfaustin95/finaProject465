@@ -43,9 +43,9 @@ function MicroRow(props: microRow) {
 	}
 	return (
 		<tr>
-			<th scope={"row"} className={getClass(type)} key={name + "cell"}>
+			<td className={getClass(type)} key={name + "cell"}>
 				{name}
-			</th>
+			</td>
 			<td key={note + "cell"}>{name == "remainder" ? "" : note}</td>
 			{amounts.map(([[month, year], x]) => (
 				<td

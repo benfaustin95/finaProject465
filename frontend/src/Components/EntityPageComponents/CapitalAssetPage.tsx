@@ -2,9 +2,11 @@ import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetFor
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { CapAsset, createSubmitNewItemForm, RouteTypes } from "@/FrontendTypes.ts";
+import { useState } from "react";
 
 export function CapitalAssetPage() {
-	const submitForm = createSubmitNewItemForm(RouteTypes.CAPASSET);
+	const [submit, setSubmit] = useState(0);
+	const submitForm = createSubmitNewItemForm(RouteTypes.CAPASSET, setSubmit, submit);
 	return (
 		<div>
 			<div>
@@ -14,6 +16,7 @@ export function CapitalAssetPage() {
 						type={RouteTypes.CAPASSET}
 						entityName={"Capital Asset"}
 						keysToDisplay={["name", "note", "income", "recurrence"]}
+						condition={submit}
 					/>
 				</Container>
 			</div>

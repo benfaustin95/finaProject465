@@ -14,14 +14,13 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: UsersBody }>("/user", async (req, reply) => {
 		const user = req.body;
 		let userCreated;
-		console.log(user);
+		app.log.error(user);
 		try {
 			const existing = await req.em.findOne(
 				User,
 				{ email: user.email },
 				{ filters: { [SOFT_DELETABLE_FILTER]: false } }
 			);
-			console.log(existing);
 			if (existing == null) userCreated = await req.em.create(User, { ...user });
 			else if (existing != null && existing.deleted_at == null)
 				return reply.status(401).send(`Unable to create user ${user.email}`);
@@ -33,7 +32,7 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.flush();
 			return reply.send({ id: existing != null ? existing.id : userCreated.id });
 		} catch (err) {
-			console.log(err);
+			app.log.error(err);
 			return reply.status(422).send(err);
 		}
 	});

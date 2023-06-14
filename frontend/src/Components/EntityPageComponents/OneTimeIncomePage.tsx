@@ -2,9 +2,11 @@ import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeInc
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 import { createSubmitNewItemForm, OneTimeIncome, RouteTypes } from "@/FrontendTypes.ts";
+import { useState } from "react";
 
 export function OneTimeIncomePage() {
-	const submitForm = createSubmitNewItemForm(RouteTypes.ONETIMEINCOME);
+	const [submit, setSubmit] = useState(0);
+	const submitForm = createSubmitNewItemForm(RouteTypes.ONETIMEINCOME, setSubmit, submit);
 	return (
 		<div>
 			<div>
@@ -14,6 +16,7 @@ export function OneTimeIncomePage() {
 						type={"oneTimeIncome"}
 						entityName={RouteTypes.ONETIMEINCOME}
 						keysToDisplay={["name", "cashBasis", "date"]}
+						condition={submit}
 					/>
 				</Container>
 			</div>

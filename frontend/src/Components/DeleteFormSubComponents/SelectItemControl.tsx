@@ -9,11 +9,12 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 	type: string;
 	entityName: string;
 	keysToDisplay: string[];
+	condition: number;
 }) {
 	const [entityArray, setEntityArray] = useState<T[]>([]);
 	const [modalShow, setModalShow] = useState(false);
 	const [item, setItem] = useState<T>(null);
-	const { type, keysToDisplay } = props;
+	const { type, keysToDisplay, condition } = props;
 	const { userId } = useAuth();
 	const formatter = new Intl.NumberFormat("em-US", {
 		style: "currency",
@@ -34,7 +35,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 				});
 		};
 		loadSearchItem();
-	}, [modalShow]);
+	}, [modalShow, condition]);
 
 	function handleClick(x: T) {
 		setItem(x);
