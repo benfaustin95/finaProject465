@@ -1,8 +1,8 @@
 import { RFBaseForm } from "@/Components/PostFormSubComponents/RFBase.tsx";
 import Form from "react-bootstrap/Form";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import * as yup from "yup";
-import { date, number, string } from "yup";
+import { number, string } from "yup";
 import { Formik } from "formik";
 import { getTax, RFBase, RouteTypes } from "@/FrontendTypes.ts";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
@@ -20,7 +20,7 @@ export const FinancialAssetForm = (props: {
 	const financialAssetSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
-		growthRate: number().required().positive().max(10),
+		growthRate: number().required().positive().max(1000),
 		totalValue: number().required().positive(),
 		costBasis: number().required().min(0),
 		wPriority: number().required().integer().positive(),

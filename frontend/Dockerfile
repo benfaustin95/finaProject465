@@ -4,14 +4,17 @@
 
 FROM node:18 as build-stage
 
+RUN apt-get update && apt-get upgrade -y && apt-get autoclean -y && apt-get autoremove -y
 RUN npm install -g pnpm
 
 WORKDIR /app
 COPY ./nginx.conf /nginx.conf
 COPY package*.json /app/
+
 RUN pnpm install
 
 COPY ./ /app/
+ENV API_HOST=localhost PORT=8080 AUTH_DOMAIN=dev-2dtmb35dmkdjhb8l.us.auth0.com AUTH_CLIENT=WTp4p0IS7rLzxWnDrIE9HJVEpsXwU3Uh AUTH_AUD=https://dev-2dtmb35dmkdjhb8l.us.auth0.com/api/v2/ AUTH_SCOPE='openid profile email' AUTH_REDIRECT=http://localhost:5173/ AUTH_EMAIL_KEY=http://localhost:5173/email
 RUN pnpm build
 
 

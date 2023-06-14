@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 import { DeleteModal } from "@/Components/DeleteFormSubComponents/DeleteModal.tsx";
@@ -13,7 +13,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 	const [entityArray, setEntityArray] = useState<T[]>([]);
 	const [modalShow, setModalShow] = useState(false);
 	const [item, setItem] = useState<T>(null);
-	const { type, entityName, keysToDisplay } = props;
+	const { type, keysToDisplay } = props;
 	const { userId } = useAuth();
 	const formatter = new Intl.NumberFormat("em-US", {
 		style: "currency",

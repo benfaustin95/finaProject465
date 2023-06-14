@@ -1,5 +1,5 @@
 import Form from "react-bootstrap/Form";
-import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { Formik } from "formik";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
@@ -22,7 +22,7 @@ export const OneTimeIncomeForm = (props: {
 		note: string(),
 		cashBasis: number().positive().required(),
 		date: date().default(null).required(),
-		growthRate: number().required().positive().max(10),
+		growthRate: number().required().positive().max(1000),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),

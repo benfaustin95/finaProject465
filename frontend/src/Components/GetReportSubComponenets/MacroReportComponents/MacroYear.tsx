@@ -100,7 +100,7 @@ function Taxes(props: DestructuredTaxAccumulator) {
 		localIncome,
 	} = props;
 
-	const taxOutput = (
+	return (
 		<>
 			<OutputRow
 				key={"federal income tax"}
@@ -119,7 +119,6 @@ function Taxes(props: DestructuredTaxAccumulator) {
 			<OutputRow key={"Local Income Tax"} name={"Local Income Tax"} note={""} amounts={local} />
 		</>
 	);
-	return taxOutput;
 }
 function YearlyIncomes(props: DestructuredMacroIncome) {
 	const { outRental, outOneTime, outHuman, outSocial, outNonTaxable, taxes } = props;
@@ -150,10 +149,6 @@ function MacroWithdrawals(props: DestructuredMacroWithdrawal) {
 
 export function MacroYear(props: DestructuredMacroReport) {
 	const { expenses, incomes, withdrawals, deficit } = props;
-	const formater = new Intl.NumberFormat("em-US", {
-		style: "currency",
-		currency: "USD",
-	});
 
 	return (
 		<Table className={"border-dark"} responsive striped bordered hover>

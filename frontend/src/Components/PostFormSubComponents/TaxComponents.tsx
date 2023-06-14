@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import { TaxService } from "@/Services/TaxService.tsx";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { TaxObject } from "@/FrontendTypes.ts";
 
 export const TaxSelector = (props: {
