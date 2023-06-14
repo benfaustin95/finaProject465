@@ -5,5 +5,9 @@ import { useAuth } from "@/Services/Auth.tsx";
 export function LogOutButton() {
 	const { handleLogout } = useAuth();
 
-	return <Button onClick={() => handleLogout()}>Log Out</Button>;
+	return (
+		<Button className={"ml-5"} onClick={() => handleLogout()}>
+			Log Out
+		</Button>
+	);
 }

@@ -58,3 +58,6 @@ table td:last-child{
 	background-size: 100%;
 	background-repeat: repeat;
 }
+.brand:hover {
+	text-decoration: underline;
+}

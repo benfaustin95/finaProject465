@@ -1,4 +1,4 @@
-import { RetireMaybeRouter } from "@/DoggrRoutes.tsx";
+import { RetireMaybeRouter } from "@/AppRoutes.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "@css/DoggrStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";

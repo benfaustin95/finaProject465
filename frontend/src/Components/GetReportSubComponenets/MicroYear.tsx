@@ -30,7 +30,7 @@ function MicroRow(props: microRow) {
 	return (
 		<tr>
 			<td key={name + "cell"}>{name}</td>
-			<td key={note + "cell"}>{note}</td>
+			<td key={note + "cell"}>{name == "remainder" ? "" : note}</td>
 			{amounts.map(([[month, year], x]) => (
 				<td key={id.toString() + year.toString() + month.toString() + name + note + "cell"}>
 					{formater.format(x)}
@@ -255,11 +255,11 @@ export function MicroYear(props: DestructuredMicroReport) {
 
 	return (
 		<Container className={"bg-light rounded-4 m-5 p-5"}>
-			<Row className={"text-center pb-4"}>
+			<Row className={"text-center pb-2"}>
 				<h1>Monthly CashFlow Estimate</h1>
 				{withdrawal != undefined && withdrawal.remainder.note != "" ? (
-					<div className={"text-danger"}>
-						{"WIll RUN OUT OF MONEY ON" + JSON.parse(withdrawal.remainder.note)}
+					<div className={" text-center p-2 h5 border border-danger border-4 rounded text-danger"}>
+						{"WIll RUN OUT OF MONEY " + JSON.parse(withdrawal.remainder.note)}
 					</div>
 				) : null}
 			</Row>

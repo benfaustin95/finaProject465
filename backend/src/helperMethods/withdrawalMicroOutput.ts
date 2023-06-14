@@ -92,7 +92,7 @@ export const withdrawalMicroOutput = (
 				});
 
 			if (currentDeficit != 0 && remainder.note == "" && year - start.getUTCFullYear() <= 50)
-				remainder.note = JSON.stringify(month + "/" + year);
+				remainder.note = JSON.stringify(month + 1 + " / " + year);
 			remainder.amounts.set(key, currentDeficit);
 		}
 	}

@@ -5,17 +5,21 @@ import { LogOutButton } from "@/Components/AuthorizationComponents/LogOutButton.
 import { LoginButton } from "@/Components/AuthorizationComponents/LoginButton.tsx";
 
 export function MainNavBar() {
-	const { token } = useAuth();
+	const { token, email } = useAuth();
 
 	return (
 		<Navbar bg={"light"} expand={"lg"}>
 			<Container>
-				<NavbarBrand>Retire Maybe?</NavbarBrand>
+				<NavbarBrand className={"brand"} href={"/"}>
+					Retire Maybe?
+				</NavbarBrand>
+				{email != null ? <Navbar.Text> Signed in as {email} </Navbar.Text> : null}
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
-				<NavbarCollapse>
-					<Col xs={10} className={"d-flex flex-row justify-content-center"}>
+				<NavbarCollapse className={"justify-content-end"}>
+					<Nav>
 						{token != null ? (
-							<Nav>
+							<>
+								<NavLink href={"/"}>Home</NavLink>
 								<NavLink href={"/macroReport"}>Macro Report</NavLink>
 								<NavLink href={"/microReportLoaded"}>Micro Report</NavLink>
 								<NavDropdown title={"Financial Items"}>
@@ -26,13 +30,11 @@ export function MainNavBar() {
 									<NavDropdown.Item href={"/financialAsset"}>Financial Asset</NavDropdown.Item>
 									<NavDropdown.Item href={"/RentalAsset"}>Rental Asset</NavDropdown.Item>
 								</NavDropdown>
-							</Nav>
+							</>
 						) : null}
-					</Col>
+						{token != null ? <LogOutButton /> : <LoginButton />}
+					</Nav>
 				</NavbarCollapse>
-				<Col xs={2} className={"d-flex flex-row justify-content-end"}>
-					<Nav>{token != null ? <LogOutButton /> : <LoginButton />}</Nav>
-				</Col>
 			</Container>
 		</Navbar>
 	);

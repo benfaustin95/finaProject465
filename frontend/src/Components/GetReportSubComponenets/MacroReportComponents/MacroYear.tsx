@@ -24,7 +24,7 @@ function OutputRow(props: DestructuredMacroOutputRow) {
 	return (
 		<tr>
 			<td key={name + "cell"}>{name}</td>
-			<td key={note + "cell"}>{note}</td>
+			<td key={note + "cell"}>{name == "remainder" ? "" : note}</td>
 			{amounts.map(([year, x]) => (
 				<td key={year + name + note + "cell"}>{formater.format(x)}</td>
 			))}

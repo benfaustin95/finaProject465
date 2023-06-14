@@ -5,5 +5,9 @@ import { useAuth } from "@/Services/Auth.tsx";
 
 export function LoginButton() {
 	const { loginWithRedirect } = useAuth0();
-	return <Button onClick={async () => loginWithRedirect()}>Log In</Button>;
+	return (
+		<Button className={"ml-5"} onClick={async () => loginWithRedirect()}>
+			Log In
+		</Button>
+	);
 }
