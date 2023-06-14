@@ -69,6 +69,7 @@ export const BaseInputForm = (props: baseInputForm) => {
 					handleChange={handleChange}
 					type={"number"}
 					name={"growthRate"}
+					title={"Growth Rate"}
 					values={valuesGrowthRate}
 					touched={touchedGrowthRate}
 					errors={errorsGrowth}

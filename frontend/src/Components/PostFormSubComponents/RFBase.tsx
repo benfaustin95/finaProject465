@@ -32,6 +32,7 @@ export const RFBaseForm = (props: rfBaseForm) => {
 				handleChange={handleChange}
 				type={"number"}
 				name={"totalValue"}
+				title={"Total Value"}
 				values={valuesTotalValue}
 				touched={touchedTotalValue}
 				errors={errorsTotalValue}
@@ -40,6 +41,7 @@ export const RFBaseForm = (props: rfBaseForm) => {
 				handleChange={handleChange}
 				type={"number"}
 				name={"costBasis"}
+				title={"Cost Basis"}
 				values={valuesCostBasis}
 				touched={touchedCostBasis}
 				errors={errorsCostBasis}
@@ -48,6 +50,7 @@ export const RFBaseForm = (props: rfBaseForm) => {
 				handleChange={handleChange}
 				type={"number"}
 				name={"wPriority"}
+				title={"Withdrawal Priority"}
 				values={valuesWPriority}
 				touched={touchedWPriority}
 				errors={errorsWPriority}

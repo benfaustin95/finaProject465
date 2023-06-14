@@ -9,7 +9,7 @@ import { DividendPage } from "@/Components/EntityPageComponents/DividendPage.tsx
 import { OneTimeIncomePage } from "@/Components/EntityPageComponents/OneTimeIncomePage.tsx";
 import { FinancialAssetPage } from "@/Components/EntityPageComponents/FinancialAssetPage.tsx";
 import { RentalAssetPage } from "@/Components/EntityPageComponents/RentalAssetPage.tsx";
-import { UserForm } from "@/Components/PostFormSubComponents/UserForm.tsx";
+import { CreateUserForm } from "@/Components/PostFormSubComponents/CreateUserForm.tsx";
 import { MainNavBar } from "@/MainNavBar.tsx";
 import { HomePage } from "@/Components/EntityPageComponents/HomePage.tsx";
 import { ProtectedRoute } from "@/Components/AuthorizationComponents/ProtectedRoute.tsx";
@@ -93,7 +93,7 @@ export function RetireMaybeRouter() {
 							</ProtectedRoute>
 						}
 					/>
-					<Route path="/createProfile" element={<UserForm />} />
+					<Route path="/createProfile" element={<CreateUserForm />} />
 				</Routes>
 			</Container>
 		</main>

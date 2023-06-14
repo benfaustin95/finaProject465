@@ -88,7 +88,9 @@ export const CapitalAssetForm = (props: {
 			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
-						<h1 className={"text-center"}>Create Capital Income</h1>
+						<h1 className={"text-center"}>{`${
+							capAsset != undefined ? "Update" : "Create"
+						} Capital Income`}</h1>
 					</Row>
 					<Row>
 						<BaseInputForm
@@ -107,6 +109,7 @@ export const CapitalAssetForm = (props: {
 						<InputControl
 							handleChange={handleChange}
 							name={"income"}
+							title={"Amount of Income"}
 							type={"number"}
 							values={values.income}
 							touched={touched.income}
@@ -138,6 +141,7 @@ export const CapitalAssetForm = (props: {
 							handleChange={handleChange}
 							name={"start"}
 							type={"date"}
+							title={"Start Date"}
 							values={values.start}
 							touched={touched.start}
 							errors={errors.start}
@@ -146,6 +150,7 @@ export const CapitalAssetForm = (props: {
 							handleChange={handleChange}
 							name={"end"}
 							type={"date"}
+							title={"End Date"}
 							values={values.end}
 							touched={touched.end}
 							errors={errors.end}

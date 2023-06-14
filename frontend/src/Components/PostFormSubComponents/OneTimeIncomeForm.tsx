@@ -62,7 +62,9 @@ export const OneTimeIncomeForm = (props: {
 			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
-						<h1 className={"text-center"}>Create One Time Income</h1>
+						<h1 className={"text-center"}>{`${
+							oneTimeIncome != undefined ? "Update" : "Create"
+						} One Time Income`}</h1>
 					</Row>
 					<Row>
 						<BaseInputForm
@@ -81,6 +83,7 @@ export const OneTimeIncomeForm = (props: {
 						<InputControl
 							handleChange={handleChange}
 							name={"cashBasis"}
+							title={"Cash Basis"}
 							type={"number"}
 							values={values.cashBasis}
 							touched={touched.cashBasis}
@@ -89,6 +92,7 @@ export const OneTimeIncomeForm = (props: {
 						<InputControl
 							handleChange={handleChange}
 							name={"date"}
+							title={"Date of Income"}
 							type={"date"}
 							values={values.date}
 							touched={touched.date}

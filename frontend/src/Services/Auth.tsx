@@ -48,7 +48,7 @@ if (!(initialToken == null)) {
 				return res.data;
 			})
 			.then((res) => {
-				initialUserID = res;
+				initialUserID = res.id;
 			})
 			.catch((err) => {
 				initialEmail = null;

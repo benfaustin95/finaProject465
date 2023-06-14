@@ -10,7 +10,7 @@ export function FinancialAssetPage() {
 		<div>
 			<div>
 				<Container className={"mx-auto my-4 p-4 bg-light rounded-5"}>
-					<h1 className={"Current Financial Assets"}> Financial Assets</h1>
+					<h1 className={"text-center"}>Current Financial Assets</h1>
 					<CurrentItemListGroup<RFBase>
 						type={RouteTypes.FINASSET}
 						entityName={"Financial Asset"}

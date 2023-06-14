@@ -34,7 +34,7 @@ export const TaxSelector = (props: {
 	return (
 		<>
 			<Col xs={12} md={4} lg={2} className={"mb-4"}>
-				<Form.Label htmlFor={level}>{level}: </Form.Label>
+				<Form.Label htmlFor={level}>{level.toUpperCase()}: </Form.Label>
 			</Col>
 			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<Form.Select

@@ -9,8 +9,8 @@ import { CapAssetType } from "../entities/capasset.js";
 export type UsersBody = {
 	name: string;
 	email: string;
-	age: number;
-	birthday: Date;
+	start: string;
+	birthday: string;
 };
 export type BudgetBody = {
 	note: string;

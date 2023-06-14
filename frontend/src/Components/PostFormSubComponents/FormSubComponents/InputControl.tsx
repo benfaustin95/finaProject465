@@ -6,11 +6,12 @@ export function InputControl(props: {
 	handleChange;
 	type: string;
 	name: string;
+	title?: string;
 	values;
 	touched;
 	errors;
 }) {
-	const { handleChange, type, name, values, touched, errors } = props;
+	const { handleChange, type, name, values, touched, errors, title } = props;
 	const [dollarInputs, setDollarInputs] = useState([
 		"income",
 		"expense",
@@ -24,7 +25,7 @@ export function InputControl(props: {
 	return (
 		<>
 			<Col xs={12} md={4} lg={2} className={"mb-4"}>
-				<Form.Label htmlFor={name}>{name}: </Form.Label>
+				<Form.Label htmlFor={name}>{title != undefined ? title : name}: </Form.Label>
 			</Col>
 			<Col xs={12} md={8} lg={4} className={"mb-4"}>
 				<InputGroup hasValidation>

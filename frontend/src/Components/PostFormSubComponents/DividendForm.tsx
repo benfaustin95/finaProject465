@@ -75,7 +75,9 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
-						<h1 className={"text-center"}>Create Dividend</h1>
+						<h1 className={"text-center"}>{`${
+							dividend != undefined ? "Update" : "Create"
+						} Dividend`}</h1>
 					</Row>
 					<Row>
 						<BaseInputForm
@@ -91,6 +93,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 						<InputControl
 							handleChange={handleChange}
 							name={"rate"}
+							title={"Rate of Return"}
 							type={"number"}
 							values={values.rate}
 							touched={touched.rate}
@@ -103,6 +106,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 							<Form.Select
 								id="finAsset"
 								name={"asset"}
+								title={"Asset"}
 								value={values.asset}
 								isValid={touched.asset && !errors.asset}
 								isInvalid={!!errors.asset}

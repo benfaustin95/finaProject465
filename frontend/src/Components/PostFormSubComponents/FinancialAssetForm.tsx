@@ -67,7 +67,9 @@ export const FinancialAssetForm = (props: {
 			{({ handleSubmit, handleChange, values, touched, errors, status }) => (
 				<Form onSubmit={handleSubmit} className={"p-4"}>
 					<Row className={"m-4 justify-content-center"}>
-						<h1 className={"text-center"}>Create Financial Asset</h1>
+						<h1 className={"text-center"}>{`${
+							finAsset != undefined ? "Update" : "Create"
+						} Financial Asset`}</h1>
 					</Row>
 					<Row>
 						<BaseInputForm

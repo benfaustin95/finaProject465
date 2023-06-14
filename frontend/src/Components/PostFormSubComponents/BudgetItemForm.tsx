@@ -80,6 +80,7 @@ export const BudgetItemForm = (props: {
 						<InputControl
 							handleChange={handleChange}
 							name={"amount"}
+							title={"Expense Amount"}
 							type={"number"}
 							values={values.amount}
 							touched={touched.amount}
@@ -94,6 +95,7 @@ export const BudgetItemForm = (props: {
 						<InputControl
 							handleChange={handleChange}
 							name={"start"}
+							title={"Start Date"}
 							type={"date"}
 							values={values.start}
 							touched={touched.start}
@@ -103,6 +105,7 @@ export const BudgetItemForm = (props: {
 							handleChange={handleChange}
 							name={"end"}
 							type={"date"}
+							title={"End Date"}
 							values={values.end}
 							touched={touched.end}
 							errors={errors.end}

@@ -1,8 +1,31 @@
 import { useAuth } from "@/Services/Auth.tsx";
-import { Col, Container, Nav, Navbar, NavbarBrand, NavDropdown, NavLink } from "react-bootstrap";
+import {
+	Button,
+	Col,
+	Container,
+	Nav,
+	Navbar,
+	NavbarBrand,
+	NavDropdown,
+	NavLink,
+} from "react-bootstrap";
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
 import { LogOutButton } from "@/Components/AuthorizationComponents/LogOutButton.tsx";
 import { LoginButton } from "@/Components/AuthorizationComponents/LoginButton.tsx";
+import React, { useState } from "react";
+import { UpdateUserModal } from "@/Components/PostFormSubComponents/UpdateUserModal.tsx";
+
+function UpdateUserButton() {
+	const [show, setShow] = useState(false);
+	return (
+		<>
+			<Button className={"ml-4"} onClick={() => setShow(true)}>
+				Update User
+			</Button>
+			<UpdateUserModal show={show} onHide={() => setShow(false)} />
+		</>
+	);
+}
 
 export function MainNavBar() {
 	const { token, email } = useAuth();
@@ -32,6 +55,7 @@ export function MainNavBar() {
 								</NavDropdown>
 							</>
 						) : null}
+						{token != null ? <UpdateUserButton /> : null}
 						{token != null ? <LogOutButton /> : <LoginButton />}
 					</Nav>
 				</NavbarCollapse>

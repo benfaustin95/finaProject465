@@ -1,9 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { User } from "../db/entities/User.js";
 
-import { UsersBody } from "../db/backendTypes/createTypes.js";
+import { RentalAssetBody, UsersBody } from "../db/backendTypes/createTypes.js";
 import { SOFT_DELETABLE, SOFT_DELETABLE_FILTER } from "mikro-orm-soft-delete";
 import { getEntryPoints } from "typedoc/dist/lib/utils/index.js";
+import { RentalAsset } from "../db/entities/rentalasset.js";
 
 async function userRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -41,21 +42,43 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 		const { email } = req.body;
 		console.log(email);
 		try {
-			const existing = await req.em.findOneOrFail(User, { email });
-			return reply.send(existing.id);
+			const existing = await req.em.findOneOrFail(
+				User,
+				{ email },
+				{ filters: { [SOFT_DELETABLE_FILTER]: false } }
+			);
+			if (existing.deleted_at != null) {
+				existing.deleted_at = null;
+				await req.em.flush();
+			}
+			return reply.send(existing);
 		} catch (err) {
 			return reply.status(404).send(`User does not exist, ${email}`);
 		}
 	});
 
-	app.delete<{ Body: { id: number } }>("/user", async (req, reply) => {
-		const { id } = req.body;
+	app.delete<{ Body: { idsToDelete: number } }>("/user", async (req, reply) => {
+		const { idsToDelete } = req.body;
 		try {
-			const user = await req.em.getReference(User, id);
+			const user = await req.em.getReference(User, idsToDelete);
 			await req.em.removeAndFlush(user);
 			return reply.send(`delete successfull`);
 		} catch (err) {
-			return reply.status(404).send(`User note found`);
+			return reply.status(404).send(`User not found`);
+		}
+	});
+
+	app.put<{ Body: { userid: number; toUpdate: UsersBody } }>("/user", async (req, reply) => {
+		const { userid, toUpdate } = req.body;
+		try {
+			const user = await req.em.findOneOrFail(User, { id: userid });
+			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
+				user[x] = toUpdate[x];
+			});
+			await req.em.flush();
+			return reply.send(`${user.name} successfully updated`);
+		} catch (err) {
+			return reply.status(404).send(err);
 		}
 	});
 }

@@ -38,7 +38,8 @@ export const RentalAssetForm = (props: {
 	});
 
 	return (
-		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
+		<Container
+			className={`mx-auto my-4 bg-light rounded-5 ${rentalAsset != undefined ? "w-100" : "w-75"}`}>
 			<Formik
 				validationSchema={rentalAssetSchema}
 				onSubmit={submitForm}
@@ -48,6 +49,7 @@ export const RentalAssetForm = (props: {
 								name: rentalAsset.name,
 								note: rentalAsset.note,
 								growthRate: getGrowthRatePercent(rentalAsset.growthRate),
+								totalValue: rentalAsset.totalValue,
 								costBasis: rentalAsset.costBasis,
 								wPriority: rentalAsset.wPriority,
 								owed: rentalAsset.owed,
@@ -76,9 +78,11 @@ export const RentalAssetForm = (props: {
 						  }
 				}>
 				{({ handleSubmit, handleChange, values, touched, errors, status }) => (
-					<Form onSubmit={handleSubmit} className={"p-4"}>
+					<Form onSubmit={handleSubmit} className={"p-2"}>
 						<Row className={"m-4 justify-content-center"}>
-							<h1 className={"text-center"}>Create Rental Asset</h1>
+							<h1 className={"text-center"}>{`${
+								rentalAsset != undefined ? "Update" : "Create"
+							} Rental Asset`}</h1>
 						</Row>
 						<Row>
 							<BaseInputForm
@@ -92,7 +96,7 @@ export const RentalAssetForm = (props: {
 								touchedGrowthRate={touched.growthRate}
 								valuesGrowthRate={values.growthRate}
 								errorsGrowth={errors.growthRate}
-								type={"financialAsset"}
+								type={RouteTypes.RENATLASSET}
 							/>
 							<RFBaseForm
 								handleChange={handleChange}
@@ -110,6 +114,7 @@ export const RentalAssetForm = (props: {
 								handleChange={handleChange}
 								type={"number"}
 								name={"owed"}
+								title={"Amount Owed"}
 								values={values.owed}
 								touched={touched.owed}
 								errors={errors.owed}
@@ -118,6 +123,7 @@ export const RentalAssetForm = (props: {
 								handleChange={handleChange}
 								type={"number"}
 								name={"maintenanceExpense"}
+								title={"Maintenance Expense"}
 								values={values.maintenanceExpense}
 								touched={touched.maintenanceExpense}
 								errors={errors.maintenanceExpense}
@@ -126,6 +132,7 @@ export const RentalAssetForm = (props: {
 								handleChange={handleChange}
 								type={"number"}
 								name={"grossIncome"}
+								title={"Gross Income"}
 								values={values.grossIncome}
 								touched={touched.grossIncome}
 								errors={errors.grossIncome}
@@ -167,13 +174,13 @@ export const RentalAssetForm = (props: {
 							/>
 						</Row>
 						<Row className={"mb-4 d-flex flex-row justify-content-center"}>
-							{deleteItem != undefined ? (
-								<Col xs={12} className={"d-flex flex-row justify-content-center"}>
-									<Button onClick={() => deleteItem(rentalAsset.id)}>Delete</Button>
-								</Col>
-							) : null}
-							<Col xs={12} className={"d-flex flex-row justify-content-center"}>
-								<SubmitButton name={deleteItem != undefined ? "Edit Expense" : "Create Expense"} />
+							<Col className={"d-flex flex-row justify-content-center"}>
+								{deleteItem != undefined ? (
+									<Button className={"btn-lg mr-2"} onClick={() => deleteItem(rentalAsset.id)}>
+										Delete
+									</Button>
+								) : null}
+								<SubmitButton name={deleteItem != undefined ? "Edit Item" : "Create Item"} />
 							</Col>
 							{status != undefined ? (
 								<div className={` text-center ${status.error != undefined ? `text-danger` : ""}`}>
