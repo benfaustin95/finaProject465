@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { getTax, RentalAsset, RouteTypes } from "@/DoggrTypes.ts";
+import { getTax, RentalAsset, RouteTypes } from "@/FrontendTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 

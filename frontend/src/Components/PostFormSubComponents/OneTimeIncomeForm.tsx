@@ -6,7 +6,7 @@ import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.ts
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { getTax, OneTimeIncome, RouteTypes } from "@/DoggrTypes.ts";
+import { getTax, OneTimeIncome, RouteTypes } from "@/FrontendTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 

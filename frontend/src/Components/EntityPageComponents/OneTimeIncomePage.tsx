@@ -1,7 +1,7 @@
 import { OneTimeIncomeForm } from "@/Components/PostFormSubComponents/OneTimeIncomeForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { createSubmitNewItemForm, OneTimeIncome, RouteTypes } from "@/DoggrTypes.ts";
+import { createSubmitNewItemForm, OneTimeIncome, RouteTypes } from "@/FrontendTypes.ts";
 
 export function OneTimeIncomePage() {
 	const submitForm = createSubmitNewItemForm(RouteTypes.ONETIMEINCOME);

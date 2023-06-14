@@ -8,7 +8,7 @@ import { getUserItemFromToken, useAuth } from "@/Services/Auth.tsx";
 import { useState } from "react";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
-import { UsersBody } from "@/DoggrTypes.ts";
+import { UsersBody } from "@/FrontendTypes.ts";
 
 export const UserForm = () => {
 	const searchParams = new URLSearchParams(document.location.search);

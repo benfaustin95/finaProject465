@@ -1,8 +1,7 @@
 import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { CapAsset, createSubmitNewItemForm, RouteTypes } from "@/DoggrTypes.ts";
-import { PostInputService } from "@/Services/PostInputService.tsx";
+import { CapAsset, createSubmitNewItemForm, RouteTypes } from "@/FrontendTypes.ts";
 
 export function CapitalAssetPage() {
 	const submitForm = createSubmitNewItemForm(RouteTypes.CAPASSET);

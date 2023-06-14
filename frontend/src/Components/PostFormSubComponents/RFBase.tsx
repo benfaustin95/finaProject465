@@ -1,7 +1,3 @@
-import Form from "react-bootstrap/Form";
-import { FormControl, InputGroup, Row } from "react-bootstrap";
-import { baseInputForm, BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
-
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 
 export type rfBaseForm = {

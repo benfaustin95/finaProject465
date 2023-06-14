@@ -1,6 +1,6 @@
 import { Col } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
-import { Recurrence } from "@/DoggrTypes.ts";
+import { Recurrence } from "@/FrontendTypes.ts";
 
 export function RecurrenceSelector(props: { handleChange; values; errors; touched }) {
 	const { handleChange, values, errors, touched } = props;

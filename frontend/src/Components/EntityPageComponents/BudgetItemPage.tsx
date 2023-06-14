@@ -1,6 +1,5 @@
 import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
-import { PostInputService } from "@/Services/PostInputService.tsx";
-import { BudgetItem, createSubmitNewItemForm, RouteTypes } from "@/DoggrTypes.ts";
+import { BudgetItem, createSubmitNewItemForm, RouteTypes } from "@/FrontendTypes.ts";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
 

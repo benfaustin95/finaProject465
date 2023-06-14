@@ -1,8 +1,7 @@
 import { FinancialAssetForm } from "@/Components/PostFormSubComponents/FinancialAssetForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { BudgetItem, createSubmitNewItemForm, RFBase, RouteTypes } from "@/DoggrTypes.ts";
-import { PostInputService } from "@/Services/PostInputService.tsx";
+import { createSubmitNewItemForm, RFBase, RouteTypes } from "@/FrontendTypes.ts";
 
 export function FinancialAssetPage() {
 	const submitForm = createSubmitNewItemForm(RouteTypes.FINASSET);

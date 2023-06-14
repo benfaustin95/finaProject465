@@ -3,7 +3,7 @@ import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import { SearchItemService } from "@/Services/SearchItemService.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
 import { DeleteModal } from "@/Components/DeleteFormSubComponents/DeleteModal.tsx";
-import { BaseInput } from "@/DoggrTypes.ts";
+import { BaseInput } from "@/FrontendTypes.ts";
 
 export function CurrentItemListGroup<T extends BaseInput>(props: {
 	type: string;
@@ -12,7 +12,6 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 }) {
 	const [entityArray, setEntityArray] = useState<T[]>([]);
 	const [modalShow, setModalShow] = useState(false);
-	const [updateSubmited, setUpdateSubmitted] = useState(false);
 	const [item, setItem] = useState<T>(null);
 	const { type, entityName, keysToDisplay } = props;
 	const { userId } = useAuth();
@@ -102,64 +101,4 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 			<DeleteModal<T> type={type} item={item} show={modalShow} onHide={() => setModalShow(false)} />
 		</>
 	);
-	{
-		/*<Col xs={12} md={4} className={"mb-4"}>*/
-	}
-	{
-		/*	<Form.Label htmlFor={"ids"}>Select {entityName}s to be deleted:</Form.Label>*/
-	}
-	{
-		/*</Col>*/
-	}
-	{
-		/*<Col xs={12} md={8} className={"mb-4"}>*/
-	}
-	{
-		/*	<Form.Select*/
-	}
-	{
-		/*		id={"ids"}*/
-	}
-	{
-		/*		value={values}*/
-	}
-	{
-		/*		name={"idsToDelete"}*/
-	}
-	{
-		/*		isValid={touched && !errors}*/
-	}
-	{
-		/*		isInvalid={!!errors}*/
-	}
-	{
-		/*		multiple*/
-	}
-	{
-		/*		onChange={handleChange}*/
-	}
-	{
-		/*		className={"mb-4"}>*/
-	}
-	{
-		/*		{entityArray.map((x) => (*/
-	}
-	{
-		/*			<option key={x.id + x.name + x.note} value={x.id}>*/
-	}
-	{
-		/*				{x.name}*/
-	}
-	{
-		/*			</option>*/
-	}
-	{
-		/*		))}*/
-	}
-	{
-		/*	</Form.Select>*/
-	}
-	{
-		/*</Col>*/
-	}
 }

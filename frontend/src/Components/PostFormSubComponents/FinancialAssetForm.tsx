@@ -4,7 +4,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { Formik } from "formik";
-import { CapAssetType, getTax, Recurrence, RFBase, RouteTypes } from "@/DoggrTypes.ts";
+import { getTax, RFBase, RouteTypes } from "@/FrontendTypes.ts";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
 import { useAuth } from "@/Services/Auth.tsx";

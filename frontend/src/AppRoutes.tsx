@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import "@css/DoggrStyles.css";
+import "@css/AppStyles.css";
 import { MicroReportLoad } from "@/Components/GetReportSubComponenets/MicroReportLoad.tsx";
 import { MacroReportLoad } from "@/Components/GetReportSubComponenets/MacroReportComponents/MacroReportLoad.tsx";
 import { Container } from "react-bootstrap";
@@ -25,8 +25,7 @@ export function RetireMaybeRouter() {
 						path="/macroReport"
 						element={
 							<ProtectedRoute>
-								{" "}
-								<MacroReportLoad />{" "}
+								<MacroReportLoad />
 							</ProtectedRoute>
 						}
 					/>

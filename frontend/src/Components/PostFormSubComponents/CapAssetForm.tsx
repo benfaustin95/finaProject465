@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { date, number, string } from "yup";
 import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.tsx";
-import { CapAsset, CapAssetType, getTax, Recurrence, RouteTypes } from "../../DoggrTypes.ts";
+import { CapAsset, CapAssetType, getTax, Recurrence, RouteTypes } from "../../FrontendTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { RecurrenceSelector } from "@/Components/PostFormSubComponents/FormSubComponents/RecurrenceSelector.tsx";
@@ -35,7 +35,7 @@ export const CapitalAssetForm = (props: {
 			)
 			.required(),
 		type: string().required(),
-		growthRate: number().required().min(0).max(10),
+		growthRate: number().required().min(0).max(100),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),

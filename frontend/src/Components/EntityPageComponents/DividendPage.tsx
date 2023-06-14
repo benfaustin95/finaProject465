@@ -1,8 +1,7 @@
 import { DividendForm } from "@/Components/PostFormSubComponents/DividendForm.tsx";
 import { Container } from "react-bootstrap";
 import { CurrentItemListGroup } from "@/Components/DeleteFormSubComponents/SelectItemControl.tsx";
-import { BudgetItem, createSubmitNewItemForm, Dividend, RouteTypes } from "@/DoggrTypes.ts";
-import { PostInputService } from "@/Services/PostInputService.tsx";
+import { createSubmitNewItemForm, Dividend, RouteTypes } from "@/FrontendTypes.ts";
 
 export function DividendPage() {
 	const submitForm = createSubmitNewItemForm(RouteTypes.DIVIDEND);

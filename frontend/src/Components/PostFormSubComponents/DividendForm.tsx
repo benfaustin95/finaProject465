@@ -8,7 +8,7 @@ import { TaxSelector } from "@/Components/PostFormSubComponents/TaxComponents.ts
 import * as yup from "yup";
 import { number, string } from "yup";
 import { useAuth } from "@/Services/Auth.tsx";
-import { Dividend, getTax, RFBase, RouteTypes } from "@/DoggrTypes.ts";
+import { Dividend, getTax, RFBase, RouteTypes } from "@/FrontendTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
 
@@ -16,6 +16,7 @@ export const DividendForm = (props: { submitForm: any; dividend?: Dividend; dele
 	const [finAssets, setFinAssets] = useState<Array<RFBase>>([]);
 	const { userId } = useAuth();
 	const { submitForm, dividend, deleteItem } = props;
+
 	useEffect(() => {
 		const loadSearchItem = () => {
 			SearchItemService.send(userId, RouteTypes.FINASSET)

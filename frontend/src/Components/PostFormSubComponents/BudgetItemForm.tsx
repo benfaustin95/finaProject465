@@ -5,8 +5,7 @@ import { date, number, string } from "yup";
 import { Formik } from "formik";
 import { BaseInputForm } from "@/Components/PostFormSubComponents/BaseInputForm.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { BudgetItem } from "@/DoggrTypes.ts";
-import { useState } from "react";
+import { BudgetItem } from "@/FrontendTypes.ts";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { RecurrenceSelector } from "@/Components/PostFormSubComponents/FormSubComponents/RecurrenceSelector.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
@@ -17,7 +16,6 @@ export const BudgetItemForm = (props: {
 }) => {
 	const { submitForm, budgetItem, deleteItem } = props;
 	const { userId } = useAuth();
-
 	const budgetItemSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),

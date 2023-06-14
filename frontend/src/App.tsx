@@ -1,6 +1,6 @@
 import { RetireMaybeRouter } from "@/AppRoutes.tsx";
 import { BrowserRouter } from "react-router-dom";
-import "@css/DoggrStyles.css";
+import "@css/AppStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "@/Services/Auth.tsx";
 import { useAuth0 } from "@auth0/auth0-react";

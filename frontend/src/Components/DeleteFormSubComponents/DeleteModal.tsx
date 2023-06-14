@@ -1,7 +1,7 @@
 import { BudgetItemForm } from "@/Components/PostFormSubComponents/BudgetItemForm.tsx";
 import { DeleteItemsService } from "@/Services/DeleteItemsService.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { BaseInput } from "@/DoggrTypes.ts";
+import { BaseInput } from "@/FrontendTypes.ts";
 import { Modal } from "react-bootstrap";
 import { PutInputService } from "@/Services/PutInputService.tsx";
 import { CapitalAssetForm } from "@/Components/PostFormSubComponents/CapAssetForm.tsx";
