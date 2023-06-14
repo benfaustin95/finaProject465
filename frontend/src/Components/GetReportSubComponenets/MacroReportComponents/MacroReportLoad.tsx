@@ -44,7 +44,7 @@ export const MacroReportLoad = () => {
 			{macroReport != undefined && macroReport.withdrawals.remainder.note != "" ? (
 				<div
 					className={" text-center m-2 p-2 h5 border border-danger border-4 rounded text-danger"}>
-					{"WIll RUN OUT OF MONEY IN " + JSON.parse(macroReport.withdrawals.remainder.note).year}
+					{"WIll RUN OUT OF MONEY IN " + JSON.parse(macroReport.withdrawals.remainder.note)}
 				</div>
 			) : null}
 			{macroReport != undefined ? report : null}

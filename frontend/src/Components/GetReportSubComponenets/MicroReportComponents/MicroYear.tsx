@@ -222,15 +222,6 @@ function Taxes(props: DestructuredMicroTaxAccumulator) {
 	return taxOutput;
 }
 
-function FillerRow(props: { name: string; type?: string; length: number }) {
-	const { name, type } = props;
-	return (
-		<tr>
-			<td className={`table-sheet ${type != undefined ? "sub-heading" : "heading"}`}>{name}</td>
-		</tr>
-	);
-}
-
 function MicroIncomes(props: DestructuredMicroIncome) {
 	const { salary, investments, retirementIncome, nonTaxable, oneTimeIncome, taxes, monthlyIncome } =
 		props;
@@ -254,7 +245,7 @@ function MicroWithdrawals(props: DestructuredMicroWithdrawal) {
 			<MicroRowGroup group={outDividend} />
 			<MicroWithdrawalRowGroup group={outputWithdrawal} />
 			{remainder != undefined && remainder.note != "" ? (
-				<MicroRow type={"sum bad"} {...remainder} id={1} />
+				<MicroRow type={"bad"} {...remainder} id={1} />
 			) : null}
 		</>
 	);

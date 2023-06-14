@@ -48,7 +48,11 @@ function OutputRow(props: row) {
 				{name == "remainder" ? "" : note}
 			</td>
 			{amounts.map(([year, x]) => (
-				<td key={year + name + note + "cell"}>{formater.format(x)}</td>
+				<td
+					className={`${type == "sum" ? "sum" : ""} ${type == "bad" ? "sum bad" : ""}`}
+					key={year + name + note + "cell"}>
+					{formater.format(x)}
+				</td>
 			))}
 		</tr>
 	);
