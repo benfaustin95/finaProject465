@@ -69,7 +69,7 @@ function RowGroup(props: rowGroup) {
 }
 
 function WithdrawalRow(props: DestructuredWithMacroOutputRow) {
-	const { name, note, amounts, updatedValue } = props;
+	const { name, note, updatedValue } = props;
 	const formater = new Intl.NumberFormat("em-US", {
 		style: "currency",
 		currency: "USD",

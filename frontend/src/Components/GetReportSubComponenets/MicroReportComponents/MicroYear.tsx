@@ -58,28 +58,6 @@ function MicroRow(props: microRow) {
 	);
 }
 
-function Remainder(props: DestructuredMicroOutputRow) {
-	const { name, note, amounts } = props;
-	const formater = new Intl.NumberFormat("em-US", {
-		style: "currency",
-		currency: "USD",
-	});
-
-	return (
-		<tr>
-			<td key={name + "cell"}>{name}</td>
-			<td key={note + "cell"}>{note}</td>
-			{amounts.map(([[month, year], x]) => {
-				return (
-					<td key={year.toString() + month.toString() + name + note + "cell"}>
-						{formater.format(x)}
-					</td>
-				);
-			})}
-		</tr>
-	);
-}
-
 function MicroRowGroup(props: microRowGroup) {
 	const { group } = props;
 	return (
@@ -151,7 +129,7 @@ function Taxes(props: DestructuredMicroTaxAccumulator) {
 		localIncome,
 	} = props;
 
-	const taxOutput = (
+	return (
 		<>
 			<MicroRow
 				key={"federal taxable income"}
@@ -219,7 +197,6 @@ function Taxes(props: DestructuredMicroTaxAccumulator) {
 			/>
 		</>
 	);
-	return taxOutput;
 }
 
 function MicroIncomes(props: DestructuredMicroIncome) {
@@ -253,10 +230,6 @@ function MicroWithdrawals(props: DestructuredMicroWithdrawal) {
 
 export function MicroYear(props: DestructuredMicroReport) {
 	const { expense, income, withdrawal, deficit } = props;
-	const formater = new Intl.NumberFormat("em-US", {
-		style: "currency",
-		currency: "USD",
-	});
 
 	return (
 		<Container className={"bg-light rounded-4 m-5 p-5"}>

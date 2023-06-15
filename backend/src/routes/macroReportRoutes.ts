@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import { User } from "../db/entities/User.js";
-import { sendMacroReport } from "../helperMethods/destructure.js";
 
 function validateTimePeriod(start: Date, end: number) {
 	if (end == undefined)

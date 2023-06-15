@@ -31,8 +31,7 @@ export function UpdateUserModal(props: { show: boolean; onHide: any }) {
 	}
 
 	function deleteItem(event) {
-		const idsToDelete = event;
-		DeleteItemsService.send(idsToDelete, userId, "user")
+		DeleteItemsService.send(event, userId, "user")
 			.then((res) => {
 				if (res.status != 200) console.log(res);
 				handleLogout();

@@ -6,7 +6,6 @@ import { useAuth } from "@/Services/Auth.tsx";
 import { DestructuredMicroReport } from "../../../../destructureTypes.ts";
 
 export const MicroReportLoad = () => {
-	const location = useLocation();
 	const navigate = useNavigate();
 	const { userId } = useAuth();
 	// const { end } = location.state;

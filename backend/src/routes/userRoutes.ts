@@ -1,10 +1,8 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 import { User } from "../db/entities/User.js";
 
-import { RentalAssetBody, UsersBody } from "../db/backendTypes/createTypes.js";
-import { SOFT_DELETABLE, SOFT_DELETABLE_FILTER } from "mikro-orm-soft-delete";
-import { getEntryPoints } from "typedoc/dist/lib/utils/index.js";
-import { RentalAsset } from "../db/entities/rentalasset.js";
+import { UsersBody } from "../db/backendTypes/createTypes.js";
+import { SOFT_DELETABLE_FILTER } from "mikro-orm-soft-delete";
 
 async function userRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {

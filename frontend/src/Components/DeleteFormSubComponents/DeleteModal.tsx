@@ -54,8 +54,7 @@ export function DeleteModal<T extends BaseInput>(props: {
 	}
 
 	function deleteItem(event) {
-		const idsToDelete = event;
-		DeleteItemsService.send(idsToDelete, userId, props.type)
+		DeleteItemsService.send(event, userId, props.type)
 			.then((res) => {
 				if (res.status != 200) throw res;
 				onHide();

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MacroReportService } from "@/Services/MacroReportService.tsx";
 import { MacroYear } from "@/Components/GetReportSubComponenets/MacroReportComponents/MacroYear.tsx";
 import { Col, Container, Row } from "react-bootstrap";
@@ -9,7 +9,7 @@ import { ReportYearForm } from "@/Components/GetReportSubComponenets/MacroReport
 
 export const MacroReportLoad = () => {
 	const navigate = useNavigate();
-	const { userId, handleToken } = useAuth();
+	const { userId } = useAuth();
 	const [macroReport, setMacroReport] = useState<DestructuredMacroReport>();
 	const [submitFailed, setSubmitFailed] = useState(false);
 	const loadReport = (event) => {
