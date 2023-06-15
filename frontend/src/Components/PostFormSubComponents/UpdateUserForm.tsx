@@ -53,6 +53,7 @@ export const UpdateUserForm = (props: { submitForm: any; deleteItem: any }) => {
 								name: user.name,
 								start: new Date(user.start).toISOString().slice(0, 10),
 								birthday: new Date(user.birthday).toISOString().slice(0, 10),
+								id: user.id,
 						  }
 						: {
 								name: "",

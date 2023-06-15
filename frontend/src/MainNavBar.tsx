@@ -19,7 +19,11 @@ function UpdateUserButton() {
 	const [show, setShow] = useState(false);
 	return (
 		<>
-			<Button className={"ml-4"} onClick={() => setShow(true)}>
+			<Button
+				className={"ml-4"}
+				onClick={() => {
+					setShow(true);
+				}}>
 				Update User
 			</Button>
 			<UpdateUserModal show={show} onHide={() => setShow(false)} />
@@ -28,7 +32,7 @@ function UpdateUserButton() {
 }
 
 export function MainNavBar() {
-	const { token, email } = useAuth();
+	const { token, email, userId } = useAuth();
 
 	return (
 		<Navbar bg={"light"} expand={"lg"}>
@@ -55,7 +59,7 @@ export function MainNavBar() {
 								</NavDropdown>
 							</>
 						) : null}
-						{token != null ? <UpdateUserButton /> : null}
+						{token != null && userId != null ? <UpdateUserButton /> : null}
 						{token != null ? <LogOutButton /> : <LoginButton />}
 					</Nav>
 				</NavbarCollapse>

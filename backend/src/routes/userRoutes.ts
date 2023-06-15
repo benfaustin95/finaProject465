@@ -3,6 +3,7 @@ import { User } from "../db/entities/User.js";
 
 import { UsersBody } from "../db/backendTypes/createTypes.js";
 import { SOFT_DELETABLE_FILTER } from "mikro-orm-soft-delete";
+import { use } from "chai";
 
 async function userRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -19,7 +20,13 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 				{ email: user.email },
 				{ filters: { [SOFT_DELETABLE_FILTER]: false } }
 			);
-			if (existing == null) userCreated = await req.em.create(User, { ...user });
+			if (existing == null)
+				userCreated = await req.em.create(User, {
+					name: user.name,
+					start: user.start,
+					birthday: user.birthday,
+					email: user.email,
+				});
 			else if (existing != null && existing.deleted_at == null)
 				return reply.status(401).send(`Unable to create user ${user.email}`);
 			else {
@@ -68,7 +75,7 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 	app.put<{ Body: { userid: number; toUpdate: UsersBody } }>("/user", async (req, reply) => {
 		const { userid, toUpdate } = req.body;
 		try {
-			const user = await req.em.findOneOrFail(User, { id: userid });
+			const user = await req.em.findOneOrFail(User, { id: toUpdate.id });
 			Object.getOwnPropertyNames(toUpdate).forEach((x) => {
 				user[x] = toUpdate[x];
 			});

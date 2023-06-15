@@ -11,6 +11,7 @@ export type UsersBody = {
 	email: string;
 	start: string;
 	birthday: string;
+	id: number;
 };
 export type BudgetBody = {
 	note: string;

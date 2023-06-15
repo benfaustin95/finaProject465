@@ -4,6 +4,7 @@ export type UsersBody = {
 	email: string;
 	start: string;
 	birthday: string;
+	id: number;
 };
 export enum CapAssetType {
 	HUMAN = "human capital",

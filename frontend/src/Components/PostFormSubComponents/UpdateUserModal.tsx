@@ -3,10 +3,11 @@ import { useAuth } from "@/Services/Auth.tsx";
 import { Modal } from "react-bootstrap";
 import { PutInputService } from "@/Services/PutInputService.tsx";
 import { UpdateUserForm } from "@/Components/PostFormSubComponents/UpdateUserForm.tsx";
+import { useState } from "react";
 
 export function UpdateUserModal(props: { show: boolean; onHide: any }) {
 	const { show, onHide } = props;
-	const { userId, email, handleLogout } = useAuth();
+	const { email, handleLogout, userId } = useAuth();
 
 	function submitForm(event, actions) {
 		const toSubmit = {

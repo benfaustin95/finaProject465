@@ -1,10 +1,11 @@
 import { httpClient } from "@/Services/HttpClient.tsx";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Simulate } from "react-dom/test-utils";
 import waiting = Simulate.waiting;
 import { GetUserProfileService } from "@/Services/GetUserProfileService.tsx";
+import React from "react";
 const serverIP = import.meta.env.API_HOST;
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
@@ -84,7 +85,7 @@ export const AuthProvider = ({ children }: any) => {
 						return res.data;
 					})
 					.then((res) => {
-						setUserId(res);
+						setUserId((userId) => res);
 					})
 					.catch((err) => {
 						throw new Error(err);
@@ -102,6 +103,7 @@ export const AuthProvider = ({ children }: any) => {
 	};
 	const updateUserID = (id: number) => {
 		setUserId(id);
+		console.log("here", userId);
 	};
 	const handleLogout = async () => {
 		await logout();
