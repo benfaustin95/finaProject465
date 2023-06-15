@@ -25,8 +25,17 @@ async function financialAssetRoutes(app: FastifyInstance, _options = {}) {
 		async (req, reply) => {
 			const { userId, idsToDelete } = req.body;
 			try {
-				const item = await req.em.findOneOrFail(FinancialAsset, { id: idsToDelete, owner: userId });
+				const item = await req.em.findOneOrFail(
+					FinancialAsset,
+					{ id: idsToDelete, owner: userId },
+					{
+						populate: ["Dividends"],
+					}
+				);
 				await req.em.remove(item);
+				for (const x of item.Dividends.getItems()) {
+					await req.em.remove(x);
+				}
 				await req.em.flush();
 				return reply.send(`${item.name} successfully created`);
 			} catch (err) {

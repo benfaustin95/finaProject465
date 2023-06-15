@@ -39,8 +39,6 @@ export const BudgetItemForm = (props: {
 		<Formik
 			validationSchema={budgetItemSchema}
 			onSubmit={submitForm}
-			validateOnChange={false}
-			validateOnBlur={false}
 			initialValues={
 				budgetItem != undefined
 					? {

@@ -4,6 +4,5 @@
 **/.code
 *.html
 *.json
-
 **/doc
 **/public

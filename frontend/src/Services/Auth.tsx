@@ -40,7 +40,6 @@ let initialEmail;
 let initialUserID;
 if (!(initialToken == null)) {
 	try {
-		console.log("here" + import.meta.env.REACT_APP_AUTH_DOMAIN);
 		await updateAxios(initialToken);
 		initialEmail = getUserItemFromToken(initialToken, import.meta.env.AUTH_EMAIL_KEY);
 		await GetUserProfileService.send(initialEmail)
@@ -85,7 +84,7 @@ export const AuthProvider = ({ children }: any) => {
 						return res.data;
 					})
 					.then((res) => {
-						setUserId((userId) => res);
+						setUserId((userId) => res.id);
 					})
 					.catch((err) => {
 						throw new Error(err);

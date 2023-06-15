@@ -22,7 +22,7 @@ export const RentalAssetForm = (props: {
 	const rentalAssetSchema = yup.object().shape({
 		name: string().required(),
 		note: string(),
-		growthRate: number().required().positive().max(1000),
+		growthRate: number().required().min(0).max(1000),
 		totalValue: number().required().positive(),
 		costBasis: number().required().min(0),
 		wPriority: number().required().integer().positive(),

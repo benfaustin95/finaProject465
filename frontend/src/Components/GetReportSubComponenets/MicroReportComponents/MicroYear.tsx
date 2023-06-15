@@ -185,14 +185,14 @@ function Taxes(props: DestructuredMicroTaxAccumulator) {
 				key={"state income tax"}
 				name={"State Income Tax"}
 				note={""}
-				amounts={stateIncome}
+				amounts={state}
 				id={1}
 			/>
 			<MicroRow
 				key={"Local Income Tax"}
 				name={"Local Income Tax"}
 				note={""}
-				amounts={localIncome}
+				amounts={local}
 				id={1}
 			/>
 		</>

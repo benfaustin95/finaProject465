@@ -30,7 +30,6 @@ export const UpdateUserForm = (props: { submitForm: any; deleteItem: any }) => {
 			})
 			.then((res) => {
 				setUser(res);
-				console.log(user);
 				setIsLoading(false);
 			})
 			.catch((err) => {
@@ -44,8 +43,6 @@ export const UpdateUserForm = (props: { submitForm: any; deleteItem: any }) => {
 		<Container className={"mx-auto my-4 bg-light rounded-5 w-75"}>
 			<Formik
 				validationSchema={profileSchema}
-				validateOnChange={false}
-				validateOnBlur={false}
 				onSubmit={submitForm}
 				initialValues={
 					user != null

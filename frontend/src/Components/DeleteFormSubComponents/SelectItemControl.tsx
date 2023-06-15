@@ -56,7 +56,7 @@ export function CurrentItemListGroup<T extends BaseInput>(props: {
 			case "date":
 				return new Date(item[name]).toISOString().slice(0, 10);
 			case "rate":
-				return Math.round(item[name] * 100);
+				return Math.round(item[name] * 100) + "%";
 			case "growthRate":
 				return Math.round((item[name] - 1) * 100);
 			// case "asset": return item[asset].

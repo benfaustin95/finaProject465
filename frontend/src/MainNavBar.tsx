@@ -51,7 +51,7 @@ export function MainNavBar() {
 								<NavLink href={"/microReportLoaded"}>Micro Report</NavLink>
 								<NavDropdown title={"Financial Items"}>
 									<NavDropdown.Item href={"/budgetItem"}>Budget Item</NavDropdown.Item>
-									<NavDropdown.Item href={"/capitalAsset"}>Capital Asset</NavDropdown.Item>
+									<NavDropdown.Item href={"/capitalAsset"}>Capital Income</NavDropdown.Item>
 									<NavDropdown.Item href={"/dividend"}>Dividend</NavDropdown.Item>
 									<NavDropdown.Item href={"/oneTimeIncome"}>One Time Income</NavDropdown.Item>
 									<NavDropdown.Item href={"/financialAsset"}>Financial Asset</NavDropdown.Item>

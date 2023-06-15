@@ -47,7 +47,7 @@ services:
     ports:
       - "5173:80"
     environment:
-      - API_HOST=localhost
+      - API_HOST=backend
       - PORT=8080
       - AUTH_DOMAIN=dev-2dtmb35dmkdjhb8l.us.auth0.com
       - AUTH_CLIENT=WTp4p0IS7rLzxWnDrIE9HJVEpsXwU3Uh

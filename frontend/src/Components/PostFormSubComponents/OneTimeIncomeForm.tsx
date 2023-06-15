@@ -22,7 +22,7 @@ export const OneTimeIncomeForm = (props: {
 		note: string(),
 		cashBasis: number().positive().required(),
 		date: date().default(null).required(),
-		growthRate: number().required().positive().max(1000),
+		growthRate: number().required().min(0).max(1000),
 		federal: string().default(""),
 		state: string().default(""),
 		local: string().default(""),
