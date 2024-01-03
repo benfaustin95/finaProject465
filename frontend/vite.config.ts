@@ -1,6 +1,8 @@
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
+import basicSsl from '@vitejs/plugin-basic-ssl'
+import mkcert from 'vite-plugin-mkcert'
 
 // Generates ascii 65-90 (Capital letters) into array Vite is expecting
 const alphabet = Array.from(Array(26), (v, k) => {
@@ -9,7 +11,7 @@ const alphabet = Array.from(Array(26), (v, k) => {
 
 export default defineConfig(({ command, mode }) => {
 	return {
-		plugins: [react(), tsconfigPaths()],
+		plugins: [react(), tsconfigPaths(), mkcert()],
 		test: {
 			globals: true,
 			environment: "jsdom",
@@ -25,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
 			host: true, // needed for the Docker Container port mapping to work
 			strictPort: true,
 			port: 5173,
+			https: true,
 		},
 		build: {
 			target: "esnext",

@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { FastifySearchHttpMethodPlugin } from "./plugins/http_search.js";
+import fs from 'fs';
 import { FastifyMikroOrmPlugin } from "./plugins/mikro.js";
 import config from "./db/mikro-orm.config.js";
 import { FastifyMacroReportsPlugin } from "./plugins/macroBudgetReport.js";
@@ -39,6 +40,10 @@ const envToLogger = {
 
 const app = Fastify({
 	logger: envToLogger[process.env.NODE_ENV],
+	https: {
+		key: fs.readFileSync('./localhost-key.pem'),
+		cert: fs.readFileSync('./localhost.pem'),
+	}
 });
 
 await app.register(cors, {

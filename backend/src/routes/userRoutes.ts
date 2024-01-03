@@ -13,7 +13,6 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 	app.post<{ Body: UsersBody }>("/user", async (req, reply) => {
 		const user = req.body;
 		let userCreated;
-		app.log.error(user);
 		try {
 			const existing = await req.em.findOne(
 				User,
@@ -44,7 +43,6 @@ async function userRoutes(app: FastifyInstance, _options = {}) {
 
 	app.search<{ Body: { email: string } }>("/user", async (req, reply) => {
 		const { email } = req.body;
-		console.log(email);
 		try {
 			const existing = await req.em.findOneOrFail(
 				User,

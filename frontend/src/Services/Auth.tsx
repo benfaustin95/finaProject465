@@ -2,11 +2,8 @@ import { httpClient } from "@/Services/HttpClient.tsx";
 import { createContext, useContext, useEffect, useState, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Simulate } from "react-dom/test-utils";
-import waiting = Simulate.waiting;
 import { GetUserProfileService } from "@/Services/GetUserProfileService.tsx";
 import React from "react";
-const serverIP = import.meta.env.API_HOST;
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 export type AuthContextProps = {
@@ -38,22 +35,14 @@ const updateAxios = async (token: string) => {
 let initialToken = getToken();
 let initialEmail;
 let initialUserID;
-if (!(initialToken == null)) {
+if (initialToken) {
 	try {
 		await updateAxios(initialToken);
 		initialEmail = getUserItemFromToken(initialToken, import.meta.env.AUTH_EMAIL_KEY);
-		await GetUserProfileService.send(initialEmail)
-			.then((res) => {
-				if (res.status != 200) throw new Error("error here initial token");
-				return res.data;
-			})
-			.then((res) => {
-				initialUserID = res.id;
-			})
-			.catch((err) => {
-				initialEmail = null;
-				initialToken = null;
-			});
+		const res = await GetUserProfileService.send(initialEmail);
+		if(res.status != 200) throw new Error('Error with initial token');
+		const data = res.data;
+		initialUserID = data.id;
 	} catch (err) {
 		initialEmail = null;
 		initialToken = null;
@@ -84,7 +73,7 @@ export const AuthProvider = ({ children }: any) => {
 						return res.data;
 					})
 					.then((res) => {
-						setUserId((userId) => res.id);
+						setUserId(res.id);
 					})
 					.catch((err) => {
 						throw new Error(err);
@@ -138,8 +127,7 @@ export const useAuth = () => {
 
 function getToken() {
 	const tokenString = localStorage.getItem("token");
-
-	if (typeof tokenString === "undefined" || tokenString === null) {
+	if (!tokenString) {
 		console.error("No token found");
 		return null;
 	}

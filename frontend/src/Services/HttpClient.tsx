@@ -3,7 +3,7 @@ import axios from "axios";
 const serverIP = import.meta.env.API_HOST;
 const serverPort = import.meta.env.PORT;
 
-const serverUrl = `http://${serverIP}:${serverPort}`;
+const serverUrl = `https://${serverIP}:${serverPort}`;
 
 // This is why I use Axios over Fetch
 export const httpClient = axios.create({
