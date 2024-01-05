@@ -1,0 +1,14 @@
+{
+  "name": "retireMaybe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "docker compose --profile full up -d",
+    "stop": "docker compose --profile full stop",
+    "rebuild": "docker compose --profile full build --no-cache && pnpm start && cd backend && pnpm migration:freshSeed && cd .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
