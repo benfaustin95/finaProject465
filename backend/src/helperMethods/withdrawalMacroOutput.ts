@@ -4,9 +4,8 @@ import {
 	MacroWithdrawal,
 	MacroWithdrawalOutputRow,
 } from "../db/backendTypes/ReportTypes.js";
-import { calculateTax, mkOutputRow } from "./incomeMacroOutput.js";
+import { mkOutputRow } from "./incomeMacroOutput.js";
 import { Dividend } from "../db/entities/Dividend.js";
-import { current } from "tap";
 import { compoundGrowthRateIncome } from "./incomeMicroOutput.js";
 import {
 	calculatePostTaxLiquidity,
@@ -36,7 +35,7 @@ export const withdrawalMacroOutput = (
 		if (currentDeficit == undefined) {
 			throw new Error("issue with deficit");
 		}
-		dividends.forEach((x, index) => {
+		dividends.forEach((x) => {
 			let currentOutDividend: MacroOutputRow = outDividend.get(x.id);
 
 			if (currentOutDividend == undefined) {
@@ -55,7 +54,7 @@ export const withdrawalMacroOutput = (
 
 		finAssets
 			.sort((a, b) => a.wPriority - b.wPriority)
-			.forEach((x, index) => {
+			.forEach((x) => {
 				const toAdd = x;
 				let currentOutputWithdrawal: MacroWithdrawalOutputRow = outputWithdrawal.get(x.id);
 
@@ -94,7 +93,7 @@ export const withdrawalMacroOutput = (
 				} else currentOutputWithdrawal.amounts.set(year, 0);
 				currentOutputWithdrawal.updatedValue.set(year, toAdd.totalValue);
 			});
-		if (currentDeficit != 0 && remainder.note == "" && year - start <= 50)
+		if (currentDeficit < 0 && remainder.note == "" && year - start <= 50)
 			remainder.note = JSON.stringify(year);
 		remainder.amounts.set(year, currentDeficit);
 	}

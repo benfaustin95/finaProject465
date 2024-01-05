@@ -33,7 +33,7 @@ export const withdrawalMicroOutput = (
 			if (currentDeficit == undefined) {
 				throw new Error("issue with deficit");
 			}
-			dividends.forEach((x, index) => {
+			dividends.forEach((x) => {
 				let currentOutDividend: MicroOutputRow = outDividend.get(x.id);
 				let currentAmount = 0;
 				if (currentOutDividend == undefined) {
@@ -51,7 +51,7 @@ export const withdrawalMicroOutput = (
 
 			finAssets
 				.sort((a, b) => a.wPriority - b.wPriority)
-				.forEach((x, index) => {
+				.forEach((x) => {
 					const toAdd = x;
 					let currentOutputWithdrawal: MicroWithdrawalOutputRow = outputWithdrawal.get(x.id);
 
@@ -91,7 +91,7 @@ export const withdrawalMicroOutput = (
 					currentOutputWithdrawal.updatedValue.set(key, toAdd.totalValue);
 				});
 
-			if (currentDeficit != 0 && remainder.note == "" && year - start.getUTCFullYear() <= 50)
+			if (currentDeficit < 0 && remainder.note == "" && year - start.getUTCFullYear() <= 50)
 				remainder.note = JSON.stringify(month + 1 + " / " + year);
 			remainder.amounts.set(key, currentDeficit);
 		}
