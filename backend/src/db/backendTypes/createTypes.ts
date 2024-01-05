@@ -1,4 +1,4 @@
-import { User } from "../entities/User.js";
+import { User, MaritalStatus } from "../entities/User.js";
 import { Level, TaxRate } from "../entities/Tax.js";
 import { FinancialAsset } from "../entities/financialasset.js";
 import { Recurrence } from "../entities/budgetItem.js";
@@ -11,6 +11,7 @@ export type UsersBody = {
 	email: string;
 	start: string;
 	birthday: string;
+	marital_status: MaritalStatus,
 	id: number;
 };
 export type BudgetBody = {

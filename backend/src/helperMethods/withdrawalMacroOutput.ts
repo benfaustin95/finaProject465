@@ -94,7 +94,7 @@ export const withdrawalMacroOutput = (
 				} else currentOutputWithdrawal.amounts.set(year, 0);
 				currentOutputWithdrawal.updatedValue.set(year, toAdd.totalValue);
 			});
-		if (currentDeficit != 0 && remainder.note == "" && year - start <= 50)
+		if (currentDeficit < 0 && remainder.note == "" && year - start <= 50)
 			remainder.note = JSON.stringify(year);
 		remainder.amounts.set(year, currentDeficit);
 	}

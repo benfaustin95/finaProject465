@@ -2,10 +2,10 @@ import Form from "react-bootstrap/Form";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { date, string } from "yup";
+import {date, number, string} from "yup";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
-import { UsersBody } from "@/FrontendTypes.ts";
+import {MaritalStatus, UsersBody} from "@/FrontendTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { useEffect, useState } from "react";
 import { GetUserProfileService } from "@/Services/GetUserProfileService.tsx";
@@ -20,6 +20,7 @@ export const UpdateUserForm = (props: { submitForm: any; deleteItem: any }) => {
 		name: string().required(),
 		start: date().required(),
 		birthday: date().required().max(new Date(), "birthday must be before today"),
+		marital_status: number().oneOf(Object.values(MaritalStatus) as number[]).required(),
 	});
 
 	useEffect(() => {
@@ -45,17 +46,19 @@ export const UpdateUserForm = (props: { submitForm: any; deleteItem: any }) => {
 				validationSchema={profileSchema}
 				onSubmit={submitForm}
 				initialValues={
-					user != null
+					user
 						? {
 								name: user.name,
 								start: new Date(user.start).toISOString().slice(0, 10),
 								birthday: new Date(user.birthday).toISOString().slice(0, 10),
 								id: user.id,
+								marital_status: user.marital_status,
 						  }
 						: {
 								name: "",
 								start: new Date().toISOString().slice(0, 10),
 								birthday: new Date().toISOString().slice(0, 10),
+								marital_status: 0,
 						  }
 				}>
 				{({ handleSubmit, handleChange, values, touched, errors, status }) => (

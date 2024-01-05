@@ -3,12 +3,12 @@ import { Col, Container, Row } from "react-bootstrap";
 import { PostInputService } from "@/Services/PostInputService.tsx";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { date, string } from "yup";
+import {date, number, string} from "yup";
 import { getUserItemFromToken } from "@/Services/Auth.tsx";
 import { useState } from "react";
 import { InputControl } from "@/Components/PostFormSubComponents/FormSubComponents/InputControl.tsx";
 import { SubmitButton } from "@/Components/PostFormSubComponents/FormSubComponents/SubmitButton.tsx";
-import { UsersBody } from "@/FrontendTypes.ts";
+import {MaritalStatus, UsersBody} from "@/FrontendTypes.ts";
 
 export const CreateUserForm = () => {
 	const searchParams = new URLSearchParams(document.location.search);
@@ -23,12 +23,14 @@ export const CreateUserForm = () => {
 		name: string().required(),
 		start: date().required(),
 		birthday: date().required().max(new Date(), "birthday must be before today"),
+		marital_status: number().oneOf(Object.values(MaritalStatus) as number[]).required(),
 	});
 	function submitForm(event) {
 		const toSubmit: UsersBody = {
 			...event,
 			email,
 		};
+		console.log(toSubmit);
 		PostInputService.send("/user", toSubmit)
 			.then((res) => {
 				if (res.status != 200) throw new Error("bad create");
@@ -51,6 +53,7 @@ export const CreateUserForm = () => {
 					name: "",
 					start: new Date().toISOString().slice(0, 10),
 					birthday: new Date().toISOString().slice(0, 10),
+					marital_status: 0,
 				}}>
 				{({ handleSubmit, handleChange, values, touched, errors }) => (
 					<Form onSubmit={handleSubmit} className={"p-4"}>
@@ -67,6 +70,23 @@ export const CreateUserForm = () => {
 								touched={touched.name}
 								errors={errors.name}
 							/>
+							<Col sm={12} md={4} lg={2}>
+								<Form.Label>
+									Marital Status
+								</Form.Label>
+							</Col>
+							<Col sm={12} md={8} lg={4}>
+								<Form.Select
+									onChange={handleChange}
+									name={'marital_status'}
+									value={values.marital_status}
+								>
+									<option value={0}>Single</option>
+									<option value={1}>Married</option>
+									<option value={2}>Widowed</option>
+									<option value={3}>Divorced</option>
+								</Form.Select>
+							</Col>
 							<InputControl
 								handleChange={handleChange}
 								name={"start"}

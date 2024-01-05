@@ -4,12 +4,20 @@ export type UsersBody = {
 	email: string;
 	start: string;
 	birthday: string;
+	marital_status: MaritalStatus,
 	id: number;
 };
 export enum CapAssetType {
 	HUMAN = "human capital",
 	NONTAXABLEANNUITY = "non-taxable annuity",
 	SOCIAL = "social capital",
+}
+
+export enum MaritalStatus {
+	SINGLE,
+	MARRIED,
+	WIDOWED,
+	DIVORCED,
 }
 
 export enum Recurrence {

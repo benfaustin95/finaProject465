@@ -129,6 +129,16 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
+        },
+        "marital_status": {
+          "name": "marital_status",
+          "type": "smallint",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "enum"
         }
       },
       "name": "users",

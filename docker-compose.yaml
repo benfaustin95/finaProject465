@@ -19,6 +19,7 @@ services:
       retries: 5
 
   backend:
+    profiles: ['backend', 'full']
     hostname: backend
     container_name: backend
     build: ./backend/
@@ -41,6 +42,7 @@ services:
         condition: service_healthy
 
   frontend:
+    profiles: ['frontend', 'full']
     container_name: frontend
     build: ./frontend/
     restart: always

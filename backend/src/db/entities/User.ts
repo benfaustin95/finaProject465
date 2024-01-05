@@ -1,4 +1,4 @@
-import { Cascade, Collection, Entity, OneToMany, Property, Unique } from "@mikro-orm/core";
+import {Cascade, Collection, Entity, Enum, OneToMany, Property, Unique} from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity.js";
 import { BudgetItem } from "./budgetItem.js";
 import { FinancialAsset } from "./financialasset.js";
@@ -20,6 +20,9 @@ export class User extends BaseEntity {
 
 	@Property()
 	start: Date = new Date();
+
+	@Enum()
+	marital_status: MaritalStatus = MaritalStatus.SINGLE;
 
 	@OneToMany(() => BudgetItem, (owner) => owner.owner, {
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
@@ -46,4 +49,12 @@ export class User extends BaseEntity {
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
 	})
 	oneTimeIncomes!: Collection<OneTimeIncome>;
+}
+
+
+export enum MaritalStatus {
+	SINGLE,
+	MARRIED,
+	WIDOWED,
+	DIVORCED,
 }
