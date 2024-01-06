@@ -21,7 +21,7 @@
     "migration:up": "pnpm mikro-orm-esm migration:up",
     "migration:down": "pnpm mikro-orm-esm migration:down",
     "migration:fresh": "pnpm mikro-orm-esm migration:fresh",
-    "migration:freshSeed": "pnpm mikro-orm-esm migration:fresh --seed",
+    "migration:freshSeed": "npm run mikro-orm-esm migration:fresh --seed",
     "seed:create": "pnpm mikro-orm-esm seeder:create ",
     "seed:run": "pnpm mikro-orm-esm seeder:run",
     "startProd": "pnpm migration:freshSeed && pnpm start"
