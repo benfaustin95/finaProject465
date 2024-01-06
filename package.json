@@ -6,7 +6,7 @@
   "scripts": {
     "start": "docker compose --profile full up -d",
     "stop": "docker compose --profile full stop",
-    "remove": "docker compose --profile full down -v -rmi all",
+    "remove": "docker compose --profile full down -v --rmi all",
     "rebuild": "npm run remove && docker compose --profile full build --no-cache && npm run start"
   },
   "keywords": [],
