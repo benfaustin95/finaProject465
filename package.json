@@ -6,7 +6,7 @@
   "scripts": {
     "start": "docker compose --profile full up -d",
     "stop": "docker compose --profile full stop",
-    "rebuild": "docker compose --profile full build --no-cache && pnpm start && cd backend && pnpm migration:freshSeed && cd .."
+    "rebuild": "docker compose --profile full build --no-cache && npm run start && cd backend && npm run migration:freshSeed && cd .."
   },
   "keywords": [],
   "author": "",
