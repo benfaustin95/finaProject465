@@ -74,6 +74,7 @@ export const AuthProvider = ({ children }: any) => {
 		try {
 			if (isAuthenticated) {
 				token = await getAccessTokenSilently();
+				console.log(token);
 				await updateAxios(token);
 				email = getUserItemFromToken(token, import.meta.env.AUTH_EMAIL_KEY);
 				setEmail(email);
