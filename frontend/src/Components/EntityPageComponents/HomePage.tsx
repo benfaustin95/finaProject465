@@ -9,6 +9,7 @@ export function HomePage() {
 		void handleToken().catch((err) => {
 			console.log(err);
 		});
+		console.log('auth: ', isAuthenticated);
 	}, [isAuthenticated]);
 
 	return (
