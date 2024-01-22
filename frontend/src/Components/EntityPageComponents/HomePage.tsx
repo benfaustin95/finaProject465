@@ -19,6 +19,7 @@ export function HomePage() {
 		</>
 	);
 }
+console.log("Auth status: ", isAuthenticated);
 export const Home = () => {
 	return (
 		<div
