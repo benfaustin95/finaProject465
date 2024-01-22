@@ -11,7 +11,7 @@ export function HomePage() {
 		});
 		console.log('auth: ', isAuthenticated);
 	}, [isAuthenticated]);
-
+console.log("auth status: ", isAuthenticated);
 	return (
 		<>
 			{" "}
@@ -19,7 +19,6 @@ export function HomePage() {
 		</>
 	);
 }
-console.log("Auth status: ", isAuthenticated);
 export const Home = () => {
 	return (
 		<div
